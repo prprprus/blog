@@ -189,11 +189,11 @@ if __name__ == "__main__":
 
 ```
 $ python -m profile demo.py
-         105 function calls in 0.670 seconds
+         105 function calls in 0.846 seconds
          ... ...
 ```
 
-震惊！1s 都不到，吓得我赶紧拿出计算器算了一下，快了将近 20 倍。抱着严谨的技术精神（狗头），再验证一下 nb_primes 为 19999 时，两个版本的结果是否一致，测试代码如下：
+震惊！1s 都不到，吓得我赶紧拿出计算器算了一下，快了将近 17 倍。抱着严谨的技术精神（狗头），再验证一下 nb_primes 为 19999 时，两个版本的结果是否一致，测试代码如下：
 
 ```Python
 import hello_cython

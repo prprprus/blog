@@ -75,3 +75,30 @@ def primes_cython_v2(int nb_primes):
 
 经过测试 v2 和 v1 的结果是一致的，测试代码就省略了，可以参考 [HelloCython.md]() 中的方法。功能一致了，那性能方面呢？通过 `cython sdm_pog_pk.pyx -a` 命令可以得到如下分析报告：
 
+![](https://github.com/hsxhr-10/Blog/blob/master/image/%E4%BD%BF%E7%94%A8Cython%E6%A0%87%E5%87%86%E5%BA%931.png)
+
+可以看到，v2 相对 v1 最后一行黄色还更浅了，这是因为 v1 返回的是 Python 类型的变量，v2 返回的是 C++ 类型的变量。
+
+然后用 CProfile 实际跑一下，测试代码和结果如下：
+
+```Python
+import hello_cython
+
+
+def main():
+    nb_primes = 19999
+    hello_cython.primes_cython_v2(nb_primes)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+```bash
+$ python -m profile demo.py
+         105 function calls in 0.923 seconds
+```
+
+从实际执行的结果上看却比 v1 的 0.846 要慢一点，但是差距还是很能接受的，原因目前不清楚，希望知道的大佬赐教下。
+
+TODO...
