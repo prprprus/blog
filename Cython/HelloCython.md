@@ -146,9 +146,9 @@ import hello_cython
 
 
 def main():
-    print(primes_python(23) == primes_cython_v1(23))
-    print(primes_python(52) == primes_cython_v1(52))
-    print(primes_python(16) == primes_cython_v1(16))
+    print(primes_python(23) == hello_cython.primes_cython_v1(23))
+    print(primes_python(52) == hello_cython.primes_cython_v1(52))
+    print(primes_python(16) == hello_cython.primes_cython_v1(16))
 
 
 if __name__ == "__main__":
@@ -221,3 +221,4 @@ True
 
 嗯，这下安心了。
 
+其实能快这么多也可以理解，毕竟经过 Cython 编译后就是 C 代码了。
