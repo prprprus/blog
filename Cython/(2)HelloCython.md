@@ -46,6 +46,7 @@ $ python -m profile demo.py
 
 ```Cython
 def primes_cython_v1(int nb_primes):
+    # 将原来的 Python 类型换成 C 类型
     cdef int[19999] p
     cdef int n
 
@@ -121,8 +122,7 @@ import hello_cython
 def main():
     nb_primes = 23
     # 使用扩展
-    result = hello_cython.primes_cython_v1(nb_primes)
-    print(result)
+    print(hello_cython.primes_cython_v1(nb_primes))
 
 
 if __name__ == "__main__":
@@ -177,7 +177,7 @@ import hello_cython
 def main():
     nb_primes = 19999
 
-    # print(primes_python(nb_primes))
+    # primes_python(nb_primes)
     hello_cython.primes_cython_v1(nb_primes)
 
 

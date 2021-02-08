@@ -51,10 +51,12 @@ def primes_cython_v1(int nb_primes):
 使用标准库 `<vector>` 后的 .pyx 代码如下：
 
 ```Cython
+# import <vector> 库
 from libcpp.vector cimport vector
 
 
 def primes_cython_v2(int nb_primes):
+    # 将原来的 Python 类型换成 C/C++ 类型
     cdef vector[int] p
     cdef int n, i
 
@@ -99,6 +101,4 @@ $ python -m profile demo.py
          105 function calls in 0.923 seconds
 ```
 
-从实际执行的结果上看却比 v1 的 0.846 要慢一点，但是差距还是很能接受的，原因目前不清楚，希望知道的大佬赐教下。
-
-TODO...
+从实际执行的结果上看却比 v1 的 0.846 要慢一点，但是从开发的便利性上看，这点差距还是很能接受的，原因目前不清楚，希望知道的大佬赐教下。
