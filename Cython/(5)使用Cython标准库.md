@@ -2,7 +2,7 @@
 
 Cython 除了最基本的自动类型转换、类型化/静态化变量的功能之外，还提供了一些比较实用的库，包括：C、C++、posix、Numpy、CPython、OpenMP 六部分，它们共同构成了 [Cython 的标准库](https://github.com/cython/cython/tree/master/Cython/Includes)。
 
-回到 [HelloCython.md]() 中的例子：
+回到 [HelloCython.md](https://github.com/hsxhr-10/Blog/blob/master/Cython/(2)HelloCython.md) 中的例子：
 
 ```Python
 # primes_python() 函数
@@ -75,7 +75,7 @@ def primes_cython_v2(int nb_primes):
 
 可以看到相比 v1，v2 更加贴近原来的代码形式，可读性好了一点。
 
-经过测试 v2 和 v1 的结果是一致的，测试代码就省略了，可以参考 [HelloCython.md]() 中的方法。功能一致了，那性能方面呢？通过 `cython sdm_pog_pk.pyx -a` 命令可以得到如下分析报告：
+经过测试 v2 和 v1 的结果是一致的，测试代码就省略了，可以参考 [HelloCython.md](https://github.com/hsxhr-10/Blog/blob/master/Cython/(2)HelloCython.md) 中的方法。功能一致了，那性能方面呢？通过 `cython sdm_pog_pk.pyx -a` 命令可以得到如下分析报告：
 
 ![](https://github.com/hsxhr-10/Blog/blob/master/image/%E4%BD%BF%E7%94%A8Cython%E6%A0%87%E5%87%86%E5%BA%931.png)
 
