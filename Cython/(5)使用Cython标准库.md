@@ -2,6 +2,8 @@
 
 Cython 除了最基本的自动类型转换、类型化/静态化变量的功能之外，还提供了一些比较实用的库，包括：C、C++、posix、Numpy、CPython、OpenMP 六部分，它们共同构成了 [Cython 的标准库](https://github.com/cython/cython/tree/master/Cython/Includes)。
 
+## C++
+
 回到 [HelloCython.md](https://github.com/hsxhr-10/Blog/blob/master/Cython/(2)HelloCython.md) 中的例子：
 
 ```Python
@@ -51,7 +53,7 @@ def primes_cython_v1(int nb_primes):
 使用标准库 `<vector>` 后的 .pyx 代码如下：
 
 ```Cython
-# import <vector> 库
+# import C++ 标准库
 from libcpp.vector cimport vector
 
 
@@ -102,3 +104,33 @@ $ python -m profile demo.py
 ```
 
 从实际执行的结果上看却比 v1 的 0.846 要慢一点，但是从开发的便利性上看，这点差距还是很能接受的，原因目前不清楚，希望知道的大佬赐教下。
+
+## C
+
+```Cython
+# import C 标准库
+from libc.stdio cimport printf
+
+
+def cprint():
+    printf("%s\n", "Hello libc")
+```
+
+## posix
+
+```Cython
+# import posix 标准库
+from posix.unistd cimport sleep
+
+
+def csleep():
+    sleep(1)
+```
+
+## Numpy
+
+TODO
+
+## OpenMP
+
+TODO
