@@ -1,3 +1,3 @@
 ![](https://p99.pstatp.com/large/1b870002fead064aff93)
 
-一些和 Python 相关的知识点、陷阱等。
+记录一些简单的 Python 语法和某些陷阱。
