@@ -39,9 +39,9 @@
 
 如果和标准的面向对象语言对比，Python 的面向对象支持可以算是残废的。但是 Python 也有自己的面向对象风格，也就是「鸭子类型」，具体体现在各种魔术方法上，比如通过重写这些魔术方法来实现多态的效果。
 
-### 类变量/函数
+### 类变量和类方法
 
-#### 和根正苗红的面向对象语言 Java 做对比
+#### 修改类变量时的陷阱
 
 在 Java 中，所有对象实例共享类变量，只要其中一个实例对类变量做了更新操作，其他实例再访问就会得到新的值。
 
@@ -120,3 +120,46 @@ In [16]: class A:
 ```
 
 另外一个方法是 TODO。
+
+#### 类方法
+
+1. 类方法的 `self` 指的是类本身
+2. 类方法只能使用类变量
+
+```IPYTHON
+In [25]: class A:
+    ...:     flag = 1
+    ...:     __flag = 2
+    ...:
+    ...:     def __init__(self, name):
+    ...:         self.__name = name
+    ...:
+    ...:     @classmethod
+    ...:     def show(self):
+    ...:         print(self)  # 类本身
+    ...:         print(A.flag)
+    ...:         print(A.__flag)
+    ...:         print(self.__name)  # 异常，因为不能访问实例变量
+    ...:
+    ...:
+    ...: a = A("A")
+    ...: a.show()
+<class '__main__.A'>
+1
+2
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-25-c984f6e37d2f> in <module>
+     15
+     16 a = A("A")
+---> 17 a.show()
+
+<ipython-input-25-c984f6e37d2f> in show(self)
+     11         print(A.flag)
+     12         print(A.__flag)
+---> 13         print(self.__name)  # 异常，因为不能访问实例变量
+     14
+     15
+
+AttributeError: type object 'A' has no attribute '_A__name'
+```
