@@ -168,4 +168,4 @@ AttributeError: type object 'A' has no attribute '_A__name'
 
 1. `__init__()` 是赋值操作，`__new__()` 才是创建对象操作
 2. `super()` 用于调用父类的方法
-3. `@property`, `XXX.setter` 用于简化 getter/setter 方法
+3. `@property`/`XXX.setter` 用于简化 getter/setter 方法
