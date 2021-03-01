@@ -164,7 +164,7 @@ AttributeError                            Traceback (most recent call last)
 AttributeError: type object 'A' has no attribute '_A__name'
 ```
 
-### 一些重要的方法
+### 其他
 
 1. `__init__()` 是赋值操作，`__new__()` 才是创建对象操作
 2. `super()` 用于调用父类的方法
