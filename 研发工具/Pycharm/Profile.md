@@ -85,11 +85,6 @@ def clear_data(pool, number):
 
 
 def main():
-    """
-    pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
-    r = redis.Redis(connection_pool=pool, socket_keepalive=True,max_connections=100)
-    :return:
-    """
     pool = redis.Redis(host="XXX", port=6379, db=0, password="XXX",
                        max_connections=100, socket_keepalive=True, decode_responses=True, health_check_interval=0)
     number = 100000
