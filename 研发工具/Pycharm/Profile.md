@@ -1,6 +1,6 @@
 # Pycharm 的 Profile 工具
 
-这里记录如何使用 Pycharm 提供的 Profile 工具对 Python 代码进行性能分析。入门案例代码如下：
+这里记录如何使用专业版 Pycharm 提供的 Profile 工具对 Python 代码进行性能分析。入门案例代码如下：
 
 ```Python
 import time
