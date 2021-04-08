@@ -1,6 +1,6 @@
 # Pycharm 的 Profile 工具
 
-这里记录如何使用 Pycharm 提供的 Profile 工具对 Python 代码进行性能分析。案例代码如下：
+这里记录如何使用 Pycharm 提供的 Profile 工具对 Python 代码进行性能分析。案例代码如下
 
 ```Python
 import time
@@ -39,4 +39,8 @@ if __name__ == "__main__":
     fun3()
     fun5()
 ```
+
+到 IDE 的空白处右击鼠标 --> More Run/Debug --> Profile XX，如下图所示
+
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/Pycharm-Profile.png)
 
