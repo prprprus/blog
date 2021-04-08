@@ -13,4 +13,4 @@
 - 光标跳转页尾：Cmd+⬇️
 - 粘带选择：Shift+方向键
 - 跳转定义：Cmd+鼠标左击
-- tab 窗口切换：Ctrl+Tab
+- tab 窗口切换：Ctrl+Tab 或 Cmd+Shift+[ 或 Cmd+Shift+] 
