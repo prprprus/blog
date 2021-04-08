@@ -44,3 +44,48 @@ if __name__ == "__main__":
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/Pycharm%20%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7.png)
 
+由于没有加锁，因此在运行结束后，报告中只有每个线程的运行情况显示出来，也就是绿色部分，可以清楚看到这次运行中，每个线程所占用的运行时间是多少。如下图所示：
+
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/Pycharm%20%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B71.png)
+
+然后来一段加锁的多线程代码，如下：
+
+```Python
+import threading
+import time
+
+
+# 互斥资源
+result = 10
+
+
+def task(i, lock):
+    with lock:
+        print(i)
+        global result
+        result -= 1
+
+
+def main():
+    workers = []
+    number = 10
+    lock = threading.Lock()
+
+    for i in range(number):
+        w = threading.Thread(target=task, kwargs={"i": i, "lock": lock})
+        workers.append(w)
+
+    for w in workers:
+        w.start()
+    for w in workers:
+        w.join()
+
+    print("---> result:", result)
+
+
+if __name__ == "__main__":
+    s = time.time()
+    main()
+    print("---> 耗时:", time.time() - s)
+```
+
