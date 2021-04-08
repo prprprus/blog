@@ -1,6 +1,11 @@
 # Pycharm 的线程可视化工具
 
-这里记录如何使用专业版 Pycharm 提供的线程可视化工具对 Python 多线程代码进行分析：查看每个线程的运行时间、等待锁的时间、持有锁的运行时间、是否发生死锁等
+这里记录如何使用专业版 Pycharm 提供的线程可视化工具对 Python 多线程代码进行分析：
+
+- 每个线程的运行时间
+- 每个线程等待锁的时间
+- 每个线程持有锁的运行时间
+- 是否发生死锁
 
 先来一段没有加锁的多线程代码，如下：
 
@@ -37,4 +42,5 @@ if __name__ == "__main__":
 
 到 IDE 编辑区的空白处右击鼠标 --> More Run/Debug --> Concurrency...，如下图所示：
 
-![]()
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/Pycharm%20%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7.png)
+
