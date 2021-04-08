@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/Pycharm-Profile.png)
 
-执行完之后，会弹出一个新的 tab 窗口，里面有耗时统计和调用关系图。如下图所示：
+执行完之后，会弹出一个新的 tab 窗口，里面会有两个图标，分别是统计图和调用关系图。如下图所示：
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/Pycharm-Profile-%E7%BB%9F%E8%AE%A1.png)
 
@@ -52,14 +52,67 @@ if __name__ == "__main__":
 
 Profile 报告：
 
-1. 耗时统计里面每一栏旁边有个黑色三角形，点击它可以按照从小到大或者从大到小进行排序，主要关注 `Time` 字段那一栏。
+0. 一般优先看我们自己写的函数或者方法的耗时，其次是第三方库的函数、方法的耗时
+1. 统计图里面点击每一栏可以按照从小到大或者从大到小进行排序，主要关注 `Time` 字段
+2. 调用关系图以一棵倒树的形式呈现，其中耗时越多的操作，颜色一般越鲜艳，主要关注颜色和 `Total` 字段
 
-2. 调用关系中耗时越多，颜色一般越鲜艳，一般关注 `Total` 字段。
-   
-有了这些报告，就可以比较直观方便的定位到代码哪里存在性能问题，进而再有针对性的做优化。
+有了这些报告，就可以比较直观方便的定位到代码哪里存在性能问题，进而再有针对性的做优化
 
 下面来看一个更贴合实际的案例，代码如下：
 
 ```Python
+import redis
+import time
 
+
+def set_data(pool, number):
+    for i in range(number):
+        pool.set(str(i), str(i))
+    print("---> set_data() done.")
+
+
+def get_data(pool, number):
+    res = []
+    for i in range(number):
+        res.append(pool.get(str(i)))
+    print("---> get_data() 结果:", res)
+
+
+def clear_data(pool, number):
+    for i in range(number):
+        pool.delete(str(i))
+    print("---> clear_data() done.")
+
+
+def main():
+    """
+    pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
+    r = redis.Redis(connection_pool=pool, socket_keepalive=True,max_connections=100)
+    :return:
+    """
+    pool = redis.Redis(host="XXX", port=6379, db=0, password="XXX",
+                       max_connections=100, socket_keepalive=True, decode_responses=True, health_check_interval=0)
+    number = 100000
+
+    set_data(pool, number)
+    get_data(pool, number)
+    # clear_data(pool, number)
+
+
+if __name__ == "__main__":
+    s = time.time()
+    main()
+    print("---> 耗时:", time.time() - s)
 ```
+
+执行 Profile，终端显示耗时输出为：
+
+```bash
+---> 耗时: 63.8957998752594
+```
+
+统计图和调用关系图如下：
+
+![]()
+
+![]()
