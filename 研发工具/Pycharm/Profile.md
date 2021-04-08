@@ -44,3 +44,8 @@ if __name__ == "__main__":
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/Pycharm-Profile.png)
 
+执行完之后，会弹出一个新的 tab 窗口，里面有耗时统计和调用关系图。如下图所示
+
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/Pycharm-Profile-%E7%BB%9F%E8%AE%A1.png)
+
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/Pycharm-Profile-%E8%B0%83%E7%94%A8%E5%85%B3%E7%B3%BB.png)
