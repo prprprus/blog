@@ -49,3 +49,11 @@ git push -f
 - 查看分支：`git branch -a`
 
 ## Git 分支管理
+
+TODO
+
+## 遇过的问题
+
+- 解决拉远端分支失败
+    - https://www.jianshu.com/p/16e35060c64e
+    - https://github.com/flutter/flutter/issues/15134
