@@ -32,8 +32,8 @@ Python 项目工程化的相关工具
 
 ### 单元测试
 
-- [unittest](https://github.com/hsxhr-10/Blog/blob/master/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.md) （基本够用了）
-- unittest.mock（基本够用了）
+- [unittest](https://github.com/hsxhr-10/Blog/blob/master/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.md) （一般够用了）
+- unittest.mock（一般够用了）
 - coverage.py（生成覆盖率报告）
 
 ### 部署
@@ -41,11 +41,11 @@ Python 项目工程化的相关工具
 - Shell（轻量级）
 - fabric（轻量级）
 - Ansible（规范化的 Shell 脚本，貌似用来做裸机配置比较多）
-- k8s（灵活强大的容器编排平台）
+- k8s（业内标准，灵活强大的容器编排平台）
 
 ### 持续集成
 
-- Git Pre-Commit（轻量级，在 commit 之前先执行自定义脚本）
+- Git Pre-Commit（轻量级，在 commit 之前先执行自定义脚本，严格来说不算事持续集成的工具，但是可以达到相似的效果）
 - GitLab-CI（跟 GitLab 的粘性较好）
 - Jenkins（业内标准）
 
