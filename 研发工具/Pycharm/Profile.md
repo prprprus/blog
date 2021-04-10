@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
 如果性能分析后发现性能瓶颈不是自己写的代码，而是别人的代码，比如第三方库，这个时候一般有这些解决思路：
 
-1. 定位到对应的源码，大致浏览一下，确定有哪些可能耗时的地方，常见的有网络 I/O、文件 I/O、CPU 计算等，先有个底。拿如上面的 `_read_from_socket()` 举例，
+1. 定位到对应的源码，大致浏览一下，确定有哪些可能耗时的地方，常见的有网络 IO、文件 IO、CPU 计算等，先有个底。拿如上面的 `_read_from_socket()` 举例，
    可以在 `redis-py/redis/connection.py` 134 行中找到（版本不懂可能有偏差）
    ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/Pycharm-Profile-%E8%B0%83%E7%94%A8%E5%85%B3%E7%B3%BB2.png)
 2. 从第三方库 API 使用方法上找，比如上面 `get_data()` 和 `set_data()` 对应的下层 API 接口是 redis-py 的 `get()` 和 `set()`，
