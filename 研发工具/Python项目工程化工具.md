@@ -1,7 +1,5 @@
 # Python 项目工程化工具
 
-update -> lint -> build -> test -> deploy
-
 当我们需要做一个稍大点的项目，而不是一两个简单的脚本时，可能就会遇到像环境隔离、依赖管理、代码风格、单元测试、部署等一系列工程化问题。下面记录一些好用的，可以帮助完成
 Python 项目工程化的相关工具
 
@@ -50,6 +48,8 @@ Python 项目工程化的相关工具
 - Git Pre-Commit（轻量级，在 commit 之前先执行自定义脚本）
 - GitLab-CI（跟 GitLab 的粘性较好）
 - Jenkins（业内标准）
+
+> update -> lint -> build -> test -> deploy
 
 ### 进程管理
 
