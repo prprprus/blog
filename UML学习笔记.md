@@ -80,7 +80,7 @@ UML 分为「结构建模图」和「行为建模图」两种大类型，共有 
 
 时序图能够比较好地描述多个系统之间的交互逻辑，特别是那些不是三两句话说得清的交互
 
-案例，微信支付时序图：
+直接看一个实际案例，微信支付时序图：
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/uml-sequence-1.png)
 
