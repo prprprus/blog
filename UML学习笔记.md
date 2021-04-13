@@ -27,7 +27,11 @@ UML 分为「结构建模图」和「行为建模图」两种大类型，共有 
 
 ### 继承
 
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/uml-class-2.png)
+
 ### 实现
+
+![]()
 
 ### 关联
 
