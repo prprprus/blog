@@ -66,3 +66,7 @@ UML 分为「结构建模图」和「行为建模图」两种大类型，共有 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/uml-class-7.png)
 
 ### 嵌套类
+
+嵌套类或者叫内部类，在 Java、Python 这些语言中都比较常见
+
+![]()
