@@ -52,8 +52,17 @@ UML 分为「结构建模图」和「行为建模图」两种大类型，共有 
 
 ### 组合
 
+组合图描述了两个类的包含关系，有强组合和弱组合之分。如果类 B 是类 A 的一部分，而且 B 的生命周期和 A 是一样的，那它们就是强组合；
+如果类 B 是类 A 的一部分，但是 B 的生命周期和 A 是独立的，他们可以分别存在，那么它们就是弱组合
+
+> 一般可能弱组合用得多一点
+
 #### 强组合
 
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/uml-class-6.png)
+
 #### 弱组合
+
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/uml-class-7.png)
 
 ### 嵌套类
