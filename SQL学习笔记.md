@@ -29,11 +29,55 @@
 
 ## DML
 
-- 
+### 概述
+
+```SQL
+SELECT [DISTINCT] <column_name>, [AGG_FUNC(<column_name>/<expression>)]
+FROM <table_name>
+JOIN <other_table_name> ON <table_name>.<column_name > = <other_table_name>.<column_name>
+WHERE <filter_expression>
+GROUP BY <column_name>
+HAVING <filter_expression>
+ORDER BY <column_name> ASC/DESC
+LIMIT <count>;
+```
+
+执行顺序：
+
+1. FROM...JOIN...ON
+2. WHERE
+3. GROUP BY
+4. HAVING
+5. SELECT...AGG_FUNC
+6. DISTINCT
+7. ORDER BY
+8. LIMIT
+
+> `DISTINCT` 是一个性能不怎么好的操作，谨慎使用
+
+### 过滤数据
+
+`WHERE` 可以搭配一系列判断真假的关键字，用来过滤查询结果：
+
+- `AND`
+- `OR`
+- `NOT`
+- `IN`/`NOT IN`
+- `BETWEEN`/`NOT BETWEEN`
+- `LIKE`/`NOT LIKE`
+- `IS NULL`/`IS NOT NULL`
+
+### JOIN
+
+![]()
+
+### 分组
+
+### 排序
+
+### 聚合运算
 
 ## 事务
-
-## 聚合运算
 
 ## 执行计划
 
