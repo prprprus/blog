@@ -69,7 +69,16 @@ LIMIT <count>;
 
 ### JOIN
 
-![]()
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1.png)
+
+三表连接案例：
+
+```SQL
+SELECT pi.imageid,p.ProductCode,pi.filepath,p.name,p.defaultimage
+FROM ProductInfringeReport pir INNER JOIN Product p ON pir.ProductCode = p.ProductCode
+    INNER JOIN ProductImage pi ON p.ProductID = pi.ProductID
+WHERE pir.adddatetime>"{}";
+```
 
 ### 分组
 
