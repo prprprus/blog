@@ -334,7 +334,7 @@ Query OK, 0 rows affected (0.00 sec)
 
 #### 验证幻读是否存在
 
-T1 和 T2 分别开启事务，如下所示：：
+T1 和 T2 分别开启事务，如下所示：
 
 ```SQL
 mysql> begin;
