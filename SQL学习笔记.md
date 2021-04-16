@@ -109,13 +109,13 @@ WHERE pir.adddatetime>"{}";
 
 没有事务隔离性会造成如下的问题，问题的严重性从高到低排序：
 
-- 脏写：事务 T1 和事务 T2 都能修改同一块数据，这就是脏写
+- 脏写：事务 T1 和事务 T2 都能修改同一块数据
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--2.png)
-- 脏读：事务 T1 可以读取到事务 T2 的中间状态的数据，这就是脏读
+- 脏读：事务 T1 可以读取到事务 T2 的中间状态的数据
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3.png)
-- 不可重复读：对于同一块数据，事务 T1 读了两次，前一次是 T2 修改提交前，后一次是事务 T2 修改提交后，前后两次读取的结果不一致，这就是不可重复读 
+- 不可重复读：对于同一块数据，事务 T1 读了两次，前一次是 T2 修改提交前，后一次是事务 T2 修改提交后，前后两次读取的结果不一致 
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---4.png)
-- 幻读：事务 T2 插入了新数据，事务 T1 第一次无法读取新数据，但是如果 T1 刚好修改到了新数据，T1 第二次就可以读取到新数据，这就是幻读 
+- 幻读：事务 T2 插入了新数据，事务 T1 第一次无法读取新数据，但是如果 T1 刚好修改到了新数据，T1 第二次就可以读取到新数据 
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--5.png)
 
 其中，脏写是最严重的结果，一般数据库都是默认不允许发生的。为了解决这些问题，数据库提供了不同的隔离级别 
