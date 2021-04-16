@@ -92,6 +92,10 @@ WHERE pir.adddatetime>"{}";
 - 也可以分别对多个列做排序，比如 `ORDER BY <COLUMN_1> DESC , <COLUMN_2> ASC;`
 - `DESC` 代表降序，`ASC` 代表升序，默认是升序排序
 
+### INSERT | UPDATE | DELETE
+
+- TODO
+
 ## 事务
 
 事务是数据库（数据库里的数据）状态转移的基本单位，事务可以保护数据的完整性和正确性
@@ -115,8 +119,8 @@ WHERE pir.adddatetime>"{}";
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3.png)
 - 不可重复读：对于同一块数据，事务 T1 读了两次，前一次是 T2 修改提交前，后一次是事务 T2 修改提交后，前后两次读取的结果不一致 
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---4.png)
-- 幻读：事务 T2 插入了新数据，事务 T1 第一次无法读取新数据，但是如果 T1 刚好修改到了新数据，T1 第二次就可以读取到新数据 
-  ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--5.png)
+- 幻读：事务 T2 插入了新数据，事务 T1 第一次无法读取新数据，但是如果 T2 `COMMIT` 之后，T1 又刚好修改到了新数据，那么 T1 第二次就可以读取到新数据 
+  ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---5.png)
 
 其中，脏写是最严重的结果，一般数据库都是默认不允许发生的。为了解决这些问题，数据库提供了不同的隔离级别 
 
@@ -129,17 +133,272 @@ MySQL 提供了四种事务隔离级别（RU < RC < RR < S），如下图所示�
 
 下面以现实中常用 RR 为案例，实验一下它的隔离效果
 
+首先检查当前隔离级别是否 RR：
+
+```SQL
+mysql> select @@GLOBAL.tx_isolation, @@session.tx_isolation;
++-----------------------+------------------------+
+| @@GLOBAL.tx_isolation | @@session.tx_isolation |
++-----------------------+------------------------+
+| REPEATABLE-READ       | REPEATABLE-READ        |
++-----------------------+------------------------+
+1 row in set, 2 warnings (0.00 sec)
+```
+
+建一个简单的测试表：
+
+```SQL
+CREATE TABLE test_transaction (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(45) NOT NULL COMMENT '名称',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='该表用于测试事务';
+```
+
+执行上面的 SQL 建表，并检查是否成功：
+
+```SQL
+mysql> describe test_transaction;
++-------+------------------+------+-----+---------+----------------+
+| Field | Type             | Null | Key | Default | Extra          |
++-------+------------------+------+-----+---------+----------------+
+| id    | int(11) unsigned | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(45)      | NO   |     | NULL    |                |
++-------+------------------+------+-----+---------+----------------+
+2 rows in set (0.00 sec)
+```
+
+插入若干测试数据：
+
+```SQL
+mysql> INSERT INTO  test_transaction (name) VALUES  ('a'), ('b'), ('c'), ('d'), ('e'), ('f'), ('g'), ('h'), ('i'), ('j'), ('k'), ('l');
+Query OK, 12 rows affected (0.01 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+mysql> select * from test_transaction;
++----+------+
+| id | name |
++----+------+
+|  1 | a    |
+|  2 | b    |
+|  3 | c    |
+|  4 | d    |
+|  5 | e    |
+|  6 | f    |
+|  7 | g    |
+|  8 | h    |
+|  9 | i    |
+| 10 | j    |
+| 11 | k    |
+| 12 | l    |
++----+------+
+12 rows in set (0.01 sec)
+```
+
+最后开两个终端，用来模拟两个独立的事务进程
+
 #### 验证脏读是否存在
+
+事务 T2 将 id=2 的 name 改成 'bb'，如下所示：
+
+```SQL
+mysql> begin;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> update test_transaction set name='bb' where id=2;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from test_transaction;
++----+------+
+| id | name |
++----+------+
+|  1 | a    |
+|  2 | bb   |
+|  3 | c    |
+|  4 | d    |
+|  5 | e    |
+|  6 | f    |
+|  7 | g    |
+|  8 | h    |
+|  9 | i    |
+| 10 | j    |
+| 11 | k    |
+| 12 | l    |
++----+------+
+12 rows in set (0.00 sec)
+
+mysql>
+```
+
+事务 T1 读取 test_transaction 表的所有数据，如下所示：
+
+```SQL
+mysql> begin;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from test_transaction;
++----+------+
+| id | name |
++----+------+
+|  1 | a    |
+|  2 | b    |
+|  3 | c    |
+|  4 | d    |
+|  5 | e    |
+|  6 | f    |
+|  7 | g    |
+|  8 | h    |
+|  9 | i    |
+| 10 | j    |
+| 11 | k    |
+| 12 | l    |
++----+------+
+12 rows in set (0.00 sec)
+
+mysql>
+```
+
+可以看到，T1 并不能读取到 T2 的中间状态，证明了 RR 隔离级别下不存在脏读问题 🎉
+
+最后，T1 和 T2 都执行 `ROLLBACK`，以便不影响下面的验证：
+
+```SQL
+mysql> rollback;
+Query OK, 0 rows affected (0.00 sec)
+```
 
 #### 验证不可重复读是否存在
 
+对于 id=9 的记录，T1 第一次读取的结果，如下所示：
+
+```SQL
+mysql> begin;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from test_transaction where id=9;
++----+------+
+| id | name |
++----+------+
+|  9 | i    |
++----+------+
+1 row in set (0.00 sec)
+
+mysql>
+```
+
+T2 修改 id=9 的 name 为 'qwerty'，并 `COMMIT`，如下所示：
+
+```SQL
+mysql> begin;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> update test_transaction set name='qwerty' where id=9;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from test_transaction where id=9;
++----+--------+
+| id | name   |
++----+--------+
+|  9 | qwerty |
++----+--------+
+1 row in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.01 sec)
+```
+
+T1 再次读取 id=9 的记录，如下所示：
+
+```SQL
+mysql> select * from test_transaction where id=9;
++----+------+
+| id | name |
++----+------+
+|  9 | i    |
++----+------+
+1 row in set (0.01 sec)
+
+mysql>
+```
+
+可以看到，T1 并不能读取到 T2 的中间状态，证明了 RR 隔离级别下不存在不可重复读问题 🎉
+
+最后，T1 执行 `ROLLBACK`，以便不影响下面的验证：
+
+```SQL
+mysql> rollback;
+Query OK, 0 rows affected (0.00 sec)
+```
+
 #### 验证幻读是否存在
+
+T2 插入一条新记录，如下所示：
+
+```SQL
+mysql> begin;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> insert into test_transaction (name) values ('m');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from test_transaction;
++----+--------+
+| id | name   |
++----+--------+
+|  1 | a      |
+|  2 | b      |
+|  3 | c      |
+|  4 | d      |
+|  5 | e      |
+|  6 | f      |
+|  7 | g      |
+|  8 | h      |
+|  9 | qwerty |
+| 10 | j      |
+| 11 | k      |
+| 12 | l      |
+| 14 | m      |
++----+--------+
+13 rows in set (0.00 sec)
+
+mysql>
+```
+
+此时 T1 并不能读取到 id=14，如下所示：
+
+```SQL
+mysql> begin;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from test_transaction;
++----+--------+
+| id | name   |
++----+--------+
+|  1 | a      |
+|  2 | b      |
+|  3 | c      |
+|  4 | d      |
+|  5 | e      |
+|  6 | f      |
+|  7 | g      |
+|  8 | h      |
+|  9 | qwerty |
+| 10 | j      |
+| 11 | k      |
+| 12 | l      |
++----+--------+
+12 rows in set (0.00 sec)
+```
+
+
 
 ### 事务相关的 SQL
 
 - 提交事务
     ```SQL
-    START TRANSACTION;
+    BEGIN;
   
     <some_sql>
   
@@ -147,7 +406,7 @@ MySQL 提供了四种事务隔离级别（RU < RC < RR < S），如下图所示�
     ```
 - 回滚事务
     ```SQL
-    START TRANSACTION;
+    BEGIN;
     
     <some_sql>
     
