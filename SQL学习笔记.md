@@ -116,7 +116,7 @@ WHERE pir.adddatetime>"{}";
 - 不可重复读：对于同一块数据，事务 T1 读了两次，后一次是事务 T2 提交后的更新数据，前后两次读取的结果不一致 
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4.png)
 - 幻读：事务 A 插入了数据 data，事务 B 刚好修改了 data，此时事务 B 就可以读取到 data，这就是幻读 
-  ![]()
+  ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-5.png)
 
 其中，脏写是最严重的结果，一般数据库都是默认不允许发生的。为了解决这些问题，数据库提供了不同的隔离级别。 
 
