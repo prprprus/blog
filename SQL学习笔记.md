@@ -97,7 +97,7 @@ WHERE pir.adddatetime>"{}";
 事务可以确保一组 SQL 语句要么成功，要么不成功
 
 - MySQL 默认 `autocommit` 参数是开启的，要使用事务要先将这个参数禁止掉
-- 使用事务用
+- 提交事务
     ```bash
     START TRANSACTION;
   
@@ -113,6 +113,8 @@ WHERE pir.adddatetime>"{}";
     
     ROLLBACK;  
     ```
+
+TODO: 隔离级别
 
 ## 执行计划
 
@@ -158,3 +160,4 @@ mysql> explain select * from employees where first_name = "Georgi";
 - `row`：需要扫描的总行数（当然越少越好）
 
 ## 最佳实践
+
