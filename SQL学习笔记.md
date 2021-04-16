@@ -131,7 +131,7 @@ MySQL 提供了四种事务隔离级别（RU < RC < RR < S），如下图所示�
     ```SQL
     START TRANSACTION;
   
-    ...
+    <some_sql>
   
     COMMIT;
     ```
@@ -139,7 +139,7 @@ MySQL 提供了四种事务隔离级别（RU < RC < RR < S），如下图所示�
     ```SQL
     START TRANSACTION;
     
-    ...
+    <some_sql>
     
     ROLLBACK;  
     ```
