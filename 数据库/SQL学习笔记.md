@@ -133,7 +133,7 @@ MySQL 提供了四种事务隔离级别（RU < RC < RR < S），如下图所示�
 
 下面以现实中常用 RR 为案例，实验一下它的隔离效果
 
-首先检查当前隔离级别是否 RR：
+首先检查当前隔离级别是否 RR，如下所示：：
 
 ```SQL
 mysql> select @@GLOBAL.tx_isolation, @@session.tx_isolation;
@@ -145,7 +145,7 @@ mysql> select @@GLOBAL.tx_isolation, @@session.tx_isolation;
 1 row in set, 2 warnings (0.00 sec)
 ```
 
-建一个简单的测试表：
+建一个简单的测试表，如下所示：：
 
 ```SQL
 CREATE TABLE test_transaction (
@@ -155,7 +155,7 @@ CREATE TABLE test_transaction (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='该表用于测试事务';
 ```
 
-执行上面的 SQL 建表，并检查是否成功：
+执行上面的 SQL 建表，并检查是否成功，如下所示：：
 
 ```SQL
 mysql> describe test_transaction;
@@ -168,7 +168,7 @@ mysql> describe test_transaction;
 2 rows in set (0.00 sec)
 ```
 
-插入若干测试数据：
+插入若干测试数据，如下所示：：
 
 ```SQL
 mysql> INSERT INTO  test_transaction (name) VALUES  ('a'), ('b'), ('c'), ('d'), ('e'), ('f'), ('g'), ('h'), ('i'), ('j'), ('k'), ('l');
@@ -261,7 +261,7 @@ mysql>
 
 可以看到，T1 并不能读取到 T2 的中间状态，证明了 RR 隔离级别下不存在脏读问题 🎉
 
-最后，T1 和 T2 都执行 `ROLLBACK`，以便不影响下面的验证：
+最后，T1 和 T2 都执行 `ROLLBACK`，以便不影响下面的验证，如下所示：：
 
 ```SQL
 mysql> rollback;
@@ -325,7 +325,7 @@ mysql>
 
 可以看到，T1 并不能读取到 T2 的中间状态，证明了 RR 隔离级别下不存在不可重复读问题 🎉
 
-最后，T1 执行 `ROLLBACK`，以便不影响下面的验证：
+最后，T1 执行 `ROLLBACK`，以便不影响下面的验证，如下所示：：
 
 ```SQL
 mysql> rollback;
@@ -334,13 +334,43 @@ Query OK, 0 rows affected (0.00 sec)
 
 #### 验证幻读是否存在
 
-T2 插入一条新记录，如下所示：
+T1 和 T2 分别开启事务，如下所示：：
 
 ```SQL
 mysql> begin;
 Query OK, 0 rows affected (0.00 sec)
 
-mysql> insert into test_transaction (name) values ('m');
+mysql>
+```
+
+T2 插入一条新记录并 `COMMIT`，如下所示：
+
+```SQL
+mysql> begin;
+Query OK, 0 rows affected (0.00 sec)
+
+-- 插入前
+mysql> select * from test_transaction;
++----+--------+
+| id | name   |
++----+--------+
+|  1 | a      |
+|  2 | b      |
+|  3 | c      |
+|  4 | d      |
+|  5 | e      |
+|  6 | f      |
+|  7 | g      |
+|  8 | h      |
+|  9 | qwerty |
+| 10 | j      |
+| 11 | k      |
+| 12 | l      |
++----+--------+
+12 rows in set (0.00 sec)
+
+-- 插入 id=13 新纪录
+mysql> insert into test_transaction (id,name) values (13,'m');
 Query OK, 1 row affected (0.00 sec)
 
 mysql> select * from test_transaction;
@@ -359,14 +389,39 @@ mysql> select * from test_transaction;
 | 10 | j      |
 | 11 | k      |
 | 12 | l      |
-| 14 | m      |
+| 13 | m      |
++----+--------+
+13 rows in set (0.00 sec)
+
+-- 提交事务
+mysql> commit;
+Query OK, 0 rows affected (0.01 sec)
+
+-- 确实已经插入成功
+mysql> select * from test_transaction;
++----+--------+
+| id | name   |
++----+--------+
+|  1 | a      |
+|  2 | b      |
+|  3 | c      |
+|  4 | d      |
+|  5 | e      |
+|  6 | f      |
+|  7 | g      |
+|  8 | h      |
+|  9 | qwerty |
+| 10 | j      |
+| 11 | k      |
+| 12 | l      |
+| 13 | m      |
 +----+--------+
 13 rows in set (0.00 sec)
 
 mysql>
 ```
 
-此时 T1 并不能读取到 id=14，如下所示：
+此时 T1 并不能读取到 id=13 这条记录，如下所示：
 
 ```SQL
 mysql> begin;
@@ -390,9 +445,45 @@ mysql> select * from test_transaction;
 | 12 | l      |
 +----+--------+
 12 rows in set (0.00 sec)
+
+mysql>
 ```
 
+> 注意：无论 T2 是否已经提交事务，T1 目前都无法读取到 id=13 这条记录
 
+T1 将所有的 name 都改成 'z'，也就是说新插入的 id=13 也被修改到了，然后再次读取整个表，如下所示：
+
+```SQL
+mysql> update test_transaction set name='z';
+Query OK, 13 rows affected (0.00 sec)
+Rows matched: 13  Changed: 13  Warnings: 0
+
+mysql> select * from test_transaction;
++----+------+
+| id | name |
++----+------+
+|  1 | z    |
+|  2 | z    |
+|  3 | z    |
+|  4 | z    |
+|  5 | z    |
+|  6 | z    |
+|  7 | z    |
+|  8 | z    |
+|  9 | z    |
+| 10 | z    |
+| 11 | z    |
+| 12 | z    |
+| 13 | z    |
++----+------+
+13 rows in set (0.01 sec)
+
+mysql>
+```
+
+可以看到第二次可以读取到新插入的 id=13，也就是说发生了幻读 😢
+
+小结：MySQL 在 RR 隔离级别下确实可以防止脏读、不可重复读，不能防止幻读
 
 ### 事务相关的 SQL
 
