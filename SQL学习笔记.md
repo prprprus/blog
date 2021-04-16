@@ -109,8 +109,10 @@ WHERE pir.adddatetime>"{}";
 
 没有事务隔离性会造成的问题：
 
-- 脏写：事务 A 和事务 B 都能修改同一行数据 data
+- 脏写：事务 T1 和事务 T2 都能修改同一块数据
+  ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2.png)
 - 脏读：一个事务可以读取到另一个事务的中间状态的数据
+  ![]()
 - 不可重复读：一个事务读取了另一个事务提交后的更新数据，导致前后两次读取的结果不一致 
 - 幻读：事务 A 插入了数据 data，事务 B 刚好修改了 data，此时事务 B 就可以读取到 data，这就是幻读 
 
@@ -124,7 +126,7 @@ MySQL 提供了四种事务隔离级别（RU < RC < RR < S），如下图所示�
 ### 事务相关的 SQL
 
 - 提交事务
-    ```bash
+    ```SQL
     START TRANSACTION;
   
     ...
@@ -132,7 +134,7 @@ MySQL 提供了四种事务隔离级别（RU < RC < RR < S），如下图所示�
     COMMIT;
     ```
 - 回滚事务
-    ```bash
+    ```SQL
     START TRANSACTION;
     
     ...
@@ -140,7 +142,7 @@ MySQL 提供了四种事务隔离级别（RU < RC < RR < S），如下图所示�
     ROLLBACK;  
     ```
 
-> MySQL 默认 `autocommit` 参数是开启的，要使用事务要先将这个参数禁止掉
+> MySQL 默认 `autocommit` 参数是开启的
 
 ## 执行计划
 
