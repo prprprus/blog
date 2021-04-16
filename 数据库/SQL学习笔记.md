@@ -337,6 +337,15 @@ Query OK, 0 rows affected (0.00 sec)
 T1 和 T2 分别开启事务，如下所示：
 
 ```SQL
+-- T1
+mysql> begin;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+```
+
+```SQL
+-- T2
 mysql> begin;
 Query OK, 0 rows affected (0.00 sec)
 
@@ -346,9 +355,6 @@ mysql>
 T2 插入一条新记录并 `COMMIT`，如下所示：
 
 ```SQL
-mysql> begin;
-Query OK, 0 rows affected (0.00 sec)
-
 -- 插入前
 mysql> select * from test_transaction;
 +----+--------+
@@ -424,9 +430,6 @@ mysql>
 此时 T1 并不能读取到 id=13 这条记录，如下所示：
 
 ```SQL
-mysql> begin;
-Query OK, 0 rows affected (0.00 sec)
-
 mysql> select * from test_transaction;
 +----+--------+
 | id | name   |
@@ -481,7 +484,7 @@ mysql> select * from test_transaction;
 mysql>
 ```
 
-可以看到，新插入的 id=13 也被修改到了，并且第二次可以读取到新插入的 id=13，也就是说发生了幻读 😢
+可以看到，T2 新插入的 id=13 也被修改到了，并且第二次可以读取到新插入的 id=13，也就是说发生了幻读 😢
 
 **小结：MySQL 在 RR 隔离级别下确实可以防止脏读、不可重复读，不能防止幻读**
 
@@ -592,3 +595,7 @@ mysql> explain select * from employees where first_name = "Georgi";
 - 【强制】禁止 `IN` 子查询，比如：`update t1 set … where name in(select name from user where…);`。因为性能很差
 - 【强制】禁止物理删除列，改成逻辑删除
 - 【强制】禁用procedure、function、trigger、views、event、外键约束。因为这些消耗数据库资源，降低数据库实例可扩展性。推荐都在应用程序端实现
+
+## 参考
+
+- https://github.com/Yhzhtk/note/issues/42#issuecomment-821176457
