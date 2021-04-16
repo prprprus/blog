@@ -107,7 +107,7 @@ WHERE pir.adddatetime>"{}";
 
 ### 事务隔离级别
 
-没有事务隔离性会造成的问题：
+没有事务隔离性会造成的问题，问题的严重性从高到低排序：
 
 - 脏写：事务 T1 和事务 T2 都能修改同一块数据
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--2.png)
@@ -115,10 +115,10 @@ WHERE pir.adddatetime>"{}";
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3.png)
 - 不可重复读：对于同一块数据，事务 T1 读了两次，后一次是事务 T2 提交后的更新数据，前后两次读取的结果不一致 
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4.png)
-- 幻读：事务 A 插入了数据 data，事务 B 刚好修改了 data，此时事务 B 就可以读取到 data，这就是幻读 
+- 幻读：事务 T2 插入了新数据，事务 T1 第一次无法读取新数据，但是如果 T1 刚好修改到了新数据，T1 第二次就可以读取到新数据，这就是幻读 
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-5.png)
 
-其中，脏写是最严重的结果，一般数据库都是默认不允许发生的。为了解决这些问题，数据库提供了不同的隔离级别。 
+其中，脏写是最严重的结果，一般数据库都是默认不允许发生的。为了解决这些问题，数据库提供了不同的隔离级别 
 
 MySQL 提供了四种事务隔离级别（RU < RC < RR < S），如下图所示，级别从低到高排序，越低的隔离级别意味着更低的系统资源消耗（加锁情况越简单）和更高的并发性能，
 同时也存在更多的数据正确性问题。MySQL 权衡了数据正确性和性能后，选择了 RR 作为默认的隔离级别
