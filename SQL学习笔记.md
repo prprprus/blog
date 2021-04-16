@@ -88,7 +88,7 @@ WHERE pir.adddatetime>"{}";
 
 `ORDER BY` 可以对查询结果进行排序
 
-- 可以按照某个字段做排序
+- 可以根据一个字段做排序
 - 也可以分别对多个列做排序，比如 `ORDER BY <COLUMN_1> DESC , <COLUMN_2> ASC;`
 - `DESC` 代表降序，`ASC` 代表升序，默认是升序排序
 
