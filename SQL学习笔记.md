@@ -29,7 +29,7 @@
 
 ## DML
 
-### 概述
+### SELECT 执行顺序
 
 ```SQL
 SELECT [DISTINCT] <column_name>, [AGG_FUNC(<column_name>/<expression>)]
@@ -41,8 +41,6 @@ HAVING <filter_expression>
 ORDER BY <column_name> ASC/DESC
 LIMIT <count>;
 ```
-
-执行顺序：
 
 1. FROM...JOIN...ON
 2. WHERE
@@ -81,6 +79,8 @@ WHERE pir.adddatetime>"{}";
 ```
 
 ### 分组
+
+
 
 ### 排序
 
