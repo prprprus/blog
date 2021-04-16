@@ -161,3 +161,43 @@ mysql> explain select * from employees where first_name = "Georgi";
 
 ## 最佳实践
 
+### DML
+
+- 【强制】`SELECT` 必须指定字段名，禁止 `*`。因为多余的字段会浪费网络带宽、缓存能装下的数据也变少了，影响性能
+- 【强制】`INSERT` 必须指定字段名
+- 【建议】`INSERT` 多组值时，避免超过 5000 个。因为可能会增加主从延迟的时间
+- 【建议】`IN` 列表的值不超过 500 个。因为可以减少底层扫描，提升性能
+- 【强制】注意读写分离的使用，即写入和事务的时候使用主库，只读的时候使用从库
+- 【强制】除了 100 行之内的小表，`SELECT` 语句必须带 `WHERE`，且使用索引
+- 【强制】生产环境禁止使用hint，如sql_no_cache，force index，ignore key，straight join等。因为hint是用来强制SQL按照某个执行计划来执行，但随着数据量变化我们无法保证自己当初的预判是正确的，因此我们要相信MySQL优化器
+- 【强制】`WHERE` 等号左右两边字段的数据类型必须一致，否则无法使用索引
+- 【建议】`UPDATE|DELETE` 要有 `WHERE` 子句，而且能用到索引
+- 【强制】`WHERE` 子句禁止只有 `LIKE` 条件，否则无法使用索引
+- 【强制】索引列不要使用函数或者表达式，否则无法使用索引
+- 【建议】如果 `OR` 无法使用到索引，可以将其优化成 `UNION`，比如：`WHERE a=1 OR b=2` 改成 `WHERE a=1… UNION …WHERE b=2;`
+- 【建议】用条件过滤来分页查询的性能，比如：`SELECT a,b,c FROM t1 LIMIT 10000,20;` 改成 `SELECT a,b,c FROM t1 WHERE id>10000 LIMIT 20;`
+
+### JOIN
+
+- 【建议】不是用子查询，可以拆分成多个查询或者 `join`
+- 【建议】线上环境，`join` 不超过三个表
+- 【建议】`join` 的表名使用别名
+- 【建议】使用结果集少的表作为驱动表
+
+### 事务
+
+- 【建议】事务隔离级别为 RR
+- 【建议】事务里面的 SQL 不超过 5 个
+- 【建议】将外部依赖调用移出事务，避免外部依赖发生问题导致事务执行时间过长
+- 【建议】对于一致性要求高的业务场景，开启事务并访问主库
+
+### 排序和分组
+
+- 【建议】减少使用 `ORDER BY`，将排序放到应用程序中做。因为 `ORDER BY`、`GROUP BY`、`DISTINCT` 这些语句比较消耗 CPU
+- 【建议】`ORDER BY`、`GROUP BY`、`DISTINCT` 这些语句尽量用上索引，直接查询出排好序的数据
+- 【建议】`ORDER BY`、`GROUP BY`、`DISTINCT` 这些语句的结果集控制在 1000 左右，否则性能不好
+
+### 禁止线上使用的 SQL
+
+- 【强制】禁止 `IN` 子查询，比如：`update t1 set … where name in(select name from user where…);`。因为性能很差
+- 【强制】禁止物理删除列，改成逻辑删除
