@@ -107,7 +107,7 @@ WHERE pir.adddatetime>"{}";
 
 ### 事务隔离级别
 
-没有事务隔离性会造成的问题，问题的严重性从高到低排序：
+没有事务隔离性会造成如下的问题，问题的严重性从高到低排序：
 
 - 脏写：事务 T1 和事务 T2 都能修改同一块数据，这就是脏写
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--2.png)
