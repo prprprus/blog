@@ -113,8 +113,8 @@ WHERE pir.adddatetime>"{}";
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--2.png)
 - 脏读：事务 T1 可以读取到事务 T2 的中间状态的数据，这就是脏读
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3.png)
-- 不可重复读：对于同一块数据，事务 T1 读了两次，后一次是事务 T2 提交后的更新数据，前后两次读取的结果不一致，这就是不可重复读 
-  ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--4.png)
+- 不可重复读：对于同一块数据，事务 T1 读了两次，前一次是 T2 修改提交前，后一次是事务 T2 修改提交后，前后两次读取的结果不一致，这就是不可重复读 
+  ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---4.png)
 - 幻读：事务 T2 插入了新数据，事务 T1 第一次无法读取新数据，但是如果 T1 刚好修改到了新数据，T1 第二次就可以读取到新数据，这就是幻读 
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--5.png)
 
