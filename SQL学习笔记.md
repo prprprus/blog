@@ -110,7 +110,7 @@ WHERE pir.adddatetime>"{}";
 没有事务隔离性会造成的问题：
 
 - 脏写：事务 T1 和事务 T2 都能修改同一块数据
-  ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2.png)
+  ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--2.png)
 - 脏读：事务 T1 可以读取到事务 T2 的中间状态的数据
   ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3.png)
 - 不可重复读：对于同一块数据，事务 T1 读了两次，后一次是事务 T2 提交后的更新数据，前后两次读取的结果不一致 
