@@ -1,2 +1,0 @@
-- ascii 码表：http://defindit.com/ascii.html
-- https://stackoverflow.com/questions/46656104/remove-x-from-string-in-a-text-file-in-python

@@ -1,2 +1,0 @@
-- https://github.com/mstamy2/PyPDF2
-- https://zhuanlan.zhihu.com/p/344384506
