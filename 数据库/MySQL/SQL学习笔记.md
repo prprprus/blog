@@ -11,7 +11,7 @@
   
 ### 表
 
-- 建表：参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E8%AE%BE%E8%AE%A1%E5%BB%BA%E6%A8%A1%E5%B7%A5%E5%85%B7/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1.md#%E4%B8%80%E4%B8%AA%E8%A7%84%E8%8C%83%E7%9A%84%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A5)
+- 建表：参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E4%B8%80%E4%B8%AA%E8%A7%84%E8%8C%83%E7%9A%84%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A5)
 - 显示所有表：`SHOW TABLES`;
 - 显示表结构：`DESCRIBE <table_name>;`
 - 显示建表定义：`SHOW CREATE TABLE <table_name>\G;`
@@ -127,7 +127,7 @@ DELETE FROM table_name
 WHERE condition;
 ```
 
-> 这几个语句注意 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#dml-1) 提到的点就可以
+> 这几个语句注意 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#dml-1) 提到的点就可以
 
 ## 事务相关的 SQL
 
@@ -153,7 +153,7 @@ ROLLBACK;
 
 ## 执行计划
 
-可以参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%B4%A2%E5%BC%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92)
+可以参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/%E7%B4%A2%E5%BC%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92)
 
 ## 最佳实践
 
