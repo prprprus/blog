@@ -94,7 +94,40 @@ WHERE pir.adddatetime>"{}";
 
 ### INSERT | UPDATE | DELETE
 
-- TODO
+#### INSERT
+
+```SQL
+INSERT INTO table(c1,c2,...)
+VALUES 
+   (v11,v12,...),
+   (v21,v22,...),
+    ...
+   (vnn,vn2,...);
+```
+
+#### UPDATE
+
+```SQL
+UPDATE [LOW_PRIORITY] [IGNORE] table_name 
+SET 
+    column_name1 = expr1,
+    column_name2 = expr2,
+    ...
+[WHERE
+    condition];
+```
+
+- LOW_PRIORITY：等到没有读取的时候才进行更新，对非 InnoDB 之外的引擎有效
+- IGNORE：发生错误也不会停止更新操作，导致错误的行不会被更新
+
+#### DELETE
+
+```SQL
+DELETE FROM table_name
+WHERE condition;
+```
+
+> 这几个语句注意 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#dml-1) 提到的点就可以
 
 ## 事务相关的 SQL
 
@@ -116,7 +149,7 @@ BEGIN;
 ROLLBACK;  
 ```
 
-TODO：更多的事务知识点可以参考 [事务学习笔记.md]()
+更多的事务相关可以参考 [事务学习笔记.md](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BA%8B%E5%8A%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md)
 
 ## 执行计划
 
@@ -200,4 +233,4 @@ mysql> explain select * from employees where first_name = "Georgi";
 
 ## 参考
 
-- TODO
+- https://www.mysqltutorial.org/basic-mysql-tutorial.aspx
