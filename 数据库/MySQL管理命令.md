@@ -1,0 +1,21 @@
+# MySQL 管理命令
+
+## 初始化
+
+- 创建用户
+    ```SQL
+    CREATE USER 'tiger'@'10.211.55.39' IDENTIFIED BY 'hzz2956195';
+    ```
+- 删除用户
+    ```SQL
+    DROP USER 'tiger'@'10.211.55.39';
+    ```
+- 授权用户（以全部权限为例）
+  ```SQL
+    GRANT ALL PRIVILEGES ON *.* to '<user_name>'@'<host_for_user>' IDENTIFIED BY '<password>';
+    FLUSH PRIVILEGES;
+    ```
+- 查看用户授权情况
+    ```SQL
+    SELECT * FROM information_schema.user_privileges;
+    ```
