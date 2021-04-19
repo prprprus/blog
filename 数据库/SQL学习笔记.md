@@ -230,7 +230,3 @@ mysql> explain select * from employees where first_name = "Georgi";
 - 【强制】禁止 `IN` 子查询，比如：`update t1 set … where name in(select name from user where…);`。因为性能很差
 - 【强制】禁止物理删除列，改成逻辑删除
 - 【强制】禁用procedure、function、trigger、views、event、外键约束。因为这些消耗数据库资源，降低数据库实例可扩展性。推荐都在应用程序端实现
-
-## 参考
-
-- https://www.mysqltutorial.org/basic-mysql-tutorial.aspx
