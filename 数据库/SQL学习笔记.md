@@ -151,6 +151,10 @@ ROLLBACK;
 
 更多的事务相关可以参考 [事务学习笔记.md](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BA%8B%E5%8A%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md)
 
+## 执行计划
+
+可以参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%B4%A2%E5%BC%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92)
+
 ## 最佳实践
 
 ### DML
