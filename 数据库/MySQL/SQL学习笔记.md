@@ -3,7 +3,7 @@
 1. [DDL](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#ddl)
 2. [DML](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#dml)
 3. [事务相关的 SQL](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E5%8A%A1%E7%9B%B8%E5%85%B3%E7%9A%84-sql)
-4. [EXPLAIN 语句]()
+4. [EXPLAIN]()
 5. [最佳实践](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5)
 
 ## DDL
@@ -157,7 +157,7 @@ ROLLBACK;
 
 更多的事务相关可以参考 [事务学习笔记.md](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/%E4%BA%8B%E5%8A%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md)
 
-## EXPLAIN 语句
+## EXPLAIN
 
 `EXPLAIN` 用来查看 SQL 的执行计划，可以参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/%E7%B4%A2%E5%BC%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92)
 
