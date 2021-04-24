@@ -42,11 +42,11 @@ UML 分为「结构建模图」和「行为建模图」两种大类型，共有 
 依赖图描述了两个类的依赖关系，有强依赖和弱依赖之分。比如人可以抽烟，也可以不抽烟，所以人和烟草之间是弱依赖；但是人必须喝水，所以人和水之间是强依赖。
 一般具体实现是所依赖的类会作为属性存在，和组合的实现会比较像，但是意义还是有区别的。
 
-#### 强依赖
+#### 弱依赖
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/uml-class-4.png)
 
-#### 弱依赖
+#### 强依赖
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/uml-class-5.png)
 
