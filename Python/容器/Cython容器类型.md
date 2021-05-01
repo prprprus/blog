@@ -83,17 +83,124 @@ cpdef test_vector(int N):
 from libcpp.algorithm cimport sort
 
 sort(vec.begin(), vec.end())
+
+
+# case5: traverse
+from libcpp.vector cimport vector
+from cython.operator cimport preincrement, dereference
+
+
+cpdef test_vector(int N):
+    cdef vector[int] vec
+    cdef int i
+    cdef vector[int].iterator it
+
+    for i in range(N):
+        vec.push_back(i)
+
+    it = vec.begin()
+    while it != vec.end():
+        print(dereference(it))
+        print(dereference(it))
+        preincrement(it)
 ```
 
 ## map
 
-![]()
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-3.png)
 
 常用方法记录：
 
 ```cython
+# case1: insert
+from libcpp.map cimport map
+from libcpp.pair cimport pair
 
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+
+# case2: moreve by key
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+    cdef map[int, int].iterator it
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+    for i in range(N):
+        it = _map.find(i)
+        _map.erase(it)
+
+
+# case3: pop last element
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+from cython.operator cimport preincrement, dereference
+
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+    cdef map[int, int].iterator it
+    cdef map[int, int].iterator it_tmp
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+    it = _map.begin()
+    for i in range(N):
+        while it != _map.end():
+            it_tmp = it
+            preincrement(it)
+
+    return (dereference(it_tmp).first, dereference(it_tmp).second)
+
+
+# case4: traverse
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+from cython.operator cimport preincrement, dereference
+
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+    cdef map[int, int].iterator it
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+    it = _map.begin()
+    while it != _map.end():
+        print(dereference(it).first)
+        print(dereference(it).second)
+        preincrement(it)
 ```
+
+总体来说，两者相差不大，起码没有 list 和 vector 大，原生 Python 的 dict 性能还是很能打的，不愧是高度优化的数据结构
 
 ## set
 
