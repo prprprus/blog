@@ -42,7 +42,7 @@ if __name__ == "__main__":
 ```Cython
 # hello_cython.pyx
 
-from libcpp.vector cimport vector
+from libcpp.vector cimport vector   # 使用 Cython 提供的 C++ 标准库
 
 def primes_cython_v2(int nb_primes):
     # 将原来的 Python 类型换成 C/C++ 类型
@@ -174,3 +174,8 @@ if __name__ == "__main__":
 
 输出 True，结果一致，验证 ✅
 
+## 小结
+
+上面的 Cython 代码是偏向 C++ 风格的，也可以写成 C 风格的，也就是不用 `<vector>` 这些 C++ 特有的东西，改成纯数组、自己撸数据结构等。
+个人更偏向于多用 Cython 标准库提供的东西，开发效率更高，如果基本的 Cython 静态化及其标准库都没办法完全优化的话，那可能就意味着涉及太多第三方的纯 Python 库，
+换个 Java 之类的静态语言重写可能会比在 Cython 里面用 C 重写会更方便
