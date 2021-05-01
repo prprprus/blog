@@ -107,7 +107,7 @@ cpdef test_vector(int N):
 
 ## map
 
-![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-5.png)
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-6.png)
 
 常用方法记录：
 
@@ -128,7 +128,7 @@ cpdef test_map(int N):
         _map.insert(_pair)
 
 
-# case2: moreve by key
+# case2: remove by key
 from libcpp.map cimport map
 from libcpp.pair cimport pair
 
@@ -209,7 +209,68 @@ cpdef test_map(int N):
 常用方法记录：
 
 ```cython
+# case1: insert
+from libcpp.set cimport set
+from libcpp.pair cimport pair
 
+
+def test_set(int N):
+    cdef set[int] _set
+    cdef pair[int, int] _pair
+    cdef set[int].iterator it
+    cdef set[int].iterator it_tmp
+    cdef int i
+
+    for i in range(N):
+        _set.insert(i)
+
+
+# case2: remove value
+from libcpp.set cimport set
+from libcpp.pair cimport pair
+from cython.operator cimport preincrement, dereference
+
+
+def test_set(int N):
+    cdef set[int] _set
+    cdef pair[int, int] _pair
+    cdef set[int].iterator it
+    cdef set[int].iterator it_tmp
+    cdef int i
+    cdef int result
+
+    for i in range(N):
+        _set.insert(i)
+
+    for i in range(N):
+        it = _set.begin()
+        result = dereference(it)
+        _set.erase(it)
+
+    return result
+
+
+# case3: traverse
+from libcpp.set cimport set
+from libcpp.pair cimport pair
+from cython.operator cimport preincrement, dereference
+
+
+def test_set(int N):
+    cdef set[int] _set
+    cdef pair[int, int] _pair
+    cdef set[int].iterator it
+    cdef set[int].iterator it_tmp
+    cdef int i
+    cdef int result
+
+    for i in range(N):
+        _set.insert(i)
+
+    it = _set.begin()
+    while it != _set.end():
+        print(dereference(it))
+        preincrement(it)
 ```
 
 ## 参考
