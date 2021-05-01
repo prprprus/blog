@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
 ## vector
 
-![]()
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-3.png)
 
 常用方法记录：
 
@@ -87,8 +87,25 @@ sort(vec.begin(), vec.end())
 
 ## map
 
+![]()
+
+常用方法记录：
+
+```cython
+
+```
+
 ## set
+
+![]()
+
+常用方法记录：
+
+```cython
+
+```
 
 ## 参考
 
 - [详细](https://github.com/cython/cython/tree/master/Cython/Includes/libcpp)
+- [Using C++ in Cython](https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html#using-c-in-cython)
