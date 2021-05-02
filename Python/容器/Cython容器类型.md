@@ -513,7 +513,7 @@ cpdef test_map(int N):
         _map.insert(_pair)
 
     for i in range(N):
-        get(_map, i)
+        result = get(_map, i)
 
     return result
 ```
@@ -578,65 +578,35 @@ cpdef test_map(int N):
 
 ## set
 
-![]()
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-11.png)
 
-常用方法记录：
+### 操作记录
+
+#### add(x)
 
 ```cython
-# case1: insert
 from libcpp.set cimport set
-from libcpp.pair cimport pair
 
 
 def test_set(int N):
     cdef set[int] _set
-    cdef pair[int, int] _pair
-    cdef set[int].iterator it
-    cdef set[int].iterator it_tmp
     cdef int i
 
     for i in range(N):
         _set.insert(i)
+```
 
+#### 遍历
 
-# case2: remove value
+```cython
 from libcpp.set cimport set
-from libcpp.pair cimport pair
 from cython.operator cimport preincrement, dereference
 
 
 def test_set(int N):
     cdef set[int] _set
-    cdef pair[int, int] _pair
     cdef set[int].iterator it
-    cdef set[int].iterator it_tmp
     cdef int i
-    cdef int result
-
-    for i in range(N):
-        _set.insert(i)
-
-    for i in range(N):
-        it = _set.begin()
-        result = dereference(it)
-        _set.erase(it)
-
-    return result
-
-
-# case3: traverse
-from libcpp.set cimport set
-from libcpp.pair cimport pair
-from cython.operator cimport preincrement, dereference
-
-
-def test_set(int N):
-    cdef set[int] _set
-    cdef pair[int, int] _pair
-    cdef set[int].iterator it
-    cdef set[int].iterator it_tmp
-    cdef int i
-    cdef int result
 
     for i in range(N):
         _set.insert(i)
@@ -645,6 +615,126 @@ def test_set(int N):
     while it != _set.end():
         print(dereference(it))
         preincrement(it)
+```
+
+#### remove(x)
+
+```cython
+from libcpp.set cimport set
+
+
+cdef remove(set[int]& _set, int value):
+    cdef set[int].iterator it
+
+    it = _set.find(value)
+    _set.erase(it)
+
+
+def test_set(int N):
+    cdef set[int] _set
+    cdef int i
+
+    for i in range(N):
+        _set.insert(i)
+
+    for i in range(N):
+        remove(_set, i)
+```
+
+#### pop()
+
+```cython
+from libcpp.set cimport set
+from cython.operator cimport dereference
+
+
+cdef int pop(set[int]& _set):
+    cdef set[int].iterator it
+    cdef int result
+
+    it = _set.begin()
+    result = dereference(it)
+    _set.erase(it)
+
+    return  result
+
+
+def test_set(int N):
+    cdef set[int] _set
+    cdef int i
+    cdef int result
+
+    for i in range(N):
+        _set.insert(i)
+
+    for i in range(N):
+        result = pop(_set)
+
+    return result
+```
+
+#### clear()
+
+```cython
+from libcpp.set cimport set
+
+
+def test_set(int N):
+    cdef set[int] _set
+    cdef int i
+
+    for i in range(N):
+        _set.insert(i)
+
+    for i in range(N):
+        _set.clear()
+```
+
+#### size()
+
+```cython
+from libcpp.set cimport set
+
+
+def test_set(int N):
+    cdef set[int] _set
+    cdef int i
+
+    for i in range(N):
+        _set.insert(i)
+
+    for i in range(N):
+        _set.size()
+```
+
+#### x in set
+
+```cython
+from libcpp.set cimport set
+from cython.operator cimport dereference
+
+
+cdef int get(set[int]& _set, int value):
+    cdef set[int].iterator it
+
+    it = _set.find(value)
+    if dereference(it) == 0:
+        return -1
+    return 1
+
+
+def test_set(int N):
+    cdef set[int] _set
+    cdef int i
+    cdef int result
+
+    for i in range(N):
+        _set.insert(i)
+
+    for i in range(N):
+        result = get(_set, i)
+
+    return result
 ```
 
 ## 参考
