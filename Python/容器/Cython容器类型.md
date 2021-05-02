@@ -29,38 +29,249 @@ if __name__ == "__main__":
 
 ## vector
 
-![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-3.png)
+![]()
 
-常用方法记录：
+### 操作记录
+
+#### append(x)
 
 ```cython
-# case1: insert
 from libcpp.vector cimport vector
 
 
 cpdef test_vector(int N):
     cdef vector[int] vec
-    cdef int _len
+    cdef int i
+
+    for i in range(N):
+        vec.push_back(i)
+```
+
+#### 遍历
+
+```cython
+# case1
+from libcpp.vector cimport vector
+from cython.operator cimport preincrement, dereference
+
+
+cpdef test_vector(int N):
+    cdef vector[int] vec
+    cdef int i
     cdef vector[int].iterator it
+    cdef vector[int].iterator it_end
+    
+    for i in range(N):
+        vec.push_back(i)
+
+    it = vec.begin()
+    it_end = vec.end()
+    while it != it_end:
+        print(dereference(it))
+        preincrement(it)
+
+
+# case2
+from libcpp.vector cimport vector
+
+
+cpdef test_vector(int N):
+    cdef vector[int] vec
+    cdef int i
+    cdef int j
+    cdef int len
+
+    for i in range(N):
+        vec.push_back(i)
+
+    j = 0
+    len = vec.size()
+    while j < len:
+        print(vec[j])
+        j += 1
+```
+
+#### extend(iterator)
+
+```cython
+from libcpp.vector cimport vector
+
+
+cpdef test_vector(int N, int value):
+    cdef vector[int] vec
+    cdef int i
+
+    for i in range(N):
+        vec.insert(vec.end(), sub.begin(), sub.end())
+```
+
+#### insert(i,x)
+
+```cython
+from libcpp.vector cimport vector
+
+
+cpdef test_vector(int N):
+    cdef vector[int] vec
+    cdef int i
+    cdef vector[int].iterator it
+    cdef int _len
 
     for i in range(N):
         _len = vec.size() / 2
         it = vec.begin()
         vec.insert(it+_len, i)
+```
 
-        
-# case2: extend
+#### remove(x)
+
+```cython
+from libcpp.vector cimport vector
+from cython.operator cimport preincrement, dereference
+
+
+cdef remove(vector[int]& vec, int value):
+    cdef vector[int].iterator it
+    cdef vector[int].iterator it_end
+
+    it = vec.begin()
+    it_end = vec.end()
+    while it != it_end:
+        if dereference(it) == value:
+            vec.erase(it)
+            return
+        preincrement(it)
+
+
+cpdef test_vector(int N):
+    cdef vector[int] vec
+    cdef int i
+
+    for i in range(N):
+        vec.push_back(i)
+
+    for i in range(N):
+        remove(vec, i)
+```
+
+#### pop()
+
+```cython
 from libcpp.vector cimport vector
 
 
-cpdef test_vector(int N, vector[int] sub):
+cpdef test_vector(int N):
     cdef vector[int] vec
+    cdef int i
 
     for i in range(N):
-        vec.insert(vec.end(), sub.begin(), sub.end())
+        vec.push_back(i)
+
+    for i in range(N):
+        vec.pop_back()
+```
+
+#### pop(i)
+
+```cython
+from libcpp.vector cimport vector
 
 
-# case3: reverse
+cpdef test_vector(int N):
+    cdef vector[int] vec
+    cdef int i
+    cdef int index
+    cdef vector[int].iterator it
+
+    for i in range(N):
+        vec.push_back(i)
+
+    for i in range(N):
+        it = vec.begin()
+        index = int(vec.size()/2)
+        vec.erase(it + index)
+```
+
+#### clear()
+
+```cython
+from libcpp.vector cimport vector
+
+
+cpdef test_vector(int N):
+    cdef vector[int] vec
+    cdef int i
+
+    for i in range(N):
+        vec.push_back(i)
+
+    for i in range(N):
+        vec.clear()
+```
+
+#### index(x)
+
+```cython
+from libcpp.vector cimport vector
+
+
+cdef int index(vector[int]& vec, int value):
+    cdef int i = 0
+    cdef int len = vec.size()
+
+    while i < len:
+        if vec[i] == value:
+            return i
+        i += 1
+
+    return -1
+
+
+cpdef test_vector(int N):
+    cdef vector[int] vec
+    cdef int i
+
+    for i in range(N):
+        vec.push_back(i)
+
+    for i in range(N):
+        index(vec, i)
+```
+
+#### count(x)
+
+```cython
+from libcpp.vector cimport vector
+
+
+cdef int count(vector[int]& vec, int value):
+    cdef int i = 0
+    cdef int len = vec.size()
+    cdef int count = 0
+
+    while i < len:
+        if vec[i] == value:
+            count += 1
+        i += 1
+
+    return count
+
+
+cpdef test_vector(int N):
+    cdef vector[int] vec
+    cdef int i
+
+    for i in range(N):
+        vec.push_back(i)
+
+    for i in range(N):
+        count(vec, i)
+```
+
+常用方法记录：
+
+```cython
+# case4: reverse
 from libcpp.vector cimport vector
 
 
@@ -79,35 +290,15 @@ cpdef test_vector(int N):
         j -= 1
 
 
-# case4: sort
+# case5: sort
 from libcpp.algorithm cimport sort
 
 sort(vec.begin(), vec.end())
-
-
-# case5: traverse
-from libcpp.vector cimport vector
-from cython.operator cimport preincrement, dereference
-
-
-cpdef test_vector(int N):
-    cdef vector[int] vec
-    cdef int i
-    cdef vector[int].iterator it
-
-    for i in range(N):
-        vec.push_back(i)
-
-    it = vec.begin()
-    while it != vec.end():
-        print(dereference(it))
-        print(dereference(it))
-        preincrement(it)
 ```
 
 ## map
 
-![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-6.png)
+![]()
 
 常用方法记录：
 
