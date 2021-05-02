@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
 ## vector
 
-![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-7.png)
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-8.png)
 
 ### 操作记录
 
@@ -271,7 +271,21 @@ cpdef test_vector(int N):
 #### sort
 
 ```cython
+from libcpp.vector cimport vector
+from libcpp.algorithm cimport sort
 
+
+cpdef test_vector(int N):
+    cdef vector[int] vec
+    cdef int i
+    cdef vector[int].iterator it_begin = vec.begin()
+    cdef vector[int].iterator it_end = vec.end()
+
+    for i in range(N):
+        vec.push_back(i)
+
+    for i in range(N):
+        sort(it_begin, it_end)
 ```
 
 #### reverse
