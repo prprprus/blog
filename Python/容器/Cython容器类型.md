@@ -311,7 +311,7 @@ cpdef test_vector(int N):
 
 ## map
 
-![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-9.png)
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-10.png)
 
 ### 操作记录
 
