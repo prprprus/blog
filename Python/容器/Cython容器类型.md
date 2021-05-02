@@ -311,12 +311,13 @@ cpdef test_vector(int N):
 
 ## map
 
-![]()
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-9.png)
 
-常用方法记录：
+### 操作记录
+
+#### dict[k] = v
 
 ```cython
-# case1: insert
 from libcpp.map cimport map
 from libcpp.pair cimport pair
 
@@ -324,63 +325,16 @@ from libcpp.pair cimport pair
 cpdef test_map(int N):
     cdef map[int, int] _map
     cdef pair[int, int] _pair
-    cdef int i
 
     for i in range(N):
         _pair.first = i
         _pair.second = i
         _map.insert(_pair)
+```
 
+#### 遍历
 
-# case2: remove by key
-from libcpp.map cimport map
-from libcpp.pair cimport pair
-
-
-cpdef test_map(int N):
-    cdef map[int, int] _map
-    cdef pair[int, int] _pair
-    cdef int i
-    cdef map[int, int].iterator it
-
-    for i in range(N):
-        _pair.first = i
-        _pair.second = i
-        _map.insert(_pair)
-
-    for i in range(N):
-        it = _map.find(i)
-        _map.erase(it)
-
-
-# case3: pop last element
-from libcpp.map cimport map
-from libcpp.pair cimport pair
-from cython.operator cimport preincrement, dereference
-
-
-cpdef test_map(int N):
-    cdef map[int, int] _map
-    cdef pair[int, int] _pair
-    cdef int i
-    cdef map[int, int].iterator it
-    cdef map[int, int].iterator it_tmp
-
-    for i in range(N):
-        _pair.first = i
-        _pair.second = i
-        _map.insert(_pair)
-
-    it = _map.begin()
-    for i in range(N):
-        while it != _map.end():
-            it_tmp = it
-            preincrement(it)
-
-    return (dereference(it_tmp).first, dereference(it_tmp).second)
-
-
-# case4: traverse
+```cython
 from libcpp.map cimport map
 from libcpp.pair cimport pair
 from cython.operator cimport preincrement, dereference
@@ -404,7 +358,223 @@ cpdef test_map(int N):
         preincrement(it)
 ```
 
-总体来说，两者相差不大，起码没有 list 和 vector 大，原生 Python 的 dict 性能还是很能打的，不愧是高度优化的数据结构
+#### del dict[k]
+
+```cython
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+
+
+cdef remove(map[int, int]& _map, int key):
+    cdef map[int, int].iterator it
+
+    it = _map.find(key)
+    _map.erase(it)
+
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+    for i in range(N):
+        remove(_map, i)
+```
+
+#### clear()
+
+```cython
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+    for i in range(N):
+        _map.clear()
+```
+
+#### pop(k)
+
+```cython
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+from cython.operator cimport dereference
+
+cdef pair[int, int] pop_by_key(map[int, int]& _map, int key):
+    cdef map[int, int].iterator it
+    cdef pair[int, int] result
+
+    it = _map.find(key)
+    result.first = dereference(it).first
+    result.second = dereference(it).second
+
+    _map.erase(it)
+
+    return result
+
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+    cdef pair[int, int] result
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+    for i in range(N):
+        result = pop_by_key(_map, i)
+
+    return result
+```
+
+#### popitem()
+
+```cython
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+from cython.operator cimport dereference
+
+
+cdef pair[int, int] popitem(map[int, int]& _map):
+    cdef map[int, int].iterator it
+    cdef pair[int, int] result
+
+    it = _map.begin()
+    result.first = dereference(it).first
+    result.second = dereference(it).second
+
+    _map.erase(it)
+
+    return result
+
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+    cdef pair[int, int] result
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+    for i in range(N):
+        result = popitem(_map)
+
+    return result
+```
+
+#### dict[k]
+
+```cython
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+from cython.operator cimport dereference
+
+
+cdef pair[int, int] get(map[int, int]& _map, int key):
+    cdef map[int, int].iterator it
+    cdef pair[int, int] result
+
+    it = _map.find(key)
+    result.first = dereference(it).first
+    result.second = dereference(it).second
+
+    return result
+
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+    cdef pair[int, int] result
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+    for i in range(N):
+        get(_map, i)
+
+    return result
+```
+
+#### len(dict)
+
+````cython
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+    for i in range(N):
+        _map.size()
+````
+
+#### k in dict
+
+```cython
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+from cython.operator cimport dereference
+
+
+cdef int get(map[int, int]& _map, int key):
+    cdef map[int, int].iterator it
+
+    it = _map.find(key)
+
+    if dereference(it).first == 0 and dereference(it).second == 0:
+        return -1
+    return 1
+
+
+cpdef test_map(int N):
+    cdef map[int, int] _map
+    cdef pair[int, int] _pair
+    cdef int i
+    cdef int result
+
+    for i in range(N):
+        _pair.first = i
+        _pair.second = i
+        _map.insert(_pair)
+
+    for i in range(N):
+        result = get(_map, i)
+
+    return result
+```
+
+总体来说，两者相差不大，起码没有 list 和 vector 大，原生 Python 的字典性能还是很能打的，不愧是高度优化的数据结构
 
 ## set
 
