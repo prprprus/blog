@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
 ## vector
 
-![]()
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-7.png)
 
 ### 操作记录
 
@@ -268,10 +268,15 @@ cpdef test_vector(int N):
         count(vec, i)
 ```
 
-常用方法记录：
+#### sort
 
 ```cython
-# case4: reverse
+
+```
+
+#### reverse
+
+```cython
 from libcpp.vector cimport vector
 
 
@@ -288,12 +293,6 @@ cpdef test_vector(int N):
     while j >= 0:
         reverse_vec.push_back(vec[j])
         j -= 1
-
-
-# case5: sort
-from libcpp.algorithm cimport sort
-
-sort(vec.begin(), vec.end())
 ```
 
 ## map
