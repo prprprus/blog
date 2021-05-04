@@ -164,6 +164,8 @@ BufferedReader 和 TextIOWrapper 的操作基本一致，只是把字符换成�
 
 ### BufferedWriter
 
+BufferedWriter 和 TextIOWrapper 的操作基本一致，只是把字符换成了字节
+
 ### BytesIO
 
 当字节内容已经在内存中，可以用 BytesIO 对其进行读写
