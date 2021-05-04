@@ -1,10 +1,10 @@
 # 同步 IO
 
-1. 三个 IO 类型：Text IO、Binary IO、Raw IO
-2. IO 类继承关系和特点
-3. `open()` 函数
-4. 常用 IO 类的 `read()`，`write()` 方法
-5. 性能和线程安全
+1. [IO 类型]()
+2. [IO 类继承关系]()
+3. [open() 函数]()
+4. [读和写]()
+5. [性能和线程安全]()
 
 ## IO 类型
 
@@ -172,6 +172,15 @@ BytesIO 的读写操作和 StringIO 基本一致，只是把字符换成了字�
 
 ## 性能和线程安全
 
+根据官网的描述：
+
+- 在很多现代的操作中，无缓冲 IO 和缓冲 IO 差不多一样快
+- `TextIOWrapper.tell()` 和 `TextIOWrapper.seek()` 重写过，而且性并能不好
+- FileIO、BufferedReader, BufferedWriter, BufferedRandom、BufferedRWPair 是线程安全的
+- TextIOWrapper 线程不安全
+
 ## 参考
 
+- [open()](https://docs.python.org/3/library/functions.html#open)
+- [io — Core tools for working with streams](https://docs.python.org/3/library/io.html#module-io)
 - [What the difference between read() and read1() in Python?](https://stackoverflow.com/questions/57726771/what-the-difference-between-read-and-read1-in-python)
