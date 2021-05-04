@@ -157,18 +157,18 @@ with io.StringIO("Hello Python IO") as f:
 
 ### BufferedReader
 
-BufferedReader 和 TextIOWrapper 的操作基本一致，只是把字符换成了字节
+BufferedReader 的读操作和 TextIOWrapper 基本一致，只是把字符换成了字节
 
 需要关注 `read1([size])` 方法，相比 `read(size=-1)`，如果缓冲区的字节数不足时，该方法底层只会执行一次 syscall read，
 也就是说不保证一定能读到 size 个字节数
 
 ### BufferedWriter
 
-BufferedWriter 和 TextIOWrapper 的操作基本一致，只是把字符换成了字节
+BufferedWriter 的写操作和 TextIOWrapper 基本一致，只是把字符换成了字节
 
 ### BytesIO
 
-BytesIO 和 StringIO 的操作基本一致，只是把字符换成了字节
+BytesIO 的读写操作和 StringIO 基本一致，只是把字符换成了字节
 
 ## 性能和线程安全
 
