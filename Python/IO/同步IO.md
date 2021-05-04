@@ -41,7 +41,7 @@ TextIOWrapper、StringIO、BufferedReader、BufferedWriter、BytesIO
     - 1：使用行缓冲，只用于交互式 Text IO
     - 大于 1：使用自定义缓冲
 
-### open() 和 IO 类
+### open() 函数和 IO 类
 
 实际使用中一般不需要主动初始化 IO 类，而是通过 `open()` 函数去决定初始化哪种 IO 类
 
