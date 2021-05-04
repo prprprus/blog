@@ -14,7 +14,7 @@ Python 支持三种 IO 类型：Text IO（文本 IO）、Binary IO（带缓冲�
 - Binary IO 作用于二进制对象，必须带缓冲，可以系统默认缓冲大小或者自定义缓冲大小
 - Raw IO 作用于二进制对象，不能带缓冲
 
-## 类继承关系
+## IO 类继承关系
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-1.png)
 
