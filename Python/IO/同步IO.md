@@ -1,10 +1,10 @@
 # 同步 IO
 
-1. [IO 类型]()
-2. [IO 类继承关系]()
-3. [open() 函数]()
-4. [读和写]()
-5. [性能和线程安全]()
+1. [IO 类型](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/%E5%90%8C%E6%AD%A5IO.md#io-%E7%B1%BB%E5%9E%8B)
+2. [IO 类继承关系](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/%E5%90%8C%E6%AD%A5IO.md#io-%E7%B1%BB%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB)
+3. [open() 函数](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/%E5%90%8C%E6%AD%A5IO.md#open-%E5%87%BD%E6%95%B0)
+4. [读和写](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/%E5%90%8C%E6%AD%A5IO.md#%E8%AF%BB%E5%92%8C%E5%86%99)
+5. [性能和线程安全](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/%E5%90%8C%E6%AD%A5IO.md#%E6%80%A7%E8%83%BD%E5%92%8C%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8)
 
 ## IO 类型
 
