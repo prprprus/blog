@@ -168,17 +168,7 @@ BufferedWriter 和 TextIOWrapper 的操作基本一致，只是把字符换成�
 
 ### BytesIO
 
-当字节内容已经在内存中，可以用 BytesIO 对其进行读写
-
-案例：
-
-```python
-import io
-
-
-with io.BytesIO(b"Hello Python IO") as f:
-    print(f.getvalue())
-```
+BytesIO 和 StringIO 的操作基本一致，只是把字符换成了字节
 
 ## 性能和线程安全
 
