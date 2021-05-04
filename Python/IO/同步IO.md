@@ -18,8 +18,8 @@ Python 支持三种 IO 类型：Text IO（文本 IO）、Binary IO（带缓冲�
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-1.png)
 
-IOBase 并没有实现读写方法，而是它的子类们去实现。一般常用的 IO 类有 TextIOWrapper、StringIO、BytesIO、
-BufferedReader、BufferedWriter
+IOBase 中大量的方法是基于 Mixin 模式继承过来的，IOBase 没有实现读写方法，而是它的子类们去实现。一般常用的 IO 类有
+TextIOWrapper、StringIO、BytesIO、BufferedReader、BufferedWriter
 
 ## open() 函数
 
