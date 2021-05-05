@@ -20,12 +20,16 @@ asyncio 的特点和主流的异步框架（tornado、gevent）差不多，主�
 
 ### 协程的定义
 
+- 被 `async` 关键字声明的函数就是异步函数，也可以粗略认为是一个协程
+- 直接调用协程并不会执行，必须在前面加 `await`，而且需要放到事件循环中执行
+
 ```python
 import asyncio
 
 
 async def sleep(second):
-    # asyncio 提供的异步 sleep() 方法
+    # asyncio 提供的异步 sleep() 方法, 不会阻塞事件循环,
+    # 如果换成 time.sleep() 就会阻塞事件循环了
     await asyncio.sleep(second)    
     print("hello asyncio")
 
@@ -51,9 +55,12 @@ async def main():
 
 
 if __name__ == "__main__":
+    # asyncio.run() 一般作为 asyncio 应用的入口, 只被调用一次
     asyncio.run(main())
 ```
 
 > 只考虑 async/await 的写法，不考虑旧的 @asyncio.coroutine 写法
+
+Profile 一下可以看到耗时 1039ms，确实并发执行了
 
 ## 可等待对象
