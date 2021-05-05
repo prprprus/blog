@@ -25,12 +25,29 @@ import asyncio
 
 
 async def sleep(second):
-    await asyncio.sleep(second)
+    # asyncio 提供的异步 sleep() 方法
+    await asyncio.sleep(second)    
     print("hello asyncio")
 
 
+async def test_sleep(second):
+    # 并发执行 10 个协程
+    await asyncio.gather(
+        sleep(second),
+        sleep(second),
+        sleep(second),
+        sleep(second),
+        sleep(second),
+        sleep(second),
+        sleep(second),
+        sleep(second),
+        sleep(second),
+        sleep(second),
+    )
+    
+
 async def main():
-    await sleep(1)
+    await test_sleep(1)
 
 
 if __name__ == "__main__":
