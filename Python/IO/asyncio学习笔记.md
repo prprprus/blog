@@ -113,16 +113,57 @@ if __name__ == "__main__":
 
 ## Task
 
+Task 是指用来运行协程的类似 Future 的对象（继承于 Future 类）。官网不建议手动创建 Task 对象，而是通过 `asyncio.create_task(aws)` 等 API 创建。
+相比协程，Task 提供更多操作可供控制
+
 ```python
 import asyncio
+
+
+def done_callback(task):
+    try:
+        print(task.result())
+        print("run done_callback()")
+    except asyncio.CancelledError:
+        pass
+    
+
+def remove_callback():
+    print("run remove_callback()")
     
 
 async def test_task():
     async def say():
-        print("hello task")
+        await asyncio.sleep(2)
+        return "hello asyncio task"
 
     task = asyncio.create_task(say())
-    await task
+    
+    # 判断 Task 是否取消
+    print(task.cancelled())
+
+    # 判断 Task 是否完成
+    print(task.done())
+    
+    # # 输出 Task 名字, 需要 Python3.8+
+    # print(task.get_name())
+    # 
+    # # 输出 Task 对应的协程, 需要 Python3.8+
+    # print(task.get_coro())
+    
+    # 设置 done callback
+    task.add_done_callback(done_callback)
+    
+    # 设置 remove callback
+    task.remove_done_callback(remove_callback)
+    
+    # 取消 Task
+    # task.cancel()
+    
+    try:
+        await task
+    except asyncio.CancelledError:
+        print("asyncio task cancelled")
 
 
 asyncio.run(test_task())
@@ -137,7 +178,7 @@ asyncio.run(test_task())
 - 异步 sleep：`asyncio.sleep(second)`
 - 并发执行一组协程：`asyncio.gather([aws])`
 - 将协程丢到事件循环执行：`asyncio.run(aws)`
-- 创建 task：`asyncio.create_task(aws)`
+- 创建 Task：`asyncio.create_task(aws)`
 - 判断是否异步函数：`asyncio.iscoroutinefunction(func)`
 - 输出当前协程：`asyncio.current_task()`
 - 输出所有协程：`asyncio.all_tasks()`
