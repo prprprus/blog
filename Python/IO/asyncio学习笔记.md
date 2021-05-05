@@ -1,20 +1,28 @@
 # asyncio 学习笔记
 
-asyncio 一般被叫做异步框架，但是根据标准的 IO 模型，很多时候说的异步框架并不是真正的异步，而是 IO 多路复用。asyncio 也不例外，
-是基于 [selector](https://github.com/python/cpython/blob/3.9/Lib/asyncio/selector_events.py) 模块做的 IO 多路复用框架，
+- TODO：事件循环涉及的任务：IO、定时、callback
+
+Python 有不少异步 IO 框架，但是根据标准的 IO 模型，很多时候说的异步 IO 并不是真正的异步，而是 IO 多路复用。asyncio 也不例外，
+对于 IO 部分，asyncio 是基于 [selector](https://github.com/python/cpython/blob/3.9/Lib/asyncio/selector_events.py) 模块，
 而 selector 基于 select，select 基于操作系统提供的 IO 多路复用机制，譬如 Linux 的 epoll，macOS 的 kqueue 等
 
-> 下面说的异步、异步框架实际指的是 IO 多路复用
+但是 asyncio 也不是只能用于 IO 操作，它所提供的事件循环、Future、线程池、进程池等工具，也可以对一般的代码进行异步化，实现并发、并行的效果
 
 asyncio 的特点和主流的异步框架（tornado、gevent）差不多，主要有以下几点：
 
-- 适用于 IO 密集型任务，相比线程昂贵（创建、销毁、上下文切换），asyncio 里的协程要轻量级很多，
-可以存在大量的协程，因此可以较好地提升应用的吞吐量，但是应用的响应时间还是要看单个协程的处理时长，跟异步与否无关
-- 事件循环不能被阻塞，也就是不能存在阻塞代码，无论是自己写的、标准库的、还是第三方库的代码。这就要求生态要好，不然连个异步的数据库驱动都没有，也挺麻烦 😂
-- 理论上不适用于 CPU 密集型任务，可以结合进程池、Celery 等工具解决这个问题
+- 擅长处理 IO 密集型任务，相比线程昂贵（创建、销毁、上下文切换），asyncio 里的协程要轻量级很多，
+可以同时存在大量的协程，因此可以较好地提升应用的吞吐量，但是应用的响应时间还是要看单个协程的处理时长，跟异步与否无关
+- 事件循环不能被阻塞，也就是不能存在阻塞代码，无论是自己写的、标准库的、还是第三方库的代码。这就需要搭配线程池、进程池等工具，或者要求生态要好，不然连个异步的数据库驱动都没有，也挺麻烦 😂
+- 不擅长 CPU 密集型任务，可以结合进程池、Celery 等工具稍微解决这个问题
+
+> Python 虚拟机大概执行 200 个字节码就进行一次系统调用，进行线程切换
 
 > asyncio 需要 Python3.5+，最好是 Python3.7+，功能会多一些，少量新功能需要 Python3.9。另外，asyncio 的接口存在不向后兼容的情况，
 > 譬如 ["Deprecated since version 3.8, will be removed in version 3.10: The loop parameter."](https://docs.python.org/3/library/asyncio-task.html#asyncio.sleep) 这类
+
+## 事件循环
+
+
 
 ## 协程
 
@@ -75,14 +83,14 @@ Profile 一下可以看到耗时 1039ms，确实并发执行了
 
 ### Python 协程和 Go 协程的区别
 
-- coroutine 基于 IO 多路复用，运行在一个线程上，当线程被阻塞，所有的 coroutine 会被阻塞，一般用于 IO 密集型任务，而且需要配合异步库使用。
+- coroutine 基于 asyncio 事件循环的调度，运行在一个线程上，当线程被阻塞，所有的 coroutine 会被阻塞，一般用于 IO 密集型任务，而且需要配合异步库使用。
 总的来说是并发，不是并行
 - goroutine 基于 Go 运行时 GPM 模型的调度，一般运行在多个线程上，当某一个线程被阻塞时，其他 goroutine 还可以运行在其他的线程上，既可以用于 IO 密集型任务，也可以用于
 CPU 密集型任务。总的来说即使并发，也是并行
 
 ## await
 
-`await` 可以作用于三类对象：Coroutine、Task、Future。它们指代的都是可能会发生阻塞的任务，都需要放到事件循环中执行
+`await` 可以作用于三类对象：Coroutine、Task、Future。它们都可以指代可能会发生阻塞的未完成任务，都需要放到事件循环中执行
 
 ### 设置超时时间
 
