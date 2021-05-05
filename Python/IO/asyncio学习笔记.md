@@ -55,10 +55,7 @@ async def test_return():
     return 21
 
 
-async def main():
-    # 判断是否异步函数
-    print(asyncio.iscoroutinefunction(test_sleep))
-    
+async def main():    
     # 测试并发执行效果
     await test_sleep(1)
     
@@ -87,7 +84,34 @@ CPU 密集型任务。总的来说即使并发，也是并行
 
 `await` 可以作用于三类对象：Coroutine、Task、Future 
 
-### Task
+### 设置超时时间
+
+```python
+import asyncio
+
+
+async def sleep(second):
+    await asyncio.sleep(second)
+    print("hello asyncio")
+
+
+async def test_timeout(second):
+    try:
+        await asyncio.wait_for(sleep(second), timeout=2)
+    except asyncio.TimeoutError:
+        print("asyncio.TimeoutError")
+        
+
+async def main():
+    # 测试超时时间
+    await test_timeout(5)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+## Task
 
 ```python
 import asyncio
@@ -104,7 +128,27 @@ async def test_task():
 asyncio.run(test_task())
 ```
 
-### Future
+## Future
 
 - TODO
 
+## 模块级别函数
+
+```python
+import asyncio
+
+
+async def main():
+    # 判断是否异步函数
+    print(asyncio.iscoroutinefunction(test_sleep))
+
+    # 输出当前协程
+    print(asyncio.current_task())
+
+    # 输出所有协程
+    print(asyncio.all_tasks())
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
