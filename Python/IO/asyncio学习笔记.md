@@ -22,6 +22,7 @@ asyncio 的特点和主流的异步框架（tornado、gevent）差不多，主�
 
 - 被 `async` 关键字声明的函数就是异步函数，也可以粗略认为是一个协程
 - 直接调用协程并不会执行，必须在前面加 `await`，而且需要放到事件循环中执行
+- `await` 的语义是：当遇到阻塞时，主动让出执行时间给其他协程
 
 ```python
 import asyncio
@@ -75,6 +76,16 @@ if __name__ == "__main__":
 
 Profile 一下可以看到耗时 1039ms，确实并发执行了
 
+### Python 协程和 Go 协程的区别
+
+- coroutine 基于 IO 多路复用，运行在一个线程上，当线程被阻塞，所有的 coroutine 会被阻塞，一般用于 IO 密集型任务，而且需要配合异步库使用。
+总的来说是并发，不是并行
+- goroutine 基于 Go 运行时 GPM 模型的调度，一般运行在多个线程上，当某一个线程被阻塞时，其他 goroutine 还可以运行在其他的线程上，既可以用于 IO 密集型任务，也可以用于
+CPU 密集型任务。总的来说即使并发，也是并行
+
 ## 可等待对象
 
-`await` 可以作用于三类对象：Coroutine、Task、Future
+`await` 可以作用于三类对象：Coroutine、Task、Future 
+
+### Task
+
