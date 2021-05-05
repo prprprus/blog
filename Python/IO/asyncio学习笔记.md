@@ -83,9 +83,28 @@ Profile 一下可以看到耗时 1039ms，确实并发执行了
 - goroutine 基于 Go 运行时 GPM 模型的调度，一般运行在多个线程上，当某一个线程被阻塞时，其他 goroutine 还可以运行在其他的线程上，既可以用于 IO 密集型任务，也可以用于
 CPU 密集型任务。总的来说即使并发，也是并行
 
-## 可等待对象
+## await
 
 `await` 可以作用于三类对象：Coroutine、Task、Future 
 
 ### Task
+
+```python
+import asyncio
+    
+
+async def test_task():
+    async def say():
+        print("hello task")
+
+    task = asyncio.create_task(say())
+    await task
+
+
+asyncio.run(test_task())
+```
+
+### Future
+
+- TODO
 
