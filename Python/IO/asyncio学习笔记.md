@@ -82,7 +82,7 @@ CPU 密集型任务。总的来说即使并发，也是并行
 
 ## await
 
-`await` 可以作用于三类对象：Coroutine、Task、Future 
+`await` 可以作用于三类对象：Coroutine、Task、Future。它们指代的都是可能会发生阻塞的任务，都需要放到事件循环中执行
 
 ### 设置超时时间
 
@@ -171,7 +171,7 @@ asyncio.run(test_task())
 
 ## Future
 
-- TODO
+Future 和 Task 提供操作差不多，[参考](https://docs.python.org/3/library/asyncio-future.html#future-object)
 
 ## 模块级别函数
 
