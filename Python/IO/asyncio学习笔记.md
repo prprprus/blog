@@ -56,7 +56,7 @@ async def test_return():
 
 
 async def main():    
-    # 测试并发执行效果
+    # 测试并发执行一组协程
     await test_sleep(1)
     
     # 测试带返回值的协程
@@ -134,21 +134,10 @@ asyncio.run(test_task())
 
 ## 模块级别函数
 
-```python
-import asyncio
-
-
-async def main():
-    # 判断是否异步函数
-    print(asyncio.iscoroutinefunction(test_sleep))
-
-    # 输出当前协程
-    print(asyncio.current_task())
-
-    # 输出所有协程
-    print(asyncio.all_tasks())
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
-```
+- 异步 sleep：`asyncio.sleep(second)`
+- 并发执行一组协程：`asyncio.gather([aws])`
+- 将协程丢到事件循环执行：`asyncio.run(aws)`
+- 创建 task：`asyncio.create_task(aws)`
+- 判断是否异步函数：`asyncio.iscoroutinefunction(func)`
+- 输出当前协程：`asyncio.current_task()`
+- 输出所有协程：`asyncio.all_tasks()`
