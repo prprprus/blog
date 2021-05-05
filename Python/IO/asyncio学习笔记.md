@@ -50,10 +50,22 @@ async def test_sleep(second):
     )
     
 
+async def test_return():
+    return 21
+
+
 async def main():
+    # 判断是否异步函数
+    print(asyncio.iscoroutinefunction(test_sleep))
+    
+    # 测试并发执行效果
     await test_sleep(1)
+    
+    # 测试带返回值的协程
+    res = await test_return()
+    print(res)
 
-
+    
 if __name__ == "__main__":
     # asyncio.run() 一般作为 asyncio 应用的入口, 只被调用一次
     asyncio.run(main())
@@ -64,3 +76,5 @@ if __name__ == "__main__":
 Profile 一下可以看到耗时 1039ms，确实并发执行了
 
 ## 可等待对象
+
+`await` 可以作用于三类对象：Coroutine、Task、Future
