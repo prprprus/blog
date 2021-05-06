@@ -15,12 +15,43 @@ asyncio 的特点和主流的异步框架（tornado、gevent）差不多，主�
 - 事件循环不能被阻塞，也就是不能存在阻塞代码，无论是自己写的、标准库的、还是第三方库的代码。这就需要搭配线程池、进程池等工具，或者要求生态要好，不然连个异步的数据库驱动都没有，也挺麻烦 😂
 - 不擅长 CPU 密集型任务，可以结合进程池、Celery 等工具稍微解决这个问题
 
-> Python 虚拟机大概执行 200 个字节码就进行一次系统调用，进行线程切换
+> Python 虚拟机大概执行 200 个字节码就进行一次线程切换的系统调用
 
 > asyncio 需要 Python3.5+，最好是 Python3.7+，功能会多一些，少量新功能需要 Python3.9。另外，asyncio 的接口存在不向后兼容的情况，
 > 譬如 ["Deprecated since version 3.8, will be removed in version 3.10: The loop parameter."](https://docs.python.org/3/library/asyncio-task.html#asyncio.sleep) 这类
 
 ## 事件循环
+
+### IO 多路复用
+
+asyncio 的事件循环包括 IO 多路复用
+
+```python
+# 回调函数映射表
+callbacks = {}
+
+while True:
+    event_list = epoll.wait(timeout)
+    for fd, event in event_list:
+        if 连接就绪:
+            # 注册回调函数
+            callbacks[fd] = callback
+        elif 读就绪:
+            # 执行对应回调函数
+            callbacks[fd]()
+            ...
+        elif 写就绪:
+            # 执行对应回调函数
+            callbacks[fd]()
+            ...
+        elif 中断事件:
+            # 执行对应回调函数
+            callbacks[fd]()
+            ...
+        else:
+            # 默认操作
+            ...
+```
 
 
 
@@ -28,9 +59,10 @@ asyncio 的特点和主流的异步框架（tornado、gevent）差不多，主�
 
 ### 协程的定义
 
-- 被 `async` 关键字声明的函数就是异步函数，也可以粗略认为是一个协程
+- 协程底层是基于生成器，区别是生成器 `yield` 出的是基础类型或者容器类型，协程 `yield` 出的只能是 `None` 或者 Future 对象
+- 从上层看，可以认为被 `async` 关键字声明的异步函数就是一个协程
 - 直接调用协程并不会执行，必须在前面加 `await`，而且需要放到事件循环中执行
-- `await` 的语义是：当遇到阻塞时，主动让出执行时间给其他协程
+- `await` 的语义是当遇到阻塞时，主动让出执行时间给其他协程
 
 ```python
 import asyncio
@@ -90,7 +122,7 @@ CPU 密集型任务。总的来说即使并发，也是并行
 
 ## await
 
-`await` 可以作用于三类对象：Coroutine、Task、Future。它们都可以指代可能会发生阻塞的未完成任务，都需要放到事件循环中执行
+`await` 可以作用于三类对象：协程、Task、Future。它们都可以指代可能会发生阻塞的未完成任务，都需要放到事件循环中执行
 
 ### 设置超时时间
 
