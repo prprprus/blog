@@ -298,6 +298,12 @@ def _run_once(self):
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-4.png)
 
+**⭐️ 整理一下调度流程大致如下 ⭐**
+
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-5.png)
+
+> 照这样看，其实事件循环中的事件指的是回调函数 😂
+
 ## 可调度对象
 
 协程在底层会被封装成 Task，而 Task 是 Future 的子类，也就是说这三种可调度对象基本都可以看成 Future 对象
