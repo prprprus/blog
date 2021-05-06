@@ -97,7 +97,7 @@ def _run_once(self):
     """
     
     # 1. self._scheduled 对应的数据结构是最小二叉堆，用来存放所有的 call_later 回调，根据 time 排序
-    # 2. 这一块的逻辑主要是将已经取消的 call_later 回调从二叉堆中删除 
+    # 2. 这一块逻辑主要是将已经取消的 call_later 回调从二叉堆中删除 
     sched_count = len(self._scheduled)
     if (sched_count > _MIN_SCHEDULED_TIMER_HANDLES and
         self._timer_cancelled_count / sched_count >
@@ -130,7 +130,7 @@ def _run_once(self):
         when = self._scheduled[0]._when
         timeout = min(max(0, when - self.time()), MAXIMUM_SELECT_TIMEOUT)
     
-    # 这一块的逻辑主要是基于 IO 多路复用处理 IO 事件
+    # 这一块逻辑主要是基于 IO 多路复用处理 IO 事件
     # 调试模式下
     if self._debug and timeout != 0:
         t0 = self.time()
@@ -147,7 +147,7 @@ def _run_once(self):
     # Handle 'later' callbacks that are ready.
     # 1. self._ready 对应的数据结构是 collections.deque，是整个事件循环的核心数据结构，
     # 任何就绪的回调函数都会放到这个队列，然后在每次事件循环中遍历队列，依次执行就绪的回调函数
-    # 2. 这一块的逻辑主要是将就绪的 call_later 回调放到 self._ready
+    # 2. 这一块逻辑主要是将就绪的 call_later 回调放到 self._ready
     end_time = self.time() + self._clock_resolution
     while self._scheduled:
         handle = self._scheduled[0]
@@ -163,23 +163,30 @@ def _run_once(self):
     # callbacks scheduled by callbacks run this time around --
     # they will be run the next time (after another I/O poll).
     # Use an idiom that is thread-safe without using locks.
+    # 
+    # 这一块逻辑主要是遍历就绪队列 self._ready，
+    # 逐个出队并执行 Handle 对象的 _run() 方法，_run() 方法内部执行的是就是回调函数
     ntodo = len(self._ready)
+    # 遍历就绪队列
     for i in range(ntodo):
+        # 出队
         handle = self._ready.popleft()
         if handle._cancelled:
             continue
+        # 调试模式下
         if self._debug:
             try:
                 self._current_handle = handle
                 t0 = self.time()
+                # 执行回调函数
                 handle._run()
-                dt = self.time() - t0
-                if dt >= self.slow_callback_duration:
-                    logger.warning('Executing %s took %.3f seconds',
-                                   _format_handle(handle), dt)
+                # 忽略大段大段的调试代码
+                ...
             finally:
                 self._current_handle = None
+        # 非调试模式下
         else:
+            # 执行回调函数
             handle._run()
     handle = None  # Needed to break cycles when an exception occurs.
 ```
