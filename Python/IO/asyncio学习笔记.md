@@ -290,11 +290,9 @@ def _run_once(self):
 
 ### 事件循环的调度流程
 
-调度流程这块其实比并不好找，单步调试貌似最多走到 events.py:88，这一步还是比较明显，应该是执行就绪的回调函数，但是协程间的切换体现不出来
+调度流程这块其实比并不好找，单步调试貌似最多走到 events.py:88，这一步还是比较明显，执行就绪的回调函数，但是协程间的切换体现不出来
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-3.png)
-
-![]()
 
 ## 可调度对象
 
