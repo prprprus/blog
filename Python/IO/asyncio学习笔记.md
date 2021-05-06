@@ -269,6 +269,8 @@ def _run_once(self):
     handle = None  # Needed to break cycles when an exception occurs.
 ```
 
+事件循环的启动流程和每次循环的处理逻辑大致就这样了
+
 ### 事件循环的调度过程
 
 ![]()
