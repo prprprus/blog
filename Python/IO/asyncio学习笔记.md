@@ -6,7 +6,7 @@ Python 有不少异步 IO 框架，但是根据标准的 IO 模型，很多时�
 对于 IO 部分，asyncio 是基于 [selector](https://github.com/python/cpython/blob/3.9/Lib/asyncio/selector_events.py) 模块，
 而 selector 基于 select，select 基于操作系统提供的 IO 多路复用机制，譬如 Linux 的 epoll，macOS 的 kqueue 等
 
-但是 asyncio 也不是只能用于 IO 操作，它所提供的事件循环、Future、线程池、进程池等工具，也可以对一般的代码进行异步化，实现并发、并行的效果
+但是 asyncio 也不是只能用于 IO 操作，它所提供的事件循环、Future、线程池、进程池等工具，也可以对一般的代码进行异步化，实现并发的效果
 
 asyncio 的特点和主流的异步框架（tornado、gevent）差不多，主要有以下几点：
 
