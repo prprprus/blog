@@ -20,9 +20,9 @@ asyncio 的特点和主流的异步框架（tornado）差不多：
 
 ## 事件循环
 
-### IO 多路复用的事件循环
+### IO 多路复用
 
-大致长这样：
+asyncio 的事件循环包含着 IO 多路复用，专门用来处理 IO 事件，多路复用本身也有一个事件循环。一般基于多路复用的代码长这样：
 
 ```python
 # 回调函数映射表
@@ -49,7 +49,7 @@ while True:
             ...
 ```
 
-### asyncio 的事件循环
+### 事件循环启动流程
 
 1. 写个 demo 打上断点，在调试模式下可以看到调用栈
 
@@ -63,27 +63,102 @@ run, runners.py:43
 <module>, demo1.py:80 # 自己的代码
 ```
 
-2. 根据调用栈可以找到事件循环的代码
+2. runners.py 的 run() 方法
 
 ```python
-# base_events.py:541
-def run_forever(self):
-    """Run until stop() is called."""
-    ...
+def run(main, *, debug=False):
+    # 确保 asyncio.run() 方法不能运行在一个已存在的事件循环
+    if events._get_running_loop() is not None:
+        raise RuntimeError(
+            "asyncio.run() cannot be called from a running event loop")
+    
+    # 判断传入的 main 对象是否协程类型
+    if not coroutines.iscoroutine(main):
+        raise ValueError("a coroutine was expected, got {!r}".format(main))
+    
+    # 新创建一个事件循环
+    loop = events.new_event_loop()
+    try:
+        # 相关设置
+        events.set_event_loop(loop)
+        loop.set_debug(debug)
+        # 执行 loop.run_until_complete(main) 方法
+        return loop.run_until_complete(main)
+    finally:
+        try:
+            _cancel_all_tasks(loop)
+            loop.run_until_complete(loop.shutdown_asyncgens())
+        finally:
+            events.set_event_loop(None)
+            loop.close()
+```
 
+3. base_events.py 的 run_until_complete() 方法
+
+```python
+def run_until_complete(self, future):
+    self._check_closed()
+    self._check_runnung()
+    
+    # 这一块逻辑主要是将协程封装成 Task
+    new_task = not futures.isfuture(future)
+    future = tasks.ensure_future(future, loop=self)
+    if new_task:
+        # An exception is raised if the future didn't complete, so there
+        # is no need to log the "destroy pending task" message
+        future._log_destroy_pending = False
+
+    future.add_done_callback(_run_until_complete_cb)
+    try:
+        # 执行事件循环
+        self.run_forever()
+    except:
+        # 忽略异常处理代码
+        ...
+    finally:
+        future.remove_done_callback(_run_until_complete_cb)
+    # 错误处理
+    if not future.done():
+        raise RuntimeError('Event loop stopped before Future completed.')
+    
+    # 返回 Future 的结果
+    return future.result()
+```
+
+4. base_events.py 的 run_forever() 方法
+
+```python
+def run_forever(self):
+    # 相关检查
+    self._check_closed()
+    self._check_runnung()
+    self._set_coroutine_origin_tracking(self._debug)
+    self._thread_id = threading.get_ident()
+
+    old_agen_hooks = sys.get_asyncgen_hooks()
+    sys.set_asyncgen_hooks(firstiter=self._asyncgen_firstiter_hook,
+                           finalizer=self._asyncgen_finalizer_hook)
     try:
         events._set_running_loop(self)
-        # 事件循环
+        # 事件循环本体
         while True:
-            # 每次执行 _run_once() 方法
+            # 每次循环执行 _run_once() 方法
             self._run_once()
+            # 外部调用 stop() 方法时会停止事件循环
             if self._stopping:
                 break
     finally:
-        ...
+        # 相关收尾操作
+        self._stopping = False
+        self._thread_id = None
+        events._set_running_loop(None)
+        self._set_coroutine_origin_tracking(False)
+        sys.set_asyncgen_hooks(*old_agen_hooks)
+```
 
+5. base_events.py 的 _run_once() 方法
 
-# base_events.py:1786
+```python
 def _run_once(self):
     """Run one full iteration of the event loop.
 
@@ -91,9 +166,10 @@ def _run_once(self):
     schedules the resulting callbacks, and finally schedules
     'call_later' callbacks.
     
-    事件循环迭代一次就运行一次这个方法。这个方法会执行所有就绪的回调函数，
-    包括 IO 多路复用的回调、一般 future 的回调、call_later 的回调（譬如含有 asyncio.sleep() 这种语句的函数），
-    回调函数都会被封装成 Handle 对象
+    事件循环迭代一次就运行一次这个方法
+
+    这个方法会执行所有就绪的回调函数，包括 IO 多路复用的回调、一般 future 的回调、
+    call_later 的回调（譬如含有 asyncio.sleep() 这种语句的函数），回调函数都会被封装成 Handle 对象
     """
     
     # 1. self._scheduled 对应的数据结构是最小二叉堆，用来存放所有的 call_later 回调，根据 time 排序
@@ -197,6 +273,8 @@ def _run_once(self):
 
 ## 可调度对象
 
+协程在底层会被封装成 Task，而 Task 是 Future 的子类，也就是说这三种可调度对象基本都可以看成 Future 对象
+
 ### (1) 协程
 
 #### 协程的定义
@@ -262,11 +340,7 @@ Profile 一下可以看到耗时 1039ms，确实并发执行了
 - goroutine 基于 Go 运行时 GPM 模型的调度，一般运行在多个线程上，当某一个线程被阻塞时，其他 goroutine 还可以运行在其他的线程上，既可以用于 IO 密集型任务，也可以用于
 CPU 密集型任务。总的来说即使并发，也是并行
 
-### (2) Future
-
-Future 提供的操作和 Task 差不多，[参考](https://docs.python.org/3/library/asyncio-future.html#future-object)
-
-### (3) Task
+### (2) Task
 
 Task 继承于 Future 类。官网不建议直接创建 Task 对象，而是通过 `asyncio.create_task(aws)` API 创建。Task 对外提供了比较多的操作
 
@@ -322,6 +396,10 @@ async def test_task():
 
 asyncio.run(test_task())
 ```
+
+### (3) Future
+
+Future 提供的操作和 Task 差不多，[参考](https://docs.python.org/3/library/asyncio-future.html#future-object)
 
 ## await 语句
 
