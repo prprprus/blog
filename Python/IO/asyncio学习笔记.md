@@ -85,6 +85,7 @@ def run(main, *, debug=False):
         # 执行 loop.run_until_complete(main) 方法
         return loop.run_until_complete(main)
     finally:
+        # 相关收尾操作
         try:
             _cancel_all_tasks(loop)
             loop.run_until_complete(loop.shutdown_asyncgens())
@@ -97,6 +98,7 @@ def run(main, *, debug=False):
 
 ```python
 def run_until_complete(self, future):
+    # 相关检查操作
     self._check_closed()
     self._check_runnung()
     
@@ -110,14 +112,14 @@ def run_until_complete(self, future):
 
     future.add_done_callback(_run_until_complete_cb)
     try:
-        # 执行事件循环
+        # 启动事件循环
         self.run_forever()
     except:
         # 忽略异常处理代码
         ...
     finally:
         future.remove_done_callback(_run_until_complete_cb)
-    # 错误处理
+    # 相关错误处理
     if not future.done():
         raise RuntimeError('Event loop stopped before Future completed.')
     
