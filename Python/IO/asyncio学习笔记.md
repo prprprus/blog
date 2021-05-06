@@ -188,9 +188,11 @@ def _run_once(self):
 
 ![]()
 
-## 协程
+## 可调度对象
 
-### 协程的定义
+### 协程
+
+#### 协程的定义
 
 - 协程底层是基于生成器，区别是生成器 `yield` 出的是基础类型或者容器类型，协程 `yield` 出的只能是 `None` 或者 Future 对象
 - 从上层看，可以认为被 `async` 关键字声明的异步函数就是一个协程
@@ -246,18 +248,18 @@ if __name__ == "__main__":
 
 Profile 一下可以看到耗时 1039ms，确实并发执行了
 
-### Python 协程和 Go 协程的区别
+#### Python 协程和 Go 协程的区别
 
 - coroutine 基于 asyncio 事件循环的调度，运行在一个线程上，当线程被阻塞，所有的 coroutine 会被阻塞，一般用于 IO 密集型任务，而且需要配合异步库使用。
 总的来说是并发，不是并行
 - goroutine 基于 Go 运行时 GPM 模型的调度，一般运行在多个线程上，当某一个线程被阻塞时，其他 goroutine 还可以运行在其他的线程上，既可以用于 IO 密集型任务，也可以用于
 CPU 密集型任务。总的来说即使并发，也是并行
 
-## Future
+### Future
 
 Future 提供的操作和 Task 差不多，[参考](https://docs.python.org/3/library/asyncio-future.html#future-object)
 
-## Task
+### Task
 
 Task 继承于 Future 类。官网不建议直接创建 Task 对象，而是通过 `asyncio.create_task(aws)` API 创建。Task 对外提供了比较多的操作
 
@@ -314,7 +316,7 @@ async def test_task():
 asyncio.run(test_task())
 ```
 
-## await
+## await 语句
 
 `await` 可以作用于三类对象：协程、Task、Future
 
