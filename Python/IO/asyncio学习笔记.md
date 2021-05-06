@@ -53,6 +53,23 @@ while True:
 
 1. 写个 demo 打上断点，在调试模式下可以看到调用栈
 
+```python
+import asyncio
+
+
+async def sleep(second):
+    await asyncio.sleep(second)
+    print("hello asyncio")
+    
+
+async def main():
+    await sleep(1)
+
+
+if __name__ == "__main__":    
+    asyncio.run(main())
+```
+
 ```BASH
 main, demo1.py:76 # 自己的代码
 _run, events.py:88
