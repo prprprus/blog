@@ -51,7 +51,7 @@ while True:
 
 ### asyncio 的事件循环
 
-写个 demo 打上断点，在调试模式下可以看到调用栈：
+1. 写个 demo 打上断点，在调试模式下可以看到调用栈
 
 ```BASH
 main, demo1.py:76 # 自己的代码
@@ -63,7 +63,7 @@ run, runners.py:43
 <module>, demo1.py:80 # 自己的代码
 ```
 
-根据调用栈可以找到事件循环的代码：
+2. 根据调用栈可以找到事件循环的代码
 
 ```python
 # base_events.py:541
@@ -184,6 +184,9 @@ def _run_once(self):
     handle = None  # Needed to break cycles when an exception occurs.
 ```
 
+### 事件循环的调度过程
+
+![]()
 
 ## 协程
 
