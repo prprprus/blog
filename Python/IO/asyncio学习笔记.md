@@ -304,13 +304,34 @@ def _run_once(self):
 
 > 照这样看，其实事件循环中的事件指的是回调函数
 
-### Event Loop API
+### 事件循环的使用
 
-- TODO
+#### (1) 获取事件循环
+
+```python
+import asyncio
+
+
+async def main():
+    loop1 = asyncio.get_event_loop()
+    loop2 = asyncio.get_running_loop()
+    loop3 = asyncio.new_event_loop()
+    print(loop1 == loop2)   # True
+    print(loop1 == loop2 == loop3)  # False
+
+
+asyncio.run(main())
+```
+
+#### (2) Callback Handle
+
+```python
+
+```
 
 ## 可调度对象
 
-协程在底层会被封装成 Task，而 Task 是 Future 的子类，也就是说这三种可调度对象基本都可以看成 Future 对象
+协程在底层会被封装成 Task，而 Task 是 Future 的子类，也就是说这三种可调度对象都可以看成 Future 对象
 
 ### (1) 协程
 
@@ -469,12 +490,10 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-## 模块级别函数
+## 其他模块级别函数
 
 - 异步 sleep：`asyncio.sleep(second)`
-- 并发执行一组协程：`asyncio.gather([aws])`
 - 将协程丢到事件循环执行：`asyncio.run(aws)`
-- 创建 Task：`asyncio.create_task(aws)`
 - 判断是否异步函数：`asyncio.iscoroutinefunction(func)`
 - 输出当前协程：`asyncio.current_task()`
 - 输出所有协程：`asyncio.all_tasks()`
