@@ -649,6 +649,46 @@ async def echo_client():
 asyncio.run(echo_client())
 ```
 
+## Queue
+
+异步队列，但是线程不安全。使用和 [queue](https://docs.python.org/3/library/queue.html#module-queue) 模块差不多，
+get/put 操作没有超时功能，需要配合 `asyncio.wait_for()` 实现
+
+案例：
+
+```python
+import asyncio
+
+
+async def consumer(queue):
+    while not queue.empty():
+        second = await queue.get()
+        await asyncio.sleep(second)
+        queue.task_done()
+        print("完成任务")
+
+    print("consumer() return")
+
+
+async def producer():
+    queue = asyncio.Queue(maxsize=30)
+
+    for i in range(10):
+        await queue.put(1)
+
+    return queue
+
+
+async def main():
+    queue = await producer()
+    await consumer(queue)
+    await queue.join()
+    print("所有任务执行完毕")
+
+
+asyncio.run(main())
+```
+
 ## 其他模块级别函数
 
 - 异步 sleep：`asyncio.sleep(second)`
