@@ -360,7 +360,7 @@ import asyncio
 
 async def main():
     loop = asyncio.get_event_loop()
-    future = loop.create_future()
+    future = loop.create_future()   # 创建 Future 对象
 
     print(future.done())    # False
     print(future.cancelled())   # False
@@ -406,14 +406,21 @@ asyncio.run(main())
 
 协程在底层会被封装成 Task，而 Task 是 Future 的子类，也就是说这三种可调度对象都可以看成 Future 对象
 
-### (1) 协程
+### (1) Future
+
+相关操作参考 []()
+
+### (2) Task
+
+Task 继承于 Future 类，提供的操作差不多
+
+### (3) 协程
 
 #### 协程的定义
 
-- 协程底层是基于生成器，区别是生成器 `yield` 出的是基础类型或者容器类型，协程 `yield` 出的只能是 `None` 或者 Future 对象
+- 协程底层是基于生成器，区别是生成器 `yield` 出的是基础类型或者容器类型，协程 `yield` 出的只能是 `None` 或者 Future 对象。在事件循环中会被封装成 Task 对象
 - 从上层看，可以认为被 `async` 关键字声明的异步函数就是一个协程
 - 直接调用协程并不会执行，必须在前面加 `await`，而且需要放到事件循环中执行
-- `await` 的语义是当遇到阻塞时，主动让出执行时间给其他协程
 
 ```python
 import asyncio
@@ -471,70 +478,9 @@ Profile 一下可以看到耗时 1039ms，确实并发执行了
 - goroutine 基于 Go 运行时 GPM 模型的调度，一般运行在多个线程上，当某一个线程被阻塞时，其他 goroutine 还可以运行在其他的线程上，既可以用于 IO 密集型任务，也可以用于
 CPU 密集型任务。总的来说即使并发，也是并行
 
-### (2) Task
-
-Task 继承于 Future 类。官网不建议直接创建 Task 对象，而是通过 `asyncio.create_task(aws)` API 创建。Task 对外提供了比较多的操作
-
-```python
-import asyncio
-
-
-def done_callback(task):
-    try:
-        print(task.result())
-        print("run done_callback()")
-    except asyncio.CancelledError:
-        pass
-    
-
-def remove_callback():
-    print("run remove_callback()")
-    
-
-async def test_task():
-    async def say():
-        await asyncio.sleep(2)
-        return "hello asyncio task"
-
-    task = asyncio.create_task(say())
-    
-    # 判断 Task 是否取消
-    print(task.cancelled())
-
-    # 判断 Task 是否完成
-    print(task.done())
-    
-    # # 输出 Task 名字, 需要 Python3.8+
-    # print(task.get_name())
-    # 
-    # # 输出 Task 对应的协程, 需要 Python3.8+
-    # print(task.get_coro())
-    
-    # 设置 done callback
-    task.add_done_callback(done_callback)
-    
-    # 设置 remove callback
-    task.remove_done_callback(remove_callback)
-    
-    # 取消 Task
-    # task.cancel()
-    
-    try:
-        await task
-    except asyncio.CancelledError:
-        print("asyncio task cancelled")
-
-
-asyncio.run(test_task())
-```
-
-### (3) Future
-
-Future 提供的操作和 Task 差不多，[参考](https://docs.python.org/3/library/asyncio-future.html#future-object)
-
 ## await 语句
 
-`await` 可以作用于三类对象：协程、Task、Future
+`await` 的语义是当遇到阻塞时，主动让出执行时间给其他协程，`await` 可以作用于协程、Task、Future 这三类对象
 
 ### 设置超时时间
 
