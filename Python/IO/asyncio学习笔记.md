@@ -423,6 +423,52 @@ async def main():
 asyncio.run(main())
 ```
 
+#### (3) 事件循环和池
+
+事件循环除了可以搭配 IO 多路复用之外，还可以搭配进程池、线程池使用，将原本的阻塞代码丢到池里面去执行，也达到了避免事件循环被阻塞的目的。
+特别是对于 CPU 密集型任务，或者没有异步版本的第三方库等场景，都非常有用
+
+事件循环和池之间的调度关系可以参考 [事件循环的调度流程](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E7%9A%84%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B) ，
+将 IO 多路复用的部分换成池即可
+
+```python
+import asyncio
+import concurrent.futures
+
+
+def blocking_io(file):
+    with open(file, "r", encoding="utf8") as f:
+        result = f.read()
+    print(result)
+
+
+def cpu_bound():
+    result = sum(i * i for i in range(10 ** 7))
+    print(result)
+    
+    
+async def before_cpu_bound():
+    print("在 before_cpu_bound() 完成之前执行了")
+    
+
+async def main():
+    loop = asyncio.get_event_loop()
+    
+    # 将同步 IO 丢到线程池执行
+    thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+    await loop.run_in_executor(thread_pool, blocking_io, "/Users/tiger/develop/tmp/demo1.txt")
+    
+    # 将 CPU 密集型任务丢到进程池执行, 同时测试异步的效果
+    process_pool = concurrent.futures.ProcessPoolExecutor(max_workers=4)
+    await asyncio.gather(
+        loop.run_in_executor(process_pool, cpu_bound),
+        before_cpu_bound(), # 会先于 cpu_bound() 执行完毕
+    )
+
+
+asyncio.run(main())
+```
+
 ## 可调度对象
 
 协程在底层会被封装成 Task，而 Task 是 Future 的子类，也就是说这三种可调度对象都可以看成 Future 对象
