@@ -302,7 +302,11 @@ def _run_once(self):
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-5.png)
 
-> 照这样看，其实事件循环中的事件指的是回调函数 😂
+> 照这样看，其实事件循环中的事件指的是回调函数
+
+### Event Loop API
+
+- TODO
 
 ## 可调度对象
 
