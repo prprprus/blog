@@ -323,7 +323,66 @@ async def main():
 asyncio.run(main())
 ```
 
-#### (2) Callback Handle
+#### (2) 启动和停止事件循环
+
+```python
+import asyncio
+
+
+async def sleep(second):
+    await asyncio.sleep(second)
+    print("sleep() done")
+    
+
+# 启动 case1
+loop = asyncio.new_event_loop()
+loop.run_until_complete(sleep(3))
+
+# 启动 case2
+asyncio.run(sleep(3))
+
+# 停止
+loop = asyncio.new_event_loop()
+print(loop.is_closed())
+print(loop.is_running())
+loop.stop()
+loop.close()
+print(loop.is_closed())
+```
+
+#### (3) 事件循环和 Future
+
+- TODO
+
+```python
+import asyncio
+
+
+async def main():
+    loop = asyncio.get_event_loop()
+    future = loop.create_future()
+
+    print(future.done())    # False
+    print(future.cancelled())   # False
+    print(loop == future.get_loop())    # True
+
+    try:
+        print("Get future result:", future.result())    # 抛出异常
+    except asyncio.base_futures.InvalidStateError:
+        print("Result is not set")
+
+    future.add_done_callback(lambda _: print("Run future done callback!"))  # 给 Future 绑定回调函数
+    future.set_result(111)  # 设置 result 的同时, 将 Future 的回调函数加入 self._ready 队列, 等待被事件循环调度执行
+    try:
+        print("get future result:", future.result())    # get future result: 111
+    except asyncio.base_futures.InvalidStateError:
+        print("Result is not set")
+
+
+asyncio.run(main())
+```
+
+#### (x) Callback Handle
 
 事件循环中的回调函数都会被封装成 Handle 对象，也就是说 `self._ready` 队列中保存的都是 Handle 对象。Handle 对象分为两类，
 一种是直接入队等待调度执行的 Handle 类，另一种是延迟执行的 TimerHandle 类（继承于 Handle 类）。
@@ -335,8 +394,8 @@ import asyncio
 
 async def main():
     loop = asyncio.get_event_loop()
-    loop.call_soon(lambda: print("Hello call_soon()"))  # 立即加入调度队列，等待执行
-    loop.call_later(1, lambda: print("Hello call_later()")) # 1s 后加入调度队列，等待执行
+    loop.call_soon(lambda: print("Hello call_soon()"))  # 立即加入调度队列，并等待执行
+    loop.call_later(1, lambda: print("Hello call_later()")) # 1s 后加入调度队列，并等待执行
     await asyncio.sleep(2)
 
 
