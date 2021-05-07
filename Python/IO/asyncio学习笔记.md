@@ -469,6 +469,8 @@ async def main():
 asyncio.run(main())
 ```
 
+> 除了这些操作之外，还有异步的 socket 操作、异步的 DNS 操作、异步的信号处理、异步的子进程操作等，其中不少操作也提供了更高级的 API
+
 ## 可调度对象
 
 协程在底层会被封装成 Task，而 Task 是 Future 的子类，也就是说这三种可调度对象都可以看成 Future 对象
