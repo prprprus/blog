@@ -539,7 +539,7 @@ if __name__ == "__main__":
 
 > 只考虑 async/await 的写法，不考虑旧的 @asyncio.coroutine 写法
 
-> Profile 一下可以看到耗时 1039ms，确实并发执行了
+> Profile 一下看到耗时 1039ms，确实并发执行了
 
 #### Python 协程和 Go 协程的区别
 
