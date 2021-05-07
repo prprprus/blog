@@ -689,6 +689,70 @@ async def main():
 asyncio.run(main())
 ```
 
+## Subprocesses
+
+异步 Subprocesses。案例：
+
+```python
+import asyncio
+
+
+async def test_subprocess(cmd):
+    proc = await asyncio.create_subprocess_shell(cmd,
+                                                 stdout=asyncio.subprocess.PIPE,
+                                                 stderr=asyncio.subprocess.PIPE)
+
+    # stdout 和 stderr 都是 StreamReader 对象, stdin 是 StreamWriter 对象
+    stdout, stderr = await proc.communicate() 
+
+    if stdout:
+        print(f'[stdout]\n{stdout.decode()}')
+    if stderr:
+        print(f'[stderr]\n{stderr.decode()}')
+
+
+asyncio.run(test_subprocess("ls -l"))
+```
+
+## 同步
+
+提供的操作和 [threading](https://docs.python.org/3/library/threading.html#module-threading) 模块差不多，区别是 asyncio 提供的同步操作只能用于协程，
+并不是线程级别的同步，也就是线程不安全。相关操作没有超时功能，需要配合 `asyncio.wait_for()` 实现
+
+案例：
+
+```python
+import asyncio
+
+# case1: 同步锁
+lock = asyncio.Lock()
+async with lock:
+    pass
+
+# case2: 条件变量
+def is_available():
+    pass
+
+
+cond = asyncio.Condition()
+async with cond:
+    await cond.wait_for(is_available())
+
+if is_available():
+    pass
+
+# case3: Event
+pass
+
+
+# case4: Semaphore
+pass
+```
+
+## 异常
+
+直接参考 [这里](https://docs.python.org/3/library/asyncio-exceptions.html#exceptions)
+
 ## 其他模块级别函数
 
 - 异步 sleep：`asyncio.sleep(second)`
