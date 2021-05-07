@@ -579,6 +579,76 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+## Streams
+
+Streams 是专门用来处理网络 IO 的一组高级 API
+
+### echo 案例
+
+- 服务端
+
+```python
+import asyncio
+
+
+async def handle(reader, writer):
+    MAX_MSGLEN = 100    # 假设每个消息最多 100 个字节
+
+    try:
+        data = await reader.read(MAX_MSGLEN)
+        print("接收数据:", data.decode("utf8"))
+
+        writer.write(data)
+        await writer.drain()  # 类似 flush()
+        print("发送数据:", data.decode("utf8"))
+    except:
+        raise
+    finally:
+        print("关闭连接")
+        writer.close()
+
+
+async def main():
+    server = await asyncio.start_server(client_connected_cb=handle, host="127.0.0.1", port=2444)
+
+    addr = server.sockets[0].getsockname()
+    print(f'服务器监听: {addr}')
+
+    # 启动服务端
+    async with server:
+        await server.serve_forever()
+
+
+asyncio.run(main())
+```
+
+- 客户端
+
+```python
+import asyncio
+
+
+async def echo_client():
+    MAX_MSGLEN = 100  # 假设每个消息最多 100 个字节
+
+    reader, writer = await asyncio.open_connection(host="127.0.0.1", port=2444)
+
+    try:
+        data = "Hello Streams"
+        writer.write(data.encode("utf8"))
+        print("发送数据:", data)
+
+        recv_data = await reader.read(MAX_MSGLEN)
+        print("接收数据:", recv_data)
+    except:
+        raise
+    finally:
+        writer.close()
+
+
+asyncio.run(echo_client())
+```
+
 ## 其他模块级别函数
 
 - 异步 sleep：`asyncio.sleep(second)`
