@@ -327,7 +327,7 @@ asyncio.run(main())
 
 事件循环中的回调函数都会被封装成 Handle 对象，也就是说 `self._ready` 队列中保存的都是 Handle 对象。Handle 对象分为两类，
 一种是直接入队等待调度执行的 Handle 类，另一种是延迟执行的 TimerHandle 类（继承于 Handle 类）。
-asyncio 对外提供了两个接口 `loop.call_soon()` 和 `loop.call_later()`，可以在外部直接 `self._ready` 队列添加回调函数 
+asyncio 对外提供了两个接口 `loop.call_soon()` 和 `loop.call_later()`，可以在外部直接往 `self._ready` 队列添加回调函数 
 
 ```python
 import asyncio
