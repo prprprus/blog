@@ -352,7 +352,8 @@ print(loop.is_closed())
 
 #### (3) 事件循环和 Future
 
-- TODO
+一个 Future 会对应一个事件循环，可以给 Future 绑定回调函数，当调用 `set_result()` 方法时，回调函数会被加入事件循环的 `self._ready` 队列，
+等待被调度执行
 
 ```python
 import asyncio
@@ -382,7 +383,27 @@ async def main():
 asyncio.run(main())
 ```
 
-#### (x) Callback Handle
+#### (4) 事件循环和 Task
+
+Task 继承于 Future，提供的操作和 Future 差不多
+
+```python
+import asyncio
+
+
+async def main():
+    async def say():
+        print("Hi")
+
+    loop = asyncio.get_event_loop()
+    task = loop.create_task(say())  # 基于协程创建 Task
+    await task
+
+
+asyncio.run(main())
+```
+
+#### (5) Callback Handle
 
 事件循环中的回调函数都会被封装成 Handle 对象，也就是说 `self._ready` 队列中保存的都是 Handle 对象。Handle 对象分为两类，
 一种是直接入队等待调度执行的 Handle 类，另一种是延迟执行的 TimerHandle 类（继承于 Handle 类）。
@@ -408,7 +429,7 @@ asyncio.run(main())
 
 ### (1) Future
 
-相关操作参考 []()
+相关操作参考 [(3) 事件循环和 Future](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#3-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C-future)
 
 ### (2) Task
 
