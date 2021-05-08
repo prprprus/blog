@@ -579,6 +579,8 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+> asyncio 很多操作并没有提供 timeout 参数来控制超时，但是可以通过 `asyncio.wait_for()` 实现
+
 ## Streams
 
 Streams 是专门用来处理网络 IO 的一组高级 API
