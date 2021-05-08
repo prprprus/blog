@@ -638,6 +638,7 @@ async def echo_client():
     try:
         data = "Hello Streams"
         writer.write(data.encode("utf8"))
+        await writer.drain()
         print("发送数据:", data)
 
         recv_data = await reader.read(MAX_MSGLEN)
@@ -653,7 +654,7 @@ asyncio.run(echo_client())
 
 ## Queue
 
-异步队列，但是线程不安全。使用和 [queue](https://docs.python.org/3/library/queue.html#module-queue) 模块差不多，
+异步队列，用法和 [queue](https://docs.python.org/3/library/queue.html#module-queue) 模块差不多，但是线程不安全。
 get/put 操作没有超时功能，需要配合 `asyncio.wait_for()` 实现
 
 案例：
@@ -693,7 +694,9 @@ asyncio.run(main())
 
 ## Subprocesses
 
-异步 Subprocesses。案例：
+异步 Subprocesses
+
+案例：
 
 ```python
 import asyncio
@@ -716,10 +719,10 @@ async def test_subprocess(cmd):
 asyncio.run(test_subprocess("ls -l"))
 ```
 
-## 同步
+## 协程同步
 
-提供的操作和 [threading](https://docs.python.org/3/library/threading.html#module-threading) 模块差不多，区别是 asyncio 提供的同步操作只能用于协程，
-并不是线程级别的同步，也就是线程不安全。相关操作没有超时功能，需要配合 `asyncio.wait_for()` 实现
+用法和 [threading](https://docs.python.org/3/library/threading.html#module-threading) 模块差不多，
+区别是 asyncio 提供的同步操作只用于协程，并不是线程级别的同步，也就是线程不安全。超时功能需要配合 `asyncio.wait_for()` 实现
 
 案例：
 
