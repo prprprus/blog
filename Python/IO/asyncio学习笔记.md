@@ -302,7 +302,7 @@ def _run_once(self):
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-5.png)
 
-> 照这样看，其实事件循环中的事件指的是回调函数
+> 照这样看，其实事件循环中的事件指的是函数
 
 ### 事件循环的使用
 
@@ -405,9 +405,9 @@ asyncio.run(main())
 
 #### (5) Callback Handle
 
-事件循环中的回调函数都会被封装成 Handle 对象，也就是说 `self._ready` 队列中保存的都是 Handle 对象。Handle 对象分为两类，
+事件循环中执行的函数都会被封装成 Handle 对象，也就是说 `self._ready` 队列中保存的都是 Handle 对象。Handle 对象分为两类，
 一种是直接入队等待调度执行的 Handle 类，另一种是延迟执行的 TimerHandle 类（继承于 Handle 类）。
-asyncio 对外提供了两个接口 `loop.call_soon()` 和 `loop.call_later()`，可以直接往 `self._ready` 队列添加回调函数，跳过需要用 Future 对象设置的限制 
+asyncio 对外提供了两个接口 `loop.call_soon()` 和 `loop.call_later()`，可以直接往 `self._ready` 队列添加函数，跳过需要用 Future 对象设置的限制 
 
 ```python
 import asyncio
