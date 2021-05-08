@@ -294,7 +294,7 @@ def _run_once(self):
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-3.png)
 
-到网上查找发现切换相关的代码在 tasks.py 的 `__step()` 和 `__wakeup()` 方法上，特别是 `__step()`
+到网上查找发现切换相关的代码在 tasks.py 的 `__step()` 和 `__wakeup()` 方法上，`__wakeup()` 调用 `__step()`，所以重点是 `__step()`
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-4.png)
 
