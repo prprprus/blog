@@ -765,3 +765,11 @@ pass
 - 判断是否异步函数：`asyncio.iscoroutinefunction(func)`
 - 输出当前协程：`asyncio.current_task()`
 - 输出所有协程：`asyncio.all_tasks()`
+
+## 参考
+
+- [asyncio — Asynchronous I/O](https://docs.python.org/3/library/asyncio.html)
+- [小白的 asyncio ：原理、源码 到实现（1）](https://zhuanlan.zhihu.com/p/64991670)
+- [How To Use Linux epoll with Python](http://scotdoyle.com/python-epoll-howto.html)
+- [预备知识：我读过的对epoll最好的讲解](http://www.nowamagic.net/academy/detail/13321005)
+- [Tornado IOLoop start()里的核心调度](http://www.nowamagic.net/academy/detail/13321037)
