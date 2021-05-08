@@ -1,6 +1,6 @@
 # asyncio 学习笔记
 
-Python 有不少异步 IO 框架，但是根据标准的 IO 模型，很多时候说的异步 IO 并不是真正的异步，而是 IO 多路复用。asyncio 也不例外，
+Python 有不少异步 IO 框架，对于 IO 处理部分，根据标准的 IO 模型来看，应该叫 IO 多路复用。asyncio 也不例外，
 对于 IO 部分，asyncio 是基于 [selector](https://github.com/python/cpython/blob/3.9/Lib/asyncio/selector_events.py) 模块，
 而 selector 基于 select，select 基于操作系统提供的 IO 多路复用机制，譬如 Linux 的 epoll，macOS 的 kqueue 等
 
