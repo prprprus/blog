@@ -601,7 +601,7 @@ async def handle(reader, writer):
         print("接收数据:", data.decode("utf8"))
 
         writer.write(data)
-        await writer.drain()  # 类似 flush()
+        await writer.drain()  # 搭配 write() 方法使用, 类似 sendall()
         print("发送数据:", data.decode("utf8"))
     except:
         raise
