@@ -352,7 +352,7 @@ print(loop.is_closed())
 
 #### (3) 事件循环和 Future
 
-一个 Future 会对应一个事件循环，可以给 Future 绑定回调函数，当调用 `set_result()` 方法时，回调函数会被加入事件循环的 `self._ready` 队列，
+一个 Future 会对应一个事件循环，可以给 Future 绑定回调函数。当调用 `set_result()` 的时候，回调函数会被加入事件循环的 `self._ready` 队列，
 等待被调度执行
 
 ```python
