@@ -121,3 +121,7 @@ main()
 #### (6) 定时器
 
 #### (7) Barrier
+
+## queue 模块
+
+[queue](https://docs.python.org/3/library/queue.html) 模块提供了多种线程安全的队列
