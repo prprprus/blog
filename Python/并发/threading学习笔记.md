@@ -226,10 +226,210 @@ condition 对象搭配锁对象使用，可以在线程不满足某种条件时�
 函数说明：
 
 - `threading.Condition(lock=None)`：可以创建 condition 对象，如果 lock 为 `None`，会默认创建一个 `RLock` 对象
-- `acquire(*args)`：该函数会去调用对应锁对象的 `acquire()` 方法
-- `release()`：该函数会去调用对应锁对象的 `release()` 方法
-- `wait(timeout=None)`：主动释放锁，进入等待状态，可设置超时时间
-- `wait_for(predicate, timeout=None)`
+- `acquire(*args)`：会去调用对应锁对象的 `acquire()` 方法
+- `release()`：会去调用对应锁对象的 `release()` 方法
+- `wait(timeout=None)`：主动释放锁，并进入等待状态，直到被唤醒或者超时
+- `wait_for(predicate, timeout=None)`：主动释放锁，并进入等待状态，直到被唤醒或者超时，而且被唤醒后必须满足条件（也就是 predicate 必须是 True）才能继续往下执行，
+  否则又会调用 `wait()` 进入等待状态。也就是相当于 `while not predicate: wait()` 的语法糖
+
+案例 1：
+
+基本使用
+
+```python
+import threading
+import time
+
+
+lock = threading.Lock()
+cond = threading.Condition(lock)
+
+
+def task1():
+    try:
+        cond.acquire()
+        print("线程 1 进入等待")
+        cond.wait()
+        print("线程 1 被唤醒")
+
+        # do something
+        time.sleep(1)
+        print("线程 1 执行成功")
+    except:
+        raise
+    finally:
+        cond.release()
+        print("线程 1 释放锁成功")
+
+
+def task2():
+    try:
+        cond.acquire()
+        # do something
+        time.sleep(1)
+        print("线程 2 执行成功")
+        cond.notify_all()
+        print("线程 2 唤醒线程 1")
+    except:
+        raise
+    finally:
+        cond.release()
+        print("线程 2 释放锁成功")
+
+
+def main():
+    t1 = threading.Thread(target=task1)
+    t1.start()
+    t2 = threading.Thread(target=task2)
+    t2.start()
+
+    print("main thread done.")
+
+
+main()
+```
+
+输出如下：
+
+```BASH
+线程 1 进入等待
+main thread done.
+线程 2 执行成功
+线程 2 唤醒线程 1
+线程 2 释放锁成功
+线程 1 被唤醒)
+线程 1 执行成功
+线程 1 释放锁成功
+```
+
+案例 2：
+
+`wait()` 方法会一直等待，直到被唤醒或者超时
+
+```python
+import threading
+import time
+
+
+lock = threading.Lock()
+cond = threading.Condition(lock)
+
+
+def task1():
+    try:
+        cond.acquire()
+        print("线程 1 进入等待")
+        cond.wait()
+        print("线程 1 被唤醒")
+
+        # do something
+        time.sleep(1)
+        print("线程 1 执行成功")
+    except:
+        raise
+    finally:
+        cond.release()
+        print("线程 1 释放锁成功")
+
+
+def task2():
+    try:
+        cond.acquire()
+        # do something
+        time.sleep(1)
+        print("线程 2 执行成功")
+        # 注释这两行，不去唤醒
+        # cond.notify_all()
+        # print("线程 2 唤醒线程 1")
+    except:
+        raise
+    finally:
+        cond.release()
+        print("线程 2 释放锁成功")
+
+
+def main():
+    t1 = threading.Thread(target=task1)
+    t1.start()
+    t2 = threading.Thread(target=task2)
+    t2.start()
+
+    print("main thread done.")
+
+
+main()
+```
+
+线程 1 会一直阻塞下去
+
+案例 3：
+
+`wait_for()` 被唤醒后，还需要满足条件，否则继续等待
+
+```python
+import threading
+import time
+
+
+lock = threading.Lock()
+cond = threading.Condition(lock)
+flag = 0
+
+
+def predicate():
+    return True if flag == 1 else False
+
+
+def task1():
+    try:
+        cond.acquire()
+        print("线程 1 不满足条件，进入等待")
+        cond.wait_for(predicate)
+        print("线程 1 满足条件")
+
+        # do something
+        time.sleep(1)
+        print("线程 1 执行成功")
+    except:
+        raise
+    finally:
+        cond.release()
+        print("线程 1 释放锁成功")
+
+
+def task2():
+    try:
+        cond.acquire()
+        # do something
+        time.sleep(1)
+        global flag
+        
+        # case1: 满足条件的修改，线程 1 被唤醒后可以继续往下执行
+        flag += 1
+        # case2: 不满足条件的修改，线程 1 被唤醒不能往下执行，继续调用 wait() 等待
+        # flag += 10
+
+        print("线程 2 执行成功")
+        cond.notify_all()
+        print("线程 2 唤醒线程 1")
+    except:
+        raise
+    finally:
+        cond.release()
+        print("线程 2 释放锁成功")
+
+
+def main():
+    t1 = threading.Thread(target=task1)
+    t1.start()
+    t2 = threading.Thread(target=task2)
+    t2.start()
+
+    print("main thread done.")
+
+
+main()
+```
 
 > 支持 `with` 语句
 
