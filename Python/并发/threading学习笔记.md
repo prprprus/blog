@@ -126,9 +126,104 @@ main()
 
 `locked()` 函数说明：如果锁对象状态为 locked 则返回 True，否则返回 False
 
+案例：
+
+```python
+import threading
+import time
+
+
+lock = threading.Lock()
+
+
+def main():
+    try:
+        # 阻塞等待
+        res = lock.acquire()
+        print("第一次申请锁结果:", res) # True
+
+        # 不等待
+        res = lock.acquire(blocking=False)
+        print("第二次申请锁结果:", res) # False
+
+        print("当前锁对象状态:", lock.locked())    # True
+
+        # do something
+        time.sleep(1)
+        print("task done.")
+    except:
+        raise
+    finally:
+        lock.release()
+        print("释放锁成功")
+
+
+main()
+```
+
+> 支持 `with` 语句
+
 #### (2) 可重入锁
 
+支持的操作和锁对象差不多，没有 `locked()` 方法，和锁对象的区别是，对于持有锁的线程可以继续申请锁
+
+案例：
+
+```python
+import threading
+import time
+
+
+rlock = threading.RLock()
+
+
+def task(i):
+    try:
+        # 阻塞等待
+        res = rlock.acquire()
+        print("{} 第一次申请锁结果: {}".format(i, res))
+
+        # 不等待
+        res = rlock.acquire(blocking=False)
+        print("{} 第二次申请锁结果: {}".format(i, res))
+
+        # 阻塞等待
+        res = rlock.acquire()
+        print("{} 第三次申请锁结果: {}".format(i, res))
+
+        # do something
+        time.sleep(1)
+        print("task {} done.".format(i))
+    except:
+        raise
+    finally:
+        # 需要释放相应次数，否则另外一个线程会一直等到
+        rlock.release()
+        rlock.release()
+        rlock.release()
+        print("{} 释放锁成功".format(i))
+
+
+def main():
+    workers = []
+    for i in range(2):
+        t = threading.Thread(target=task, args=(i,))
+        workers.append(t)
+
+    for worker in workers:
+        worker.start()
+
+    print("main thread done.")
+
+
+main()
+```
+
+> 支持 `with` 语句
+
 #### (3) 条件变量
+
+> 支持 `with` 语句
 
 #### (4) 信号量
 
