@@ -110,21 +110,18 @@ main()
 
 #### (1) 锁
 
-`threading.Lock()` 可以创建锁对象，自动返回当前系统所支持的锁类型
+函数说明：
 
-`acquire(blocking=True, timeout=-1)` 函数说明：
-
-- 将锁对象状态设置成 locked（申请锁），如果成功则返回 True，否则返回 False
-- blocking 为 True 代表阻塞等待，直到申请锁成功，或者超时为止；为 False 代表如果不能立即申请锁，则不等待直接返回
-- timeout 为 -1 代表一直等待下去，`threading.TIMEOUT_MAX` 可以获取系统支持的最大等待时间
-
-`release()` 函数说明：
-
-- 将锁对象状态设置成 unlocked（释放锁），可以在任意线程中执行，不一定是持有锁的线程。该函数没有返回值
-- 如果有多个线程在等待锁，会随机选择一个线程持有锁
-- 如果释放 unlocked 的锁对象，则会抛出 RuntimeError
-
-`locked()` 函数说明：如果锁对象状态为 locked 则返回 True，否则返回 False
+- `threading.Lock()`：可以创建锁对象，自动返回当前系统所支持的锁类型
+- `acquire(blocking=True, timeout=-1)`
+    - 将锁对象状态设置成 locked（申请锁），如果成功则返回 True，否则返回 False
+    - blocking 为 True 代表阻塞等待，直到申请锁成功，或者超时为止；为 False 代表如果不能立即申请锁，则不等待直接返回
+    - timeout 为 -1 代表一直等待下去，`threading.TIMEOUT_MAX` 可以获取系统支持的最大等待时间
+- `release()`
+    - 将锁对象状态设置成 unlocked（释放锁），可以在任意线程中执行，不一定是持有锁的线程。该函数没有返回值
+    - 如果有多个线程在等待锁，会随机选择一个线程持有锁
+    - 如果释放 unlocked 的锁对象，则会抛出 RuntimeError
+- `locked()`：如果锁对象状态为 locked 则返回 True，否则返回 False
 
 案例：
 
@@ -222,6 +219,17 @@ main()
 > 支持 `with` 语句
 
 #### (3) 条件变量
+
+condition 对象搭配锁对象使用，可以在线程不满足某种条件时主动释放锁，并阻塞等待，直到当条件满足时被其他线程唤醒。相对单纯的互斥锁，
+这是一种基于通信的同步方式
+
+函数说明：
+
+- `threading.Condition(lock=None)`：可以创建 condition 对象，如果 lock 为 `None`，会默认创建一个 `RLock` 对象
+- `acquire(*args)`：该函数会去调用对应锁对象的 `acquire()` 方法
+- `release()`：该函数会去调用对应锁对象的 `release()` 方法
+- `wait(timeout=None)`：主动释放锁，进入等待状态，可设置超时时间
+- `wait_for(predicate, timeout=None)`
 
 > 支持 `with` 语句
 
