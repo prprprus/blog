@@ -13,7 +13,7 @@
 
 ## threading 的使用
 
-### 模块级别的函数
+### 模块级别函数
 
 ```python
 import threading
@@ -433,14 +433,14 @@ main()
 
 > 支持 `with` 语句
 
-#### (4) 信号量
+#### (4) Semaphore
 
 #### (5) Event
 
-#### (6) 定时器
+#### (6) Timer
 
 #### (7) Barrier
 
-## queue 模块
+## queue 的使用
 
 [queue](https://docs.python.org/3/library/queue.html) 模块提供了多种线程安全的队列，用于线程间通信
