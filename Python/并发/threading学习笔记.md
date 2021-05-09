@@ -110,6 +110,22 @@ main()
 
 #### (1) 锁
 
+`threading.Lock()` 可以创建锁对象，自动返回当前系统所支持的锁类型
+
+`acquire(blocking=True, timeout=-1)` 函数说明：
+
+- 将锁对象状态设置成 locked（申请锁），如果成功则返回 True，否则返回 False
+- blocking 为 True 代表阻塞等待，直到申请锁成功，或者超时为止；为 False 代表如果不能立即申请锁，则不等待直接返回
+- timeout 为 -1 代表一直等待下去，`threading.TIMEOUT_MAX` 可以获取系统支持的最大等待时间
+
+`release()` 函数说明：
+
+- 将锁对象状态设置成 unlocked（释放锁），可以在任意线程中执行，不一定是持有锁的线程。该函数没有返回值
+- 如果有多个线程在等待锁，会随机选择一个线程持有锁
+- 如果释放 unlocked 的锁对象，则会抛出 RuntimeError
+
+`locked()` 函数说明：如果锁对象状态为 locked 则返回 True，否则返回 False
+
 #### (2) 可重入锁
 
 #### (3) 条件变量
@@ -124,4 +140,4 @@ main()
 
 ## queue 模块
 
-[queue](https://docs.python.org/3/library/queue.html) 模块提供了多种线程安全的队列
+[queue](https://docs.python.org/3/library/queue.html) 模块提供了多种线程安全的队列，用于线程间通信
