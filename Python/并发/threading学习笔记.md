@@ -560,9 +560,9 @@ if __name__ == "__main__":
 
     def producer():
         for i in range(5):
+            time.sleep(2)
             _queue.put(i)
             print("生产数据 {}".format(i))
-            time.sleep(2)
 
         print("生产数据完毕")
 
