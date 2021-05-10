@@ -543,5 +543,61 @@ timer.start()
 
 ## queue 的使用
 
-[queue](https://docs.python.org/3/library/queue.html) 模块提供了多种线程安全的队列，用于线程间通信
+[queue](https://docs.python.org/3/library/queue.html) 模块提供了多种线程安全的队列，用于线程间通信。[SimpleQueue](https://docs.python.org/3/library/queue.html#simplequeue-objects) 比较常用
 
+案例：
+
+简单的生产着消费者模型
+
+```python
+import queue
+import threading
+import time
+
+if __name__ == "__main__":
+    _queue = queue.SimpleQueue()
+
+    def producer():
+        for i in range(5):
+            _queue.put(i)
+            print("生产数据 {}".format(i))
+            time.sleep(2)
+
+        print("生产数据完毕")
+
+    def consumer():
+        while True:
+            print("等待数据...")
+            data = _queue.get()
+            time.sleep(0.5)
+            print("消费数据 {}".format(data))
+
+
+    producer = threading.Thread(target=producer)
+    consumer = threading.Thread(target=consumer)
+
+    consumer.start()
+    producer.start()
+```
+
+输出如下：
+
+```BASH
+等待数据...
+生产数据 0
+消费数据 0
+等待数据...
+生产数据 1
+消费数据 1
+等待数据...
+生产数据 2
+消费数据 2
+等待数据...
+生产数据 3
+消费数据 3
+等待数据...
+生产数据 4
+消费数据 4
+等待数据...
+生产数据完毕
+```
