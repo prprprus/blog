@@ -8,6 +8,8 @@ WSGI 解耦了应用端和服务端，让它们可以灵活搭配使用，譬如
 
 ## 简单实现
 
+> 参考 PEP-3333 的实现
+
 ### WSGI 应用端
 
 ```python
@@ -17,7 +19,7 @@ class AppClass:
         status = '200 OK'
         response_headers = [('Content-type', 'text/plain')]
         start_response(status, response_headers)
-        return ["Hello WSGI"]
+        return [b"Hello WSGI"]
 ```
 
 应用端需要满足三个要求：
@@ -31,77 +33,110 @@ class AppClass:
 ```python
 import os, sys
 
+
 enc, esc = sys.getfilesystemencoding(), 'surrogateescape'
 
+
 def unicode_to_wsgi(u):
-    # Convert an environment variable to a WSGI "bytes-as-unicode" string
     return u.encode(enc, esc).decode('iso-8859-1')
+
 
 def wsgi_to_bytes(s):
     return s.encode('iso-8859-1')
 
+
 def run_wsgi(application):
-    environ = {k: unicode_to_wsgi(v) for k,v in os.environ.items()}
-    environ['wsgi.input']        = sys.stdin.buffer
-    environ['wsgi.errors']       = sys.stderr
-    environ['wsgi.version']      = (1, 0)
-    environ['wsgi.multithread']  = False
+    # environ 字典包含 CGI 变量、WSGI 变量，可能还有系统环境变量、Web 服务器的相关变量
+    # 完整的字典字段参考这里：https://www.python.org/dev/peps/pep-3333/#environ-variables
+    # 注意：这里简化了 environ，实际中大多数字段需要从 HTTP 中解析出来
+    environ = {k: unicode_to_wsgi(v) for k, v in os.environ.items()}
+    environ['wsgi.input'] = sys.stdin.buffer
+    environ['wsgi.errors'] = sys.stderr
+    environ['wsgi.version'] = (1, 0)
+    environ['wsgi.multithread'] = False
     environ['wsgi.multiprocess'] = True
-    environ['wsgi.run_once']     = True
+    environ['wsgi.run_once'] = True
 
     if environ.get('HTTPS', 'off') in ('on', '1'):
         environ['wsgi.url_scheme'] = 'https'
     else:
         environ['wsgi.url_scheme'] = 'http'
 
+    # 存放 HTTP headers
     headers_set = []
     headers_sent = []
 
     def write(data):
+        """发送 HTTP headers 和数据"""
         out = sys.stdout.buffer
 
+        # 确保必须先设置 headers，再发送数据
         if not headers_set:
-             raise AssertionError("write() before start_response()")
+            raise AssertionError("write() before start_response()")
 
+        # 发送 headers
         elif not headers_sent:
-             # Before the first output, send the stored headers
-             status, response_headers = headers_sent[:] = headers_set
-             out.write(wsgi_to_bytes('Status: %s\r\n' % status))
-             for header in response_headers:
-                 out.write(wsgi_to_bytes('%s: %s\r\n' % header))
-             out.write(wsgi_to_bytes('\r\n'))
+            status, response_headers = headers_sent[:] = headers_set
+            out.write(wsgi_to_bytes('Status: %s\r\n' % status))
+            for header in response_headers:
+                out.write(wsgi_to_bytes('%s: %s\r\n' % header))
+            out.write(wsgi_to_bytes('\r\n'))
 
+        # 发送数据
         out.write(data)
         out.flush()
 
     def start_response(status, response_headers, exc_info=None):
+        """
+        :param status: HTTP 响应状态
+        :param response_headers: HTTP headers 信息
+        :param exc_info: 异常信息
+        """
+        # 异常处理
         if exc_info:
             try:
                 if headers_sent:
-                    # Re-raise original exception if headers sent
                     raise exc_info[1].with_traceback(exc_info[2])
             finally:
-                exc_info = None     # avoid dangling circular ref
+                exc_info = None  # avoid dangling circular ref
         elif headers_set:
             raise AssertionError("Headers already set!")
-
+        
+        # 封装 status 和 headers
         headers_set[:] = [status, response_headers]
 
-        # Note: error checking on the headers should happen here,
-        # *after* the headers are set.  That way, if an error
-        # occurs, start_response can only be re-called with
-        # exc_info set.
-
         return write
-
+    
+    # 调用应用端
     result = application(environ, start_response)
     try:
+        # 发送响应数据
         for data in result:
-            if data:    # don't send headers until body appears
+            if data:  # don't send headers until body appears
                 write(data)
+        # 只需要发送 headers
         if not headers_sent:
-            write('')   # send headers now if body was empty
+            write('')
     finally:
         if hasattr(result, 'close'):
             result.close()
 ```
+
+执行 `run_wsgi(AppClass())` 输出：
+
+```BASH
+Status: 200 OK
+Content-type: text/plain
+
+Hello WSGI
+```
+
+### 交互流程
+
+1. 服务端实现接收到请求信息，解析出 environ
+2. 服务端调用应用端，传入 environ 字典和 start_response() 函数
+3. 应用端根据 environ 的信息执行相应的业务逻辑；调用 start_response() 函数，将 status、headers 返回给服务端；返回可迭代对象
+4. 服务端将接收到的 status、headers、数据（可迭代对象）封装成 HTTP 响应，返回给请求方
+
+## Flask 中的 WSGI
+
