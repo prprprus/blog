@@ -1,5 +1,8 @@
 # Executor 学习笔记
 
+1. []()
+1. []()
+
 Executor 提供了池、Future、调度等功能，可以用于并发处理、异步处理等，具体有线程池执行器 ThreadPoolExecutor 和进程池执行器 ProcessPoolExecutor 两个子类，
 ThreadPoolExecutor 用于 IO 密集型任务，ProcessPoolExecutor 用于 CPU 密集型任务。
 ThreadPoolExecutor 和 ProcessPoolExecutor 的用法差不多，下面以 Executor 和 ThreadPoolExecutor 为主
@@ -106,7 +109,7 @@ Executor Future 对象提供的操作和 [asyncio Future 对象](https://github.
 但是也有一些区别
 
 - Executor Future 的 `result()` 带超时功能，而且当 Future 未就绪时调用 `result()` 不会立即抛出异常
-- Executor Future 的 `set_result()` 会直接调用绑定的回调函数。而 asyncio Future 不会直接执行，而是把回调函数加入 `self._ready` 调度队列
+- Executor Future 的 `set_result()` 会直接调用绑定的回调函数。asyncio Future 不会直接执行，而是把回调函数加入 `self._ready` 调度队列
     ```python
     # _base.py:513
 
@@ -135,9 +138,117 @@ Executor Future 对象提供的操作和 [asyncio Future 对象](https://github.
                 LOGGER.exception('exception calling callback for %r', self)
     ```
 
-## Executor 调度流程
+## Executor 的调度流程
+
+> 以 ThreadPoolExecutor 为例
+
+1. 写个 demo，打上断点，在调试模式下可以看到调用栈
+
+```python
+import concurrent.futures
 
 
+if __name__ == "__main__":
+    def foo():
+        print("Hello Pool")
+
+    pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+    future = pool.submit(foo)
+    future.result()
+```
+
+```BASH
+_invoke_callbacks, _base.py:322
+set_result, _base.py:524
+run, thread.py:63
+_worker, thread.py:80
+run, threading.py:870 # 执行线程的相关步骤
+_bootstrap_inner, threading.py:926  # 执行线程的相关步骤
+_bootstrap, threading.py:890  # 执行线程的相关步骤
+```
+
+2. thread.py 的 _worker() 函数
+
+线程池里的工作线程对应的 `target` 并不是 `submit()` 提交的任务，而是 `_worker()` 函数。`_worker()` 函数会进入事件循环，
+不断从调度队列 `work_queue` 中尝试获取 _WorkItem 对象并执行它的 `run()` 方法
+
+```python
+def _worker(executor_reference, work_queue, initializer, initargs):
+    # 忽略相关检查
+    # ...
+    
+    try:
+        # 每个工作线程进入事件循环
+        while True:
+            # work_queue 是核心数据结构，类型是 queue.SimpleQueue，存放的是 _WorkItem 对象
+            work_item = work_queue.get(block=True)
+            if work_item is not None:
+                # 执行 _WorkItem 对象的 run() 方法
+                work_item.run()
+                # Delete references to object. See issue16284
+                del work_item
+                continue
+            executor = executor_reference()
+            # 忽律退出事件循环的一些处理
+            # ...
+            del executor
+    except BaseException:
+        _base.LOGGER.critical('Exception in worker', exc_info=True)
+```
+
+3. thread.py 的 run() 方法
+
+执行提交过来的任务，调用任务所对应的 Future 对象的 `set_result()` 方法
+
+```python
+def run(self):
+    if not self.future.set_running_or_notify_cancel():
+        return
+
+    try:
+        # 这里执行的才是 `submit()` 提交的任务
+        result = self.fn(*self.args, **self.kwargs)
+    except BaseException as exc:
+        self.future.set_exception(exc)
+        # Break a reference cycle with the exception 'exc'
+        self = None
+    else:
+        # 调用 Future 的 set_result()，从而唤醒阻塞的线程、执行回调函数 
+        self.future.set_result(result)
+```
+
+4. _base.py 的 set_result() 方法
+
+设置结果，唤醒阻塞线程，调用回调函数
+
+```python
+def set_result(self, result):
+    # set_result() 是一个带锁操作
+    with self._condition:
+        # 相关设置
+        self._result = result
+        self._state = FINISHED
+        for waiter in self._waiters:
+            waiter.add_result(self)
+        # 通知调用了 result() 阻塞等待的线程
+        self._condition.notify_all()
+    # 直接调用绑定的回调函数
+    self._invoke_callbacks()
+```
+
+5. _base.py 的 _invoke_callbacks() 方法
+
+```python
+def _invoke_callbacks(self):
+    for callback in self._done_callbacks:
+        try:
+            # 调用回调函数
+            callback(self)
+        except Exception:
+            LOGGER.exception('exception calling callback for %r', self)
+```
+
+Executor 的调度流程大致就这样了
 
 ## 异常
 
