@@ -127,8 +127,8 @@ def run_wsgi(application):
 - 解析出 environ
 - 定义用于发送数据的 `write()` 函数
 - 定义用于设置 status、headers 的 `start_response()` 函数
-- 调用应用端获取结果
-- 返回结果给请求方
+- 调用应用端并获取结果
+- 将结果返回给请求方
 
 执行 `run_wsgi(AppClass())` 输出：
 
@@ -205,13 +205,13 @@ def run_wsgi(self):
     # 忽略一些检查
     # ...
     
-    # 解析 environ
+    # 1. 解析 environ
     self.environ = environ = self.make_environ()
     # 存放 status, headers 的容器, 给 start_response() 使用
     headers_set = []
     headers_sent = []
     
-    # 定义用于发送数据的 write() 函数
+    # 2. 定义用于发送数据的 write() 函数
     def write(data):
         assert headers_set, "write() before start_response"
         if not headers_sent:
@@ -234,7 +234,7 @@ def run_wsgi(self):
             self.wfile.write(data)
         self.wfile.flush()
     
-    # 定义用于设置 status、headers 的 start_response() 函数
+    # 3. 定义用于设置 status、headers 的 start_response() 函数
     def start_response(status, response_headers, exc_info=None):
         if exc_info:
             try:
@@ -248,10 +248,10 @@ def run_wsgi(self):
         return write
 
     def execute(app):
-        # 调用应用端获取结果
+        # 4. 调用应用端获取结果
         application_iter = app(environ, start_response)
         try:
-            # 调用 write() 将结果返回给请求方
+            # 5. 调用 write() 将结果返回给请求方
             for data in application_iter:
                 write(data)
             if not headers_sent:
