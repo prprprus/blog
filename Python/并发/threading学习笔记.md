@@ -5,7 +5,7 @@
 由于 GIL 的存在，无论 CPU 有多少个核心，一个时刻只能有一个线程使用 CPU 资源，所以 Python 线程是并发不是并行，适用于 IO 密集型任务，
 不适用于 CPU 密集型任务
 
-更进一步，Python 并发处理方案的选择：
+Python 并发方案选择：
 
 - 如果是 IO 密集型任务，并且每个 IO 操作很慢，又需要很多任务并发执行，使用基于协程的异步方案解决（譬如 [asyncio](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md) ）
 - 如果是 IO 密集型任务，但是每个 IO 操作很快，只需要有限数量的任务并发执行，使用多线程即可
