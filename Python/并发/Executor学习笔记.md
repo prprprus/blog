@@ -1,6 +1,6 @@
 # Executor 学习笔记
 
-Executor 提供了池、调度、Future 等功能，可以用于并发处理、异步处理等，具体有线程池执行器 ThreadPoolExecutor 和进程池执行器 ProcessPoolExecutor 两个子类，
+Executor 提供了池、Future、调度等功能，可以用于并发处理、异步处理等，具体有线程池执行器 ThreadPoolExecutor 和进程池执行器 ProcessPoolExecutor 两个子类，
 ThreadPoolExecutor 用于 IO 密集型任务，ProcessPoolExecutor 用于 CPU 密集型任务。
 ThreadPoolExecutor 和 ProcessPoolExecutor 的用法差不多，下面以 Executor 和 ThreadPoolExecutor 为主
 
