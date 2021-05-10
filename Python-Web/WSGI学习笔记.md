@@ -4,7 +4,7 @@ WSGI 是 Python Web 的一种协议和规范，分为应用端（Flask、Tornado
 WSGI 解耦了应用端和服务端，让它们可以灵活搭配使用，譬如 Flask 既可以运行在 Gunicorn 上，也可以运行在 uWSGI 上。
 其他编程语言也有类似的协议，譬如 Java 的 Servlet
 
-> uwsgi 也是一种 Python Web 协议，而 uWSGI 是既实现了 WSGI 协议，又实现了 uwsgi 协议的服务端
+> uwsgi 也是一种 Python Web 协议，而 uWSGI 是既实现了 WSGI 协议，又实现了 uwsgi 协议的应用服务器
 
 ## 简单实现
 
