@@ -296,8 +296,6 @@ def _run_once(self):
     handle = None  # Needed to break cycles when an exception occurs.
 ```
 
-事件循环的启动流程和每次循环的处理逻辑大致就这样了
-
 ### 事件循环的调度流程
 
 调度流程这块其实比并不好找，单步调试貌似最多走到 events.py:88，这一步还是比较明显，执行就绪的回调函数，但是协程间的切换体现不出来

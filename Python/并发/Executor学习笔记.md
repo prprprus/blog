@@ -1,7 +1,10 @@
 # Executor 学习笔记
 
-1. []()
-1. []()
+1. [Executor](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#executor)
+2. [ThreadPoolExecutor 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#threadpoolexecutor-%E7%9A%84%E4%BD%BF%E7%94%A8)
+3. [Future 对象](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#future-%E5%AF%B9%E8%B1%A1)
+4. [Executor 的调度流程](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#executor-%E7%9A%84%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B)
+5. [异常](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E5%BC%82%E5%B8%B8)
 
 Executor 提供了池、Future、调度等功能，可以用于并发处理、异步处理等，具体有线程池执行器 ThreadPoolExecutor 和进程池执行器 ProcessPoolExecutor 两个子类，
 ThreadPoolExecutor 用于 IO 密集型任务，ProcessPoolExecutor 用于 CPU 密集型任务。
@@ -247,8 +250,6 @@ def _invoke_callbacks(self):
         except Exception:
             LOGGER.exception('exception calling callback for %r', self)
 ```
-
-Executor 的调度流程大致就这样了
 
 ## 异常
 
