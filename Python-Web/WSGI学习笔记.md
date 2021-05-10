@@ -122,6 +122,14 @@ def run_wsgi(application):
             result.close()
 ```
 
+服务端需要满足五个要求：
+
+- 解析出 environ
+- 定义用于发送数据的 `write()` 函数
+- 定义用于设置 status、headers 的 `start_response()` 函数
+- 调用应用端获取结果
+- 返回结果给请求方
+
 执行 `run_wsgi(AppClass())` 输出：
 
 ```BASH
@@ -134,8 +142,8 @@ Hello WSGI
 ### 交互流程
 
 1. 服务端实现接收到请求信息，解析出 environ
-2. 服务端调用应用端，传入 environ 字典和 start_response() 函数
-3. 应用端根据 environ 的信息执行相应的业务逻辑；调用 start_response() 函数，将 status、headers 返回给服务端；返回可迭代对象
+2. 服务端调用应用端，传入 environ 字典和 `start_response()` 函数
+3. 应用端根据 environ 的信息执行相应的业务逻辑；调用 `start_response()` 函数，将 status、headers 返回给服务端；返回可迭代对象
 4. 服务端将接收到的 status、headers、数据（可迭代对象）封装成 HTTP 响应，返回给请求方
 
 ## Flask 中的 WSGI
