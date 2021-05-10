@@ -148,3 +148,124 @@ Hello WSGI
 
 ## Flask 中的 WSGI
 
+1. 写个 demo，打上断点，在调试模式下可以看到调用栈
+
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+
+@app.route('/hello')
+def hello_world():
+    return 'Hello, World!'
+
+
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=12345)
+```
+
+```BASH
+write, serving.py:265
+execute, serving.py:315
+run_wsgi, serving.py:323
+handle_one_request, serving.py:379  # 从这个地方开始，下面的堆栈信息是请求转发过来的路径，不是这次分析的重点
+handle, server.py:426
+handle, serving.py:345
+__init__, socketserver.py:720
+finish_request, socketserver.py:360
+process_request_thread, socketserver.py:650
+run, threading.py:870
+_bootstrap_inner, threading.py:926
+_bootstrap, threading.py:890
+```
+
+2. serving.py 的 handle_one_request() 方法
+
+serving.py 是 werkzeug 的模块
+
+```python
+def handle_one_request(self):
+    """Handle a single HTTP request."""
+    self.raw_requestline = self.rfile.readline()
+    if not self.raw_requestline:
+        self.close_connection = 1
+    # 判断是否有效的请求
+    elif self.parse_request():
+        # 重点是这里，调用 run_wsgi() 方法
+        return self.run_wsgi()
+```
+
+3. serving.py 的 run_wsgi() 方法
+
+大体上跟 PEP-3333 的例子差不多
+
+```python
+def run_wsgi(self):
+    # 忽略一些检查
+    # ...
+    
+    # 解析 environ
+    self.environ = environ = self.make_environ()
+    # 存放 status, headers 的容器, 给 start_response() 使用
+    headers_set = []
+    headers_sent = []
+    
+    # 定义用于发送数据的 write() 函数
+    def write(data):
+        assert headers_set, "write() before start_response"
+        if not headers_sent:
+            status, response_headers = headers_sent[:] = headers_set
+            try:
+                code, msg = status.split(None, 1)
+            except ValueError:
+                code, msg = status, ""
+            code = int(code)
+            # 发送 HTTP 响应状态行
+            self.send_response(code, msg)
+            # 忽略大段大段的 headers 处理 
+            # ...
+            # 发送 HTTP headers
+            self.end_headers()
+
+        assert isinstance(data, bytes), "applications must write bytes"
+        # 发送数据
+        if data:
+            self.wfile.write(data)
+        self.wfile.flush()
+    
+    # 定义用于设置 status、headers 的 start_response() 函数
+    def start_response(status, response_headers, exc_info=None):
+        if exc_info:
+            try:
+                if headers_sent:
+                    reraise(*exc_info)
+            finally:
+                exc_info = None
+        elif headers_set:
+            raise AssertionError("Headers already set")
+        headers_set[:] = [status, response_headers]
+        return write
+
+    def execute(app):
+        # 调用应用端获取结果
+        application_iter = app(environ, start_response)
+        try:
+            # 调用 write() 将结果返回给请求方
+            for data in application_iter:
+                write(data)
+            if not headers_sent:
+                write(b"")
+        finally:
+            if hasattr(application_iter, "close"):
+                application_iter.close()
+
+    try:
+        # 入口
+        execute(self.server.app)
+    except (_ConnectionError, socket.timeout) as e:
+        self.connection_dropped(e, environ)
+    except Exception:
+        # 忽略大段大段的异常处理
+        # ...
+```
