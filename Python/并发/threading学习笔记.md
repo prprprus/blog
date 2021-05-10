@@ -548,7 +548,7 @@ timer.start()
 
 案例：
 
-简单的生产着消费者模型
+简单的生产者消费者模型
 
 ```python
 import queue
