@@ -170,7 +170,7 @@ _bootstrap, threading.py:890  # 执行线程的相关步骤
 2. thread.py 的 _worker() 函数
 
 线程池里的工作线程对应的 `target` 并不是 `submit()` 提交的任务，而是 `_worker()` 函数。`_worker()` 函数会进入事件循环，
-不断从调度队列 `work_queue` 中尝试获取 _WorkItem 对象并执行它的 `run()` 方法
+不断从调度队列 `work_queue` 中尝试获取 _WorkItem 对象（阻塞获取），并执行它的 `run()` 方法
 
 ```python
 def _worker(executor_reference, work_queue, initializer, initargs):
