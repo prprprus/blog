@@ -606,3 +606,18 @@ if __name__ == "__main__":
 等待数据...
 生产数据完毕
 ```
+
+## 其他
+
+在 threading 源码中看到一个小技巧，在 Python 程序退出之前执行一个处理函数：
+
+```python
+import atexit
+
+
+def _python_exit():
+    print("自定义退出回调函数")
+
+
+atexit.register(_python_exit)
+```
