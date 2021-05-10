@@ -441,6 +441,34 @@ main()
 
 #### (7) Barrier
 
+案例：
+
+可以实现类似 Golang `Waitgroup()` 的效果
+
+```python
+import threading
+  
+barrier = threading.Barrier(1)
+  
+class thread(threading.Thread):
+    def __init__(self, thread_ID):
+        threading.Thread.__init__(self)
+        self.thread_ID = thread_ID
+    def run(self):
+        print(str(self.thread_ID) + "\n")
+          
+thread1 = thread(100)
+thread2 = thread(101)  
+thread1.start()
+thread2.start()
+
+# 等待所有线程执行完，主线程才继续往下执行
+# join() 方法会让子线程变成串行，这个不会
+barrier.wait()
+  
+print("Exit\n")
+```
+
 ## queue 的使用
 
 [queue](https://docs.python.org/3/library/queue.html) 模块提供了多种线程安全的队列，用于线程间通信
