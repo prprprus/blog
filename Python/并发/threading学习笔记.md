@@ -543,7 +543,8 @@ timer.start()
 
 ## queue 的使用
 
-[queue](https://docs.python.org/3/library/queue.html) 模块提供了多种线程安全的队列，用于线程间通信。[SimpleQueue](https://docs.python.org/3/library/queue.html#simplequeue-objects) 比较常用
+[queue](https://docs.python.org/3/library/queue.html) 模块提供了多种线程安全的队列，用于线程间通信。
+[SimpleQueue](https://docs.python.org/3/library/queue.html#simplequeue-objects) 比较常用，标准库很多需要线程间通信的地方也是用的 SimpleQueue
 
 案例：
 
