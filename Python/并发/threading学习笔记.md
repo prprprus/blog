@@ -231,6 +231,8 @@ condition 对象搭配锁对象使用，可以在线程不满足某种条件时�
 - `wait(timeout=None)`：主动释放锁，并进入等待状态，直到被唤醒或者超时
 - `wait_for(predicate, timeout=None)`：主动释放锁，并进入等待状态，直到被唤醒或者超时，而且被唤醒后必须满足条件（也就是 predicate 必须是 True）才能继续往下执行，
   否则又会调用 `wait()` 进入等待状态。也就是相当于 `while not predicate: wait()` 的语法糖
+- `notify(n=1)`：打算唤醒 n 个等待线程，该方法被调用后，线程并不会立即被唤醒，还是要等到 `release()` 被调用之后。必须是持有锁的线程调用，否则抛出 RuntimeError 异常
+- `notify_all()`：打算唤醒所有等待线程，该方法被调用后，线程并不会立即被唤醒，还是要等到 `release()` 被调用之后。必须是持有锁的线程调用，否则抛出 RuntimeError 异常
 
 案例 1：
 
@@ -434,6 +436,92 @@ main()
 > 支持 `with` 语句
 
 #### (4) Semaphore
+
+在并发环境下，用于保护数量有限的资源（譬如数据库连接池）
+
+`Semaphore` 和 `BoundedSemaphore` 的区别：
+
+```python
+class Semaphore:
+    def __init__(self, value=1):
+        if value < 0:
+            raise ValueError("semaphore initial value must be >= 0")
+        self._cond = Condition(Lock())
+        self._value = value
+
+    def acquire(self, blocking=True, timeout=None):
+        # 忽律
+        pass
+
+    __enter__ = acquire
+
+    def release(self):
+        with self._cond:
+            self._value += 1
+            self._cond.notify()
+
+    def __exit__(self, t, v, tb):
+        self.release()
+```
+
+```python
+class BoundedSemaphore(Semaphore):
+    def __init__(self, value=1):
+        Semaphore.__init__(self, value)
+        self._initial_value = value
+
+    def release(self):
+        with self._cond:
+            if self._value >= self._initial_value:
+                raise ValueError("Semaphore released too many times")
+            self._value += 1
+            self._cond.notify()
+```
+
+从源码上看可以知道 `BoundedSemaphore` 继承于 `Semaphore`，两者区别在于 `release()` 方法，`BoundedSemaphore` 在释放锁时会对比释放次数 `self._value` 和
+初始化时指定的次数 `self._initial_value`，确保了释放次数不会超过指定的次数，否则抛出 ValueError 异常，更加方便可靠
+
+案例：
+
+```python
+import threading
+import time
+
+max_connections = 3
+pool = threading.BoundedSemaphore(max_connections)
+
+
+def task3(i):
+    try:
+        pool.acquire()
+        print("线程 {} 获取到资源".format(i))
+        # do something
+        time.sleep(1)
+    except:
+        raise
+    finally:
+        pool.release()
+
+
+def main():
+    workers = []
+    for i in range(9):
+        t = threading.Thread(target=task3, args=(i, ))
+        # t.daemon = True
+        workers.append(t)
+
+    for worker in workers:
+        worker.start()
+
+    print("main thread done.")
+
+
+main()
+```
+
+输出是三个一组，说明限制有效
+
+> 支持 `with` 语句
 
 #### (5) Event
 
