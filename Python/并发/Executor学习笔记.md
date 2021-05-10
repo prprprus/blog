@@ -1,0 +1,144 @@
+# Executor 学习笔记
+
+Executor 提供了池、调度、Future 等功能，可以用于并发处理、异步处理等，具体有线程池执行器 ThreadPoolExecutor 和进程池执行器 ProcessPoolExecutor 两个子类，
+ThreadPoolExecutor 用于 IO 密集型任务，ProcessPoolExecutor 用于 CPU 密集型任务。
+ThreadPoolExecutor 和 ProcessPoolExecutor 的用法差不多，下面以 Executor 和 ThreadPoolExecutor 为主
+
+> 支持 `with` 语句。听说这个库是直接抄 Java 的 Executor 😂
+
+## Executor
+
+Executor 不应该直接使用，应该使用它的子类 ThreadPoolExecutor 或者 ProcessPoolExecutor
+
+### submit(fn, *args, **kwargs)
+
+简单来说是提交任务到执行器中，等待被调度执行。详细的如下
+
+```python
+# thread.py:146
+
+def submit(*args, **kwargs):
+    # 省略大段大段的参数检查
+    # ...
+    
+    # submit 是一个带锁的操作
+    with self._shutdown_lock:
+        # 判断执行器是否正常
+        if self._broken:
+            raise BrokenThreadPool(self._broken)
+        
+        # 如果已经调用了 shutdown() 关闭 Executor，就不能再调用 submit() 提交任务
+        if self._shutdown:
+            raise RuntimeError('cannot schedule new futures after shutdown')
+        if _shutdown:
+            raise RuntimeError('cannot schedule new futures after '
+                               'interpreter shutdown')
+        
+        # 为任务创建一个对应的 Future 对象
+        f = _base.Future()
+        # 将 Future 对象、任务、任务的参数封装成一个 _WorkItem 对象 
+        w = _WorkItem(f, fn, args, kwargs)
+        
+        # self._work_queue 是 queue.SimpleQueue 类型，线程安全的先进先出队列
+        # 将 _WorkItem 对象入队，等待被调度执行
+        self._work_queue.put(w)
+        # 一些额外的操作
+        self._adjust_thread_count()
+        # 返回 Future 对象
+        return f
+```
+
+### shutdown(wait=True, *, cancel_futures=False)
+
+简单来说是关闭执行器。详细的如下
+
+```python
+# _base.py:606
+
+def shutdown(self, wait=True):
+    # shutdown 是一个带锁的操作
+    with self._shutdown_lock:
+        # 标记关闭
+        self._shutdown = True
+        self._work_queue.put(None)
+    # 如果 wait 为 True，等待所有工作线程执行完任务
+    if wait:
+        for t in self._threads:
+            t.join()
+```
+
+## ThreadPoolExecutor 的使用
+
+案例：
+
+```python
+import concurrent.futures
+import requests    
+import os
+
+
+if __name__ == "__main__":
+    urls = [
+        "http://qq.com",
+        "http://163.com"
+    ]
+
+    def humble_download(url):
+        headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36"}
+        try:
+            data = requests.get(url, headers=headers).content
+            return data
+        except:
+            raise
+            return "网络异常"
+
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()*2)
+    futures = [executor.submit(humble_download, url) for url in urls]
+    
+    # 等到 Future 结果，先完成的先返回
+    for future in concurrent.futures.as_completed(futures):
+        print(future.result())
+```
+
+## Future 对象
+
+Executor Future 对象提供的操作和 [asyncio Future 对象](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#3-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C-future) 大体上差不多,
+但是也有一些区别
+
+- Executor Future 的 `result()` 带超时功能，而且当 Future 未就绪时调用 `result()` 不会立即抛出异常
+- Executor Future 的 `set_result()` 会直接调用绑定的回调函数。而 asyncio Future 不会直接执行，而是把回调函数加入 `self._ready` 调度队列
+    ```python
+    # _base.py:513
+
+    def set_result(self, result):
+        # set_result() 是一个带锁操作
+        with self._condition:
+            # 相关设置
+            self._result = result
+            self._state = FINISHED
+            for waiter in self._waiters:
+                waiter.add_result(self)
+            # 通知调用了 result() 阻塞等待的线程
+            self._condition.notify_all()
+        # 直接调用绑定的回调函数
+        self._invoke_callbacks()
+    
+  
+    # _base.py:321
+  
+    def _invoke_callbacks(self):
+        for callback in self._done_callbacks:
+            try:
+                # 调用回调函数
+                callback(self)
+            except Exception:
+                LOGGER.exception('exception calling callback for %r', self)
+    ```
+
+## Executor 调度流程
+
+
+
+## 异常
+
+[这里](https://docs.python.org/3/library/concurrent.futures.html#exception-classes)
