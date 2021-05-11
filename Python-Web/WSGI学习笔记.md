@@ -189,7 +189,6 @@ serving.py 是 werkzeug 的模块
 
 ```python
 def handle_one_request(self):
-    """Handle a single HTTP request."""
     self.raw_requestline = self.rfile.readline()
     if not self.raw_requestline:
         self.close_connection = 1
@@ -272,3 +271,7 @@ def run_wsgi(self):
         # 忽略大段大段的异常处理
         # ...
 ```
+
+## 参考
+
+- [PEP-3333](https://www.python.org/dev/peps/pep-3333/#environ-variables)
