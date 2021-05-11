@@ -42,10 +42,14 @@ class Factory(_BaseMixin):
 
 
 class Product(_BaseMixin):
+    """ Factory 和 Product 一对多 """
     __tablename__ = "product"
 
     product_id = Column(String(255), nullable=False, unique=True)
     name = Column(String(45), nullable=False)
+    factory_id = Column(String(255), nullable=False, unique=True)
+
+    # TODO: relationship
 
 
 class Orders(_BaseMixin):
@@ -56,6 +60,7 @@ class Orders(_BaseMixin):
 
 
 class OrdersProduct(_BaseMixin):
+    """ Orders 和 Product 多对多 """
     __tablename__ = "orders_product"
 
     order_id = Column(String(255), nullable=False, unique=True)
