@@ -1,4 +1,4 @@
-# asyncio 学习笔记
+# asyncio 笔记
 
 1. [事件循环](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF)
 2. [可调度对象](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E5%8F%AF%E8%B0%83%E5%BA%A6%E5%AF%B9%E8%B1%A1)

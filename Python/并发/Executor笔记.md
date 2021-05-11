@@ -1,4 +1,4 @@
-# Executor 学习笔记
+# Executor 笔记
 
 1. [Executor](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#executor)
 2. [ThreadPoolExecutor 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#threadpoolexecutor-%E7%9A%84%E4%BD%BF%E7%94%A8)
