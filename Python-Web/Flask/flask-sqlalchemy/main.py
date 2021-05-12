@@ -33,6 +33,7 @@ def handle():
 
         # 基于一对多关系的连表查询
         # res = mysql_session.query(Factory.name, Product.name).join(Product, Factory.factory_id == Product.factory_id).all()
+        # res = mysql_session.query(Factory.name, Product.name).filter(Factory.factory_id == Product.factory_id).all()
 
         # 基于多对多关系的连表查询
         # 1. 查这张订单 23ff2f2a-bc09-4444-b415-121bd79df5df 包含的商品名称
