@@ -50,7 +50,7 @@ class DatabaseEngine:
 @contextmanager
 def session_factory(database_type=DatabaseType.MYSQL.value):
     if database_type == DatabaseType.MYSQL.value:
-        session = DatabaseEngine(url=mysql_config.connection_url).generate_session()
+        session = _dbengine.generate_session()
     else:
         raise DatabaseTypeError
 
@@ -62,3 +62,7 @@ def session_factory(database_type=DatabaseType.MYSQL.value):
         raise
     finally:
         session.close()
+
+
+_dbengine = DatabaseEngine(url=mysql_config.connection_url)
+dbengine = _dbengine.engine

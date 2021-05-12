@@ -261,8 +261,72 @@ class OrdersProduct(_BaseMixin):
 
 更多操作参考 [这里](https://docs.sqlalchemy.org/en/14/orm/tutorial.html#common-filter-operators)
 
-[comment]: <> (## 参考)
+#### 连表查询
 
-[comment]: <> (- https://stackoverflow.com/questions/6297404/multi-threaded-use-of-sqlalchemy#:~:text=Session%20objects%20are%20not%20thread,%2C%20but%20are%20thread%2Dlocal.&text=If%20you%20don't%20want,object%20by%20default%20uses%20threading.)
+- `SELECT p.name, f.name FROM product p INNER JOIN factory f ON p.factory_id=f.factory_id;`
+    ```python
+    with session_factory() as session:
+        session.query(Factory.name, Product.name).join(Product, Factory.factory_id == Product.factory_id).all()
+    ```
+    ```python
+    with session_factory() as session:
+        session.query(Factory.name, Product.name).filter(Factory.factory_id == Product.factory_id).all()
+    ```
+- `SELECT p.name, f.name FROM product p INNER JOIN factory f ON p.factory_id=f.factory_id WHERE f.name='工厂2号'";`
+    ```python
+    with session_factory() as session:
+        session.query(Factory.name, Product.name).join(Product, Factory.factory_id == Product.factory_id).filter(Factory.name == "工厂2号").all()
+    ```
+- `SELECT t1.name, t2.name, t3.name FROM table1 t1 INNER JOIN t2 ON t1.id=t2.id LEFT JOIN table3 t3 ON t2.id=t3.id WHERE t1.name='aaa' AND t3.name='ccc';`
+    ```python
+    with session_factory() as session:
+        session.query(table1.name, table2.name, table3.name)\
+               .join(table2, table1.id == table2.id)\
+               .outerjoin(table3, table2.id == table3.id)\
+               .filter(table1.name == "aaa", table3.name == "ccc")\
+               .all()
+    ```
 
-[comment]: <> (- https://copdips.com/2019/05/using-python-sqlalchemy-session-in-multithreading.html)
+#### 更新
+
+- `UPDATE factory SET name='工厂10号' where factory_id='a1d760f2-275e-4efb-ae02-dc4d5434fb10';`
+    ```python
+    # 修改一条或者多条数据
+    with session_factory() as session:
+        session.query(Factory).filter(Factory.factory_id == "a1d760f2-275e-4efb-ae02-dc4d5434fb10").update({"name": "工厂10号"})
+    ```
+    ```python
+    # 修改一条数据
+    with session_factory() as session:
+        factory = session.query(Factory).filter(Factory.factory_id == "a1d760f2-275e-4efb-ae02-dc4d5434fb10").one()
+        factory.name = "工厂10号"
+    ```
+
+#### 插入
+
+- `INSERT INTO factory(factory_id, name) value("050b90a7-590f-410d-ad4b-61686b81436f", "工厂101号");`
+    ```python
+    with session_factory() as session:
+        factory = Factory()
+        factory.factory_id = "050b90a7-590f-410d-ad4b-61686b81436f"
+        factory.name = "工厂101号"
+    ```
+
+#### 原生 SQL
+
+```python
+from sqlalchemy.sql import text
+
+sql = text("select * from factory where name=:name;")
+res = engine.execute(sql, {"name": "工厂1号"})
+for row in res:
+    for k, v in row.items():
+        print("{}={}".format(k, v))
+```
+
+[Query API](https://docs.sqlalchemy.org/en/14/orm/query.html#query-api) 有详细的 query 接口信息
+
+## 参考
+
+- [Query API](https://docs.sqlalchemy.org/en/14/orm/query.html#query-api)
+- [Multi-threaded use of SQLAlchemy](https://stackoverflow.com/questions/6297404/multi-threaded-use-of-sqlalchemy#:~:text=Session%20objects%20are%20not%20thread,%2C%20but%20are%20thread%2Dlocal.&text=If%20you%20don't%20want,object%20by%20default%20uses%20threading.)

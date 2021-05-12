@@ -1,8 +1,9 @@
 import json
 
 from flask import Flask, Response
+# from sqlalchemy.sql import text
 
-from database import session_factory
+from database import session_factory, dbengine
 from model import (
     to_dict,
     Factory,
@@ -50,6 +51,13 @@ def handle():
     #                        .join(Orders, OrdersProduct.order_id == Orders.order_id)\
     #                        .filter(Product.product_id == "a473f8af-bdbd-418d-a986-50e10bd9673c")\
     #                        .all()
+
+    # 原生 SQL
+    # sql = text("select * from factory where name=:name;")
+    # res = dbengine.execute(sql, {"name": "工厂1号"})
+    # for row in res:
+    #     for k, v in row.items():
+    #         print("{}={}".format(k, v))
 
     data = {"code": 0, "message": "success", "data": data}
     result = json.dumps(data, ensure_ascii=False)
