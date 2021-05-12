@@ -37,17 +37,27 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 - [Column Element Modifier Constructors](https://docs.sqlalchemy.org/en/14/core/sqlelement.html#column-element-modifier-constructors)
 - [ColumnElement](https://docs.sqlalchemy.org/en/14/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement)
 
-### Engine 组件
+### Engine 和 Connection Pooling 组件
 
 根据官网的示意图可知 Engine 和其他组件的关系
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-2.png)
 
-#### create_engine() 方法
+#### create_engine() 方法说明
 
+用于创建 Engine 对象和配置连接池
 
+常用参数说明：
 
-### Connection Pooling 组件
+- url：数据库连接 URL，格式 `dialect+driver://username:password@host:port/database`。具体参考 [这里](https://docs.sqlalchemy.org/en/14/core/engines.html#database-urls)
+- echo=False：是否开启 Engine 日志。对性能有比较大的影响，线上环境应该关闭
+- echo_pool=False：是否开启连接池日志。对性能有比较大的影响，线上环境应该关闭
+- isolation_level：事务隔离级别。取值 ("SERIALIZABLE", "REPEATABLE READ", "READ COMMITTED", "READ UNCOMMITTED")，一般不需要主动设置
+- pool_size=5：连接池中保持打开的连接数。QueuePool 下设置为 0 代表无限制
+- max_overflow=10：在 pool_size 之外还能打开的连接数，也就是最大连接数，仅在 QueuePool 下有效
+- pool_pre_ping：每次从池中取出连接时，是否检测连接的有效性。一般设置为 True 确保使用有效的连接
+- pool_recycle=-1：主动回收连接的时长。MySQL 默认 8 小时后如果检测到空闲连接，就会主动断开连接
+- pool_timeout=30：从池中获取连接的等待时间。单位秒
 
 ## SQLAlchemy ORM
 
