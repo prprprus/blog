@@ -327,8 +327,6 @@ for row in res:
         print("{}={}".format(k, v))
 ```
 
-[Query API](https://docs.sqlalchemy.org/en/14/orm/query.html#query-api) 有详细的 query 接口信息
-
 ## 参考
 
 - [Query API](https://docs.sqlalchemy.org/en/14/orm/query.html#query-api)
