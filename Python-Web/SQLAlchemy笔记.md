@@ -65,7 +65,46 @@ Engine 和连接池线程安全
 
 ### Session
 
-Session 不是线程安全的
+Session 负责映射一次或一组 SQL 操作，默认不是 autucommit
+
+#### sessionmaker() 类说明
+
+用于创建 Session 对象
+
+常用参数说明：
+
+- bind：与 Session 关联的 Engine 对象
+- autoflush=True：flush 之后 SQL 才会被执行。一般设置成 True，就不需要每条 SQL 后面 flush 一下
+- autocommit=False：是否自动提交事务
+- expire_on_commit=True：Session 是否在事务提交之后失效
+
+> 相关的官方文档在 [这里](https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session)
+
+Session 不是线程安全，可以用 `contextmanager` 加 `yield` 解决：
+
+```python
+from contextlib import contextmanager
+
+
+@contextmanager
+def session_factory():
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
+
+with session_factory() as session:
+    # use session
+    pass
+```
+
+完整案例参考 [这里](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/Flask/flask-sqlalchemy/database.py#L50)
 
 ## 参考
 
