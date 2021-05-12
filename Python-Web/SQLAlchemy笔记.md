@@ -161,7 +161,7 @@ CREATE TABLE orders_product (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表和商品表的多对多关系';
 ```
 
-根据表结构和 Schema/Type 组件提供的各种数据类型，对应的 ORM 模型如下：
+根据表结构，利用 Schema/Type 组件提供的各种数据类型，对应的 ORM 模型如下：
 
 ```python
 from sqlalchemy.ext.declarative import declarative_base
@@ -222,7 +222,44 @@ class OrdersProduct(_BaseMixin):
 
 ### (3) 常用操作
 
+利用 ORM 本身提供的操作接口和 SQL Expression Language 组件，可以完成日常 SQL 操作
 
+#### 单表查询
+
+- `SELECT * FROM factory;`
+    ```python
+    with session_factory() as session:
+        session.query(Factory).all()
+    ```
+- `SELECT * FROM factory WHERE name='工厂1号';`
+    ```python
+    with session_factory() as session:
+        session.query(Factory).filter(Factory.name == "工厂1号").all()
+    ```
+- `SELECT * FROM factory WHERE id='a1d760f2-275e-4efb-ae02-dc4d5434fb10' AND name='工厂1号';`
+    ```python
+    with session_factory() as session:
+        session.query(Factory).filter(Factory.id == "a1d760f2-275e-4efb-ae02-dc4d5434fb10").filter(Factory.name == "工厂1号").all()
+    ```
+- `SELECT * FROM factory WHERE id='a1d760f2-275e-4efb-ae02-dc4d5434fb10' OR name='工厂1号';`
+    ```python
+    from sqlalchemy import or_
+    
+    with session_factory() as session:
+        session.query(Factory).filter(or_(Factory.name == "工厂1号", Factory.name == "工厂2号")).all()
+    ```
+- `SELECT * FROM factory LIMIT 1;`
+    ```python
+    with session_factory() as session:
+        session.query(Factory).first()
+    ```
+- `SELECT * FROM factory ORDER BY name DESC LIMIT 1;`
+    ```python
+    with session_factory() as session:
+        session.query(Factory).order_by(Factory.name.desc()).first()
+    ```
+
+更多操作参考 [这里](https://docs.sqlalchemy.org/en/14/orm/tutorial.html#common-filter-operators)
 
 [comment]: <> (## 参考)
 
