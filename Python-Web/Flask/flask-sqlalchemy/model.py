@@ -49,8 +49,6 @@ class Product(_BaseMixin):
     name = Column(String(45), nullable=False)
     factory_id = Column(String(255), nullable=False, unique=True)
 
-    # TODO: relationship
-
 
 class Orders(_BaseMixin):
     __tablename__ = "orders"
