@@ -63,7 +63,7 @@ Engine 和连接池线程安全
 
 ## SQLAlchemy ORM
 
-### Session
+### (1) Session
 
 Session 负责映射一次或一组 SQL 操作，默认不是 autucommit
 
@@ -104,9 +104,65 @@ with session_factory() as session:
     pass
 ```
 
-完整案例参考 [这里](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/Flask/flask-sqlalchemy/database.py#L50)
+完整案例参考 [这里](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/Flask/flask-sqlalchemy/database.py#L50) ，或者用 `from sqlalchemy.orm import scoped_session`
 
-## 参考
+### ORM 建模
 
-- https://stackoverflow.com/questions/6297404/multi-threaded-use-of-sqlalchemy#:~:text=Session%20objects%20are%20not%20thread,%2C%20but%20are%20thread%2Dlocal.&text=If%20you%20don't%20want,object%20by%20default%20uses%20threading.
-- https://copdips.com/2019/05/using-python-sqlalchemy-session-in-multithreading.html
+有四张表，factory 表和 product 表是一对多关系，orders 表和 product 表关系是多对多：
+
+```sql
+CREATE TABLE factory (
+    `id` bigint(11) NOT NULL AUTO_INCREMENT,
+    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
+    `factory_id` varchar(255) NOT NULL UNIQUE COMMENT '生产厂家ID',
+    `name` varchar(45) NOT NULL COMMENT '生产厂家名称',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='生产厂家信息';
+```
+
+```sql
+CREATE TABLE product (
+    `id` bigint(11) NOT NULL AUTO_INCREMENT,
+    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
+    `product_id` varchar(255) NOT NULL UNIQUE COMMENT '商品ID',
+    `name` varchar(45) NOT NULL COMMENT '商品名称',
+    `factory_id` varchar(255) NOT NULL UNIQUE COMMENT '关联的生产厂家ID',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品信息';
+```
+
+```sql
+CREATE TABLE orders (
+    `id` bigint(11) NOT NULL AUTO_INCREMENT,
+    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
+    `order_id` varchar(255) NOT NULL UNIQUE COMMENT '订单ID',
+    `price` decimal(13, 5) NOT NULL DEFAULT 0 COMMENT '订单金额',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单信息';
+```
+
+```sql
+CREATE TABLE orders_product (
+    `id` bigint(11) NOT NULL AUTO_INCREMENT,
+    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
+    `order_id` varchar(255) NOT NULL UNIQUE COMMENT '订单ID',
+    `product_id` varchar(255) NOT NULL UNIQUE COMMENT '商品ID',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表和商品表的多对多关系';
+```
+
+
+
+[comment]: <> (## 参考)
+
+[comment]: <> (- https://stackoverflow.com/questions/6297404/multi-threaded-use-of-sqlalchemy#:~:text=Session%20objects%20are%20not%20thread,%2C%20but%20are%20thread%2Dlocal.&text=If%20you%20don't%20want,object%20by%20default%20uses%20threading.)
+
+[comment]: <> (- https://copdips.com/2019/05/using-python-sqlalchemy-session-in-multithreading.html)
