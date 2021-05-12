@@ -289,7 +289,7 @@ class OrdersProduct(_BaseMixin):
 
 #### 更新
 
-- `UPDATE factory SET name='工厂10号' where factory_id='a1d760f2-275e-4efb-ae02-dc4d5434fb10';`
+- `UPDATE factory SET name='工厂10号' WHERE factory_id='a1d760f2-275e-4efb-ae02-dc4d5434fb10';`
     ```python
     # 修改一条或者多条数据
     with session_factory() as session:
@@ -304,7 +304,7 @@ class OrdersProduct(_BaseMixin):
 
 #### 插入
 
-- `INSERT INTO factory(factory_id, name) value("050b90a7-590f-410d-ad4b-61686b81436f", "工厂101号");`
+- `INSERT INTO factory(factory_id, name) VALUE("050b90a7-590f-410d-ad4b-61686b81436f", "工厂101号");`
     ```python
     with session_factory() as session:
         factory = Factory()
