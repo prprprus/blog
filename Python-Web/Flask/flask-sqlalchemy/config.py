@@ -1,6 +1,11 @@
 """
 connection_url 格式: dialect+driver://username:password@host:port/database?参数
 """
+from enum import Enum
+
+
+class DatabaseType(Enum):
+    MYSQL = "MySQL"
 
 
 class MySQLConfig:
@@ -23,3 +28,5 @@ class MySQLConfig:
             database=self.database, charset=self.charset
         )
 
+
+mysql_config = MySQLConfig(username="xxx", password="xxx", host="xxx")

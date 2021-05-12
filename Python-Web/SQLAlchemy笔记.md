@@ -39,7 +39,7 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 
 ### (3) Engine 和 Connection Pooling 组件
 
-根据官网的示意图可知 Engine 和其他组件的关系
+根据官网的示意图可知 Engine 和其他组件的关系。Engine 和连接池是线程安全的
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-2.png)
 
@@ -62,4 +62,6 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 ## SQLAlchemy ORM
 
 ### Session
+
+Session 不是线程安全的
 
