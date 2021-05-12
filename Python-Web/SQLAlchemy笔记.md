@@ -8,6 +8,8 @@ SQLAlchemy 是 Python ORM 框架，用来解耦应用程序和数据库，让应
 
 SQLAlchemy 提供了 Dialect（方言）的概念，专门用于处理、提供一些底层数据库特有的功能 
 
+> 讨论以 MySQL 为主
+
 ## SQLAlchemy Core
 
 ### (1) Schema/Type 组件
@@ -158,6 +160,67 @@ CREATE TABLE orders_product (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表和商品表的多对多关系';
 ```
+
+根据表结构和 Schema/Type 组件提供的各种数据类型，对应的 ORM 模型如下：
+
+```python
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import (
+    Column,
+    Integer,
+    DateTime,
+    String,
+    DECIMAL,
+    text
+)
+from sqlalchemy.dialects.mysql import TINYINT
+
+_Base = declarative_base()
+
+
+class _BaseMixin(_Base):
+    """ 基类 ORM, 包含一些必须的字段 """
+    __abstract__ = True
+    __bind_key__ = 'extension_model'
+
+    id = Column(Integer, primary_key=True)
+    is_deleted = Column(TINYINT, nullable=False, default=0)
+    create_time = Column(DateTime, nullable=False, default=text("CURRENT_TIMESTAMP"))
+    update_time = Column(DateTime, nullable=False, default=text("CURRENT_TIMESTAMP"))
+    
+
+class Factory(_BaseMixin):
+    __tablename__ = "factory"
+
+    factory_id = Column(String(255), nullable=False, unique=True)
+    name = Column(String(45), nullable=False)
+
+
+class Product(_BaseMixin):
+    """ Factory 和 Product 一对多 """
+    __tablename__ = "product"
+
+    product_id = Column(String(255), nullable=False, unique=True)
+    name = Column(String(45), nullable=False)
+    factory_id = Column(String(255), nullable=False, unique=True)
+
+
+class Orders(_BaseMixin):
+    __tablename__ = "orders"
+
+    order_id = Column(String(255), nullable=False, unique=True)
+    price = Column(DECIMAL(13, 5), nullable=False, default=0)
+
+
+class OrdersProduct(_BaseMixin):
+    """ Orders 和 Product 多对多 """
+    __tablename__ = "orders_product"
+
+    order_id = Column(String(255), nullable=False, unique=True)
+    product_id = Column(String(255), nullable=False, unique=True)
+```
+
+### (3) 常用操作
 
 
 
