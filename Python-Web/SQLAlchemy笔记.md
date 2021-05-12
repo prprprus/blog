@@ -1,5 +1,8 @@
 # SQLAlchemy 笔记
 
+1. [SQLAlchemy Core](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/SQLAlchemy%E7%AC%94%E8%AE%B0.md#sqlalchemy-core)
+2. [SQLAlchemy ORM](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/SQLAlchemy%E7%AC%94%E8%AE%B0.md#sqlalchemy-orm)
+
 SQLAlchemy 是 Python ORM 框架，用来解耦应用程序和数据库，让应用程序可以用同一套 API 去操作不同的数据库
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-1.png)
@@ -220,7 +223,7 @@ class OrdersProduct(_BaseMixin):
     product_id = Column(String(255), nullable=False, unique=True)
 ```
 
-### (3) 常用操作
+### (3) SQL 操作
 
 利用 ORM 本身提供的操作接口和 SQL Expression Language 组件，可以完成日常 SQL 操作
 
