@@ -39,9 +39,11 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 
 ### (3) Engine 和 Connection Pooling 组件
 
-根据官网的示意图可知 Engine 和其他组件的关系。Engine 和连接池是线程安全的
+根据官网的示意图可知 Engine 和其他组件的关系
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-2.png)
+
+Engine 和连接池线程安全
 
 #### create_engine() 方法说明
 
@@ -65,3 +67,7 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 
 Session 不是线程安全的
 
+## 参考
+
+- https://stackoverflow.com/questions/6297404/multi-threaded-use-of-sqlalchemy#:~:text=Session%20objects%20are%20not%20thread,%2C%20but%20are%20thread%2Dlocal.&text=If%20you%20don't%20want,object%20by%20default%20uses%20threading.
+- https://copdips.com/2019/05/using-python-sqlalchemy-session-in-multithreading.html
