@@ -106,7 +106,7 @@ with session_factory() as session:
 
 完整案例参考 [这里](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/Flask/flask-sqlalchemy/database.py#L50) ，或者用 `from sqlalchemy.orm import scoped_session`
 
-### ORM 建模
+### (2) ORM 建模
 
 有四张表，factory 表和 product 表是一对多关系，orders 表和 product 表关系是多对多：
 
