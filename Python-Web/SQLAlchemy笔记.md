@@ -41,7 +41,7 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 
 
 
-### 连接池
+### Connection Pooling 组件
 
 ## SQLAlchemy ORM
 
