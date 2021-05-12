@@ -10,7 +10,7 @@ SQLAlchemy 提供了 Dialect（方言）的概念，专门用于处理、提供�
 
 ## SQLAlchemy Core
 
-### Schema/Type 组件
+### (1) Schema/Type 组件
 
 Schema/Type 组件负责映射底层数据库的字段数据类型
 
@@ -27,7 +27,7 @@ MySQL 方言：
 
 - [Included Dialects](https://docs.sqlalchemy.org/en/13/dialects/index.html#included-dialects)
 
-### SQL Expression Language 组件
+### (2) SQL Expression Language 组件
 
 SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in/or/and/not/desc/asc 等）
 
@@ -37,7 +37,7 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 - [Column Element Modifier Constructors](https://docs.sqlalchemy.org/en/14/core/sqlelement.html#column-element-modifier-constructors)
 - [ColumnElement](https://docs.sqlalchemy.org/en/14/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement)
 
-### Engine 和 Connection Pooling 组件
+### (3) Engine 和 Connection Pooling 组件
 
 根据官网的示意图可知 Engine 和其他组件的关系
 
@@ -62,3 +62,4 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 ## SQLAlchemy ORM
 
 ### Session
+
