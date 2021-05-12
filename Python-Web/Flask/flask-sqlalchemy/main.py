@@ -46,7 +46,7 @@ def handle():
         #                    .filter(Product.product_id == "a473f8af-bdbd-418d-a986-50e10bd9673c")\
         #                    .all()
 
-        data = {"code": 0, "message": "success", "data": _to_dict(res)}
+        data = {"code": 0, "message": "success", "data": to_dict(res)}
         result = json.dumps(data, ensure_ascii=False)
         response = Response(result, content_type="application/json; charset=utf-8")
         return response
