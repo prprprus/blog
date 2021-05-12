@@ -1,6 +1,8 @@
+import json
+
 from enum import Enum
 
-from flask import make_response, jsonify
+from flask import Response
 
 
 class ResponseStatus:
@@ -14,12 +16,14 @@ class ResponseStatus:
 
 
 def generate_response(code, message, data=None, headers=None):
-    response = make_response(jsonify({"code": code, "message": message, "data": data}))
+    _result = {"code": code, "message": message, "data": data}
+    result = json.dumps(_result, ensure_ascii=False)
+    response = Response(result)
 
-    _headers = {"content_type": "application/json; charset=utf-8"}
+    _headers = {"Content-Type": "application/json; charset=utf-8"}
     if headers is not None:
         _headers.update(headers)
     for k, v in _headers.items():
-        response.headers.add(k, v)
+        response.headers[k] = v
 
     return response

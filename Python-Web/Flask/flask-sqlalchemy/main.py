@@ -18,6 +18,7 @@ app = Flask(__name__)
 def handle():
     try:
         res = mysql_session.query(Factory).all()
+
         _data = {"code": 0, "message": "success", "data": to_dict(res)}
         data = json.dumps(_data, ensure_ascii=False)
         response = Response(data, content_type="application/json; charset=utf-8")
