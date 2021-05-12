@@ -2,7 +2,7 @@
 
 SQLAlchemy 是 Python ORM 框架，用来解耦应用程序和数据库，让应用程序可以用同一套 API 去操作不同的数据库
 
-![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonweb-1.png)
+![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-1.png)
 
 根据官网提供的架构图，可知 SQLAlchemy 分为三部分，最底层的 DBAPI 是具体数据库的驱动接口，中间的 Core 提供了各种核心组件，最上层的 ORM 负责提供对象关系映射建模和一些高级的接口
 
@@ -38,6 +38,12 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 - [ColumnElement](https://docs.sqlalchemy.org/en/14/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement)
 
 ### Engine 组件
+
+根据官网的示意图可知 Engine 和其他组件的关系
+
+![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-2.png)
+
+#### create_engine() 方法
 
 
 
