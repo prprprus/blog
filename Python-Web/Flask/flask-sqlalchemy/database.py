@@ -40,5 +40,6 @@ class Database:
 
 
 # MySQL
-mysql_config = MySQLConfig(username="xxx", password="xxx", host="xxx")
+mysql_config = MySQLConfig(username="tiger", password="hzz2956195", host="10.211.55.39")
+# mysql_config = MySQLConfig(username="xxx", password="xxx", host="xxx")
 mysql_session = Database(url=mysql_config.connection_url).generate_session()
