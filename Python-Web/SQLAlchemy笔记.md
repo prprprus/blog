@@ -48,7 +48,7 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-2.png)
 
-Engine 和连接池线程安全
+**⭐️ Engine 和连接池线程安全 ⭐️**
 
 #### create_engine() 方法说明
 
@@ -85,7 +85,7 @@ Session 负责映射一次或一组 SQL 操作，默认不是 autucommit
 
 > 相关的官方文档在 [这里](https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session)
 
-Session 不是线程安全，可以用 `contextmanager` 加 `yield` 解决：
+**⭐️ Session 不是线程安全，可以用 `contextmanager` 加 `yield` 解决⭐️**
 
 ```python
 from contextlib import contextmanager
