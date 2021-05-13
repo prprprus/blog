@@ -1,8 +1,10 @@
 # requests 笔记
 
+requests 是一个常用的 HTTP/HTTPS 客户端，对应的是阻塞 IO，想要非阻塞 IO 可以配合线程使用，或者用 [httpx](https://github.com/encode/httpx)
+
 ## requests 的使用
 
-### Session() 方法
+### Session 对象
 
 `Session()` 会使用底层库 urllib3 的连接池，对 TCP 连接进行复用，对于向同一个目标主机进行多次请求的场景会有性能提升
 
@@ -24,7 +26,7 @@ def request(method, url, **kwargs):
         return session.request(method=method, url=url, **kwargs)
 ```
 
-### 常见用法
+### 常用操作
 
 ```BASH
 import requests
