@@ -15,6 +15,15 @@ s.get('https://httpbin.org/cookies')
 
 版本比较新的 requests（譬如 2.25.1） 默认使用 `Session()`，源码 api.py:60
 
+```python
+def request(method, url, **kwargs):
+    # 忽略大段大段的注释
+    pass
+
+    with sessions.Session() as session:
+        return session.request(method=method, url=url, **kwargs)
+```
+
 ### 常见用法
 
 ```BASH
