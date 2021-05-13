@@ -26,6 +26,7 @@ r = requests.get(<url>, params=<dict>, headers=<headers>)
 
 # POST
 r = requests.post(<url>, data=<dict>, headers=<headers>)
+r = requests.post(<url>, json=<dict>, headers=<headers>)
 
 # 上传
 files = [
@@ -38,4 +39,11 @@ r = requests.get(url=<url>, stream=True, headers=<headers>)
 
 with open('./test.png', 'wb') as out_file:
     shutil.copyfileobj(response.raw, out_file)
+    
+# 客户端证书验证
+r = requests.get(<url>, cert=("/path/client.cert", "/path/client.key"))
+
+# SSL 证书验证
+r = requests.get(<url>, verify="/path/to/certfile")
+r = requests.get(<url>, verify=False)
 ```
