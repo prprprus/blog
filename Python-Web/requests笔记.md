@@ -31,28 +31,28 @@ import requests
 import shutil
 
 # GET
-r = requests.get(<url>, params=<dict>, headers=<headers>)
+r = requests.get(<url>, params=<dict>, headers=<headers>, timeout=<timeout>)
 
 # POST
-r = requests.post(<url>, data=<dict>, headers=<headers>)
-r = requests.post(<url>, json=<dict>, headers=<headers>)
+r = requests.post(<url>, data=<dict>, headers=<headers>, timeout=<timeout>)
+r = requests.post(<url>, json=<dict>, headers=<headers>, timeout=<timeout>)
 
 # 上传
 files = [
     ("image", open("test.png", "rb")),
 ]
-r = requests.post(<url>, data=<dict>, files=files, headers=<headers>)
+r = requests.post(<url>, data=<dict>, files=files, headers=<headers>, timeout=<timeout>)
 
 # 下载
-r = requests.get(url=<url>, stream=True, headers=<headers>)
+r = requests.get(url=<url>, stream=True, headers=<headers>, timeout=<timeout>)
 
 with open('./test.png', 'wb') as out_file:
     shutil.copyfileobj(response.raw, out_file)
     
 # 客户端证书验证
-r = requests.get(<url>, cert=("/path/client.cert", "/path/client.key"))
+r = requests.get(<url>, cert=("/path/client.cert", "/path/client.key"), timeout=<timeout>)
 
 # SSL 证书验证
-r = requests.get(<url>, verify="/path/to/certfile")
-r = requests.get(<url>, verify=False)
+r = requests.get(<url>, verify="/path/to/certfile", timeout=<timeout>)
+r = requests.get(<url>, verify=False, timeout=<timeout>)
 ```
