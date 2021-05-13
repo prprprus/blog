@@ -109,7 +109,7 @@ with session_factory() as session:
     pass
 ```
 
-完整案例参考 [这里](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/Flask/flask-sqlalchemy/database.py#L50) ，或者用 `from sqlalchemy.orm import scoped_session`
+完整案例参考 [这里](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/Flask/flask-sqlalchemy/database.py#L50) ，或者用 `from sqlalchemy.orm import scoped_session` 解决也可以
 
 ### (2) ORM 建模
 
