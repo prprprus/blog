@@ -50,10 +50,11 @@ celery_demo
 from celery import Celery
 
 app = Celery(
-    main="celery_demo",
-    # broker 根据实际修改
-    broker="amqp://<myuser>:<mypassword>@<localhost>:5672/<myvhost>",
-    backend="redis://"
+    main="task",
+    broker="amqp://tiger:hzz2956195@localhost:5672/tiger_vhost",
+    backend="redis://",
+    timezone='Asia/Shanghai',
+    enable_utc=True,
 )
 
 app.conf.update(
@@ -96,9 +97,19 @@ from task.task2 import *
 
 celery_demo 目录下执行
 
+- 前台执行
+
 ```BASH
-celery --app task worker --loglevel=INFO
+celery --app=task worker --concurrency=4 --loglevel=INFO
 ```
+
+- 后台执行
+
+```BASH
+sudo celery multi start --app=task worker --concurrency=4 --loglevel=INFO
+```
+
+> 后台执行对应的 pid 文件在 `/var/run/celery`，日志文件在 `/var/log/celery`
 
 看到类似输出就成功了
 
@@ -125,13 +136,15 @@ from task.task2 import sub
 
 if __name__ == "__main__":
     res = add.delay(1, 2)
-    print(res.get())
+    print(res.ready())   # False 任务是否完成
+    print(res.get())    # 3 获取任务结果
 
-    res = sub.delay(11, 2)
-    print(res.get())
+    res = sub.delay(11, 2)  # 9
+    print(res.get(timeout=3, propagate=False))  # 当任务发生异常时，不会抛到应用程序
+    print(res.traceback)  # None 主动获取任务的异常信息
 ```
 
-测试代码会返回 3 和 9，Worker 所在终端的日志信息大致如下
+Worker 所在终端的日志信息大致如下
 
 ```BASH
 [xxxx-xx-xx 16:10:37,007: INFO/MainProcess] Received task: task.task1.add[190dee0d-df36-4401-8e1d-f427038170ea]
