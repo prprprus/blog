@@ -50,7 +50,7 @@ celery_demo
 from celery import Celery
 
 app = Celery(
-    main="task",
+    main="celery_demo",
     broker="amqp://tiger:hzz2956195@localhost:5672/tiger_vhost",
     backend="redis://",
     timezone='Asia/Shanghai',
@@ -69,11 +69,10 @@ app.conf.update(
 from app import app
 
 
-@app.task
-def add(x, y):
+@app.task(bind=True)
+def add(self, x, y):
     print("Run add(x, y)!")
     return x + y
-
 ```
 
 ```python
@@ -81,8 +80,8 @@ def add(x, y):
 from app import app
 
 
-@app.task
-def sub(x, y):
+@app.task(bind=True)
+def sub(self, x, y):
     print("Run sub(x, y)!")
     return x - y
 ```
@@ -109,7 +108,9 @@ celery --app=task worker --concurrency=4 --loglevel=INFO
 sudo celery multi start --app=task worker --concurrency=4 --loglevel=INFO
 ```
 
-> 后台执行对应的 pid 文件在 `/var/run/celery`，日志文件在 `/var/log/celery`
+> 1. 后台执行对应的 pid 文件在 `/var/run/celery`，日志文件在 `/var/log/celery`
+> 2. 通知后台执行：`sudo celery multi stop --app=task worker --concurrency=4 --loglevel=INFO`
+> 3. 查看后台执行：`sudo celery multi show --app=task worker --concurrency=4 --loglevel=INFO`
 
 看到类似输出就成功了
 
