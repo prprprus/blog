@@ -3,7 +3,7 @@
 1. [SQLAlchemy Core](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/SQLAlchemy%E7%AC%94%E8%AE%B0.md#sqlalchemy-core)
 2. [SQLAlchemy ORM](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/SQLAlchemy%E7%AC%94%E8%AE%B0.md#sqlalchemy-orm)
 
-SQLAlchemy 是 Python ORM 框架，用来解耦应用程序和数据库，让应用程序可以用同一套 API 去操作不同的数据库
+SQLAlchemy 是 Python ORM 框架，用来将数据库表映射成编程语言的对象，同时解耦应用程序和数据库，让应用程序可以用同一套 API 去操作不同的数据库
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-1.png)
 
