@@ -109,7 +109,7 @@ sudo celery multi start --app=task worker --concurrency=4 --loglevel=INFO
 ```
 
 > 1. 后台执行对应的 pid 文件在 `/var/run/celery`，日志文件在 `/var/log/celery`
-> 2. 通知后台执行：`sudo celery multi stop --app=task worker --concurrency=4 --loglevel=INFO`
+> 2. 停止后台执行：`sudo celery multi stop --app=task worker --concurrency=4 --loglevel=INFO`
 > 3. 查看后台执行：`sudo celery multi show --app=task worker --concurrency=4 --loglevel=INFO`
 
 看到类似输出就成功了
