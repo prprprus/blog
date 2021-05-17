@@ -7,7 +7,7 @@
 > https://github.com/benoitc/gunicorn/blob/master/gunicorn/workers/ggevent.py#L143
 > https://github.com/benoitc/gunicorn/blob/master/gunicorn/workers/ggevent.py#L38
 
-## 单个协程处理并发 IO 任务
+## 协程处理并发 IO
 
 测试代码如下：
 
@@ -21,18 +21,7 @@ import gevent
 
 app = Flask(__name__)
 
-URLS = [
-    "http://www.qq.com",
-    "http://www.163.com",
-    "http://www.example.com",
-    "http://www.nowamagic.net/academy/detail/13321037",
-    "http://www.example.com",
-    "http://www.example.com",
-    "http://www.example.com",
-    "http://www.example.com",
-    "http://www.example.com",
-    "http://www.example.com",
-]
+URLS = ["http://www.example.com"] * 5
 
 
 def _download(url):
@@ -50,43 +39,7 @@ def async_download():
     return [coroutine.value for coroutine in coroutines]
 ```
 
-### Case1：Gunicorn sync + 阻塞 IO
-
-```python
-@app.route("/hello", methods=["GET"])
-def handle():
-    s = time.time()
-    print(sync_download())
-    total = time.time() - s
-
-    resp = Response(json.dumps({"code": 0, "message": "success", "data": total}, ensure_ascii=False))
-    resp.headers["Content-Type"] = "application/json; charset=utf-8"
-    return resp
-```
-
-`gunicorn -w 1 -b 0.0.0.0:12345 demo1:app`
-
-结果：耗时约 2.5s
-
-### Case2：Gunicorn sync + 非阻塞 IO（gevent）
-
-```python
-@app.route("/hello", methods=["GET"])
-def handle():
-    s = time.time()
-    print(async_download())
-    total = time.time() - s
-
-    resp = Response(json.dumps({"code": 0, "message": "success", "data": total}, ensure_ascii=False))
-    resp.headers["Content-Type"] = "application/json; charset=utf-8"
-    return resp
-```
-
-`gunicorn -w 1 -b 0.0.0.0:12345 demo1:app`
-
-结果：耗时约 2.5s
-
-### Case3：Gunicorn gevent + 阻塞 IO
+### Case1
 
 ```python
 @app.route("/hello", methods=["GET"])
@@ -104,7 +57,7 @@ def handle():
 
 结果：耗时约 2.5s
 
-### Case4：Gunicorn gevent + 非阻塞 IO（gevent） ✅
+### Case2 ✅
 
 ```python
 @app.route("/hello", methods=["GET"])
@@ -122,48 +75,9 @@ def handle():
 
 结果：耗时约 0.4s
 
-### Case5：Gunicorn sync + 非阻塞 IO（多线程） ✅
+## 协程之间的非阻塞
 
-```python
-@app.route("/hello", methods=["GET"])
-def handle():
-    s = time.time()
-    print(async_download_by_thread())
-    total = time.time() - s
-
-    resp = Response(json.dumps({"code": 0, "message": "success", "data": total}, ensure_ascii=False))
-    resp.headers["Content-Type"] = "application/json; charset=utf-8"
-    return resp
-```
-
-`gunicorn -w 1 -b 0.0.0.0:12345 demo1:app`
-
-结果：耗时约 0.4s
-
-### Case6：Gunicorn gevent + 非阻塞 IO（多线程）✅
-
-```python
-@app.route("/hello", methods=["GET"])
-def handle():
-    s = time.time()
-    print(async_download_by_thread())
-    total = time.time() - s
-
-    resp = Response(json.dumps({"code": 0, "message": "success", "data": total}, ensure_ascii=False))
-    resp.headers["Content-Type"] = "application/json; charset=utf-8"
-    return resp
-```
-
-`gunicorn -w 1 -k gevent -b 0.0.0.0:12345 demo1:app`
-
-结果：耗时约 0.4s
-
-> Case5 和 Case6 由于真正干活的是线程，所以 Gunicorn 的 worker 模式并没有影响
-
-## 数据库场景
-
-后端应用程序一般离不开数据库，使用 SQLAlchemy 操作 MySQL 就是一个常见的场景
-
+后端应用程序一般离不开数据库，使用 SQLAlchemy 操作 MySQL 就是一个常见的场景。
 以为 [这个项目](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/Flask/flask-sqlalchemy/README.md) 作为案例，
 SQLAlchemy 版本是 1.4.15，pymysql 版本是 1.0.2（pymysql 是阻塞的 MySQL 驱动）
 
@@ -176,7 +90,7 @@ SQLAlchemy 版本是 1.4.15，pymysql 版本是 1.0.2（pymysql 是阻塞的 MyS
 3. 分别用两个客户端发起请求，先调用接口 B，再调用接口 A
 4. 在不同的条件下，观察接口 A 能否在接口 B 之前返回，也就是能否实现非阻塞的效果
 
-### Case1：Gunicorn sync + 阻塞 IO
+### Case1 ✅
 
 ```python
 @app.route("/hello")
@@ -212,63 +126,6 @@ def handle1():
     response = Response(result, content_type="application/json; charset=utf-8")
     return response
 ```
-
-`gunicorn -w 1 -b 0.0.0.0:12345 main:app`
-
-结果：接口 B 先返回，接口 A 后返回，耗时约 25s，不能实现非阻塞效果
-
-### Case2：Gunicorn sync + 非阻塞 IO（gevent）
-
-```python
-@app.route("/hello")
-def handle():
-    def _db_sleep():
-        sql = text("SELECT SLEEP(5);")
-        res = dbengine.execute(sql)
-        print(res)
-
-    s = time.time()
-    gevent.joinall([gevent.spawn(_db_sleep)])
-    total = time.time() - s
-
-    data = {"code": 0, "message": "success", "data": total}
-    result = json.dumps(data, ensure_ascii=False)
-    response = Response(result, content_type="application/json; charset=utf-8")
-    return response
-
-
-@app.route("/bye")
-def handle1():
-    def _db_sleep():
-        sql = text("SELECT SLEEP(20);")
-        res = dbengine.execute(sql)
-        print(res)
-
-    s = time.time()
-    gevent.joinall([gevent.spawn(_db_sleep)])
-    total = time.time() - s
-
-    data = {"code": 0, "message": "success", "data": total}
-    result = json.dumps(data, ensure_ascii=False)
-    response = Response(result, content_type="application/json; charset=utf-8")
-    return response
-```
-
-`gunicorn -w 1 -b 0.0.0.0:12345 main:app`
-
-结果：接口 B 先返回，接口 A 后返回，耗时约 25s，不能实现非阻塞效果
-
-### Case3：Gunicorn gevent + 阻塞 IO
-
-测试代码同 Case1
-
-`gunicorn -w 1 -k gevent -b 0.0.0.0:12345 main:app`
-
-结果：接口 A 先返回，接口 B 后返回，耗时约 20s，能实现非阻塞效果
-
-### Case4：Gunicorn gevent + 非阻塞 IO（gevent）
-
-测试代码同 Case2
 
 `gunicorn -w 1 -k gevent -b 0.0.0.0:12345 main:app`
 
@@ -276,7 +133,7 @@ def handle1():
 
 ## 总结
 
-Gunicorn + gevent 可以确保请求之间非阻塞，先完成的请求先返回。但是如果请求里面有阻塞 IO，那么这个请求还是会被阻塞
-
-对于 Gunicorn + gevent 的组合，IO 操作需要用 gevent 协程或者多线程封装起来，才能发挥这套组合的效果。
-可以类比 asyncio 框架，必须把 IO 操作封装到 async 函数中，不然事件循环没法进行调度
+1. gevent 在 Gunicorn 中的表现基本没什么不同，最大区别是不需要手动执行 `monkey.patch_all()`，一旦 Gunicorn 在 gevent
+   模式下启动完成，默认 IO 库就会被替换成非阻塞版本，也就是相应的函数会变成 gevent 协程，可以被 gevent 的事件循环调度（类似 asyncio）
+2. gevent 能确保 Gunicorn 中每个请求（一个请求对应一个 gevent 协程）的非阻塞效果
+3. 如果想在单个 gevent 协程中实现并发效果，需要 spawn 出额外的协程
