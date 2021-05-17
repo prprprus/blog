@@ -1,12 +1,13 @@
 # Gunicorn 笔记
 
-在线上环境中，Gunicorn 一般会搭配 gevent 处理并发，下面针对常见的场景做一下实验，验证如何正确使用它们。为了避免进程对结果的影响，Gunicorn 只启动一个进程
+在线上环境中，Gunicorn 一般会搭配 gevent 处理并发，下面针对常见的场景做一下实验，验证如何正确使用它们。
+为了避免进程对结果的影响，Gunicorn 只会启动一个进程
 
 > 如果 worker 类型选择了 gevent，Gunicorn 在初始化进程时就会调用 `monkey.patch_all()`
 > https://github.com/benoitc/gunicorn/blob/master/gunicorn/workers/ggevent.py#L143
 > https://github.com/benoitc/gunicorn/blob/master/gunicorn/workers/ggevent.py#L38
 
-## 并发处理 IO 场景
+## 在协程里面处理并发 IO
 
 后端应用程序经常需要去调用其他的服务，使用 requests 库就是一个高频场景
 
