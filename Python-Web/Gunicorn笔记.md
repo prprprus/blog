@@ -15,6 +15,7 @@
 ```python
 import json
 import time
+import concurrent.futures
 
 from flask import Flask, Response
 import requests
@@ -35,6 +36,8 @@ URLS = [
     "http://www.example.com",
 ]
 
+pool = concurrent.futures.ThreadPoolExecutor()
+
 
 def _download(url):
     r = requests.get(url)
@@ -49,6 +52,10 @@ def async_download():
     coroutines = [gevent.spawn(_download, url) for url in URLS]
     gevent.joinall(coroutines)
     return [coroutine.value for coroutine in coroutines]
+
+
+def async_download_by_thread():
+    return list(pool.map(_download, URLS))
 ```
 
 ### Case1：Gunicorn sync + 阻塞 IO
@@ -69,7 +76,7 @@ def handle():
 
 结果：耗时约 2.5s
 
-### Case2：Gunicorn sync + 非阻塞 IO
+### Case2：Gunicorn sync + 非阻塞 IO（gevent）
 
 ```python
 @app.route("/hello", methods=["GET"])
@@ -105,7 +112,7 @@ def handle():
 
 结果：耗时约 2.5s
 
-### Case4：Gunicorn gevent + 非阻塞 IO
+### Case4：Gunicorn gevent + 非阻塞 IO（gevent） ✅
 
 ```python
 @app.route("/hello", methods=["GET"])
@@ -123,9 +130,45 @@ def handle():
 
 结果：耗时约 0.4s
 
+### Case5：Gunicorn sync + 非阻塞 IO（多线程） ✅
+
+```python
+@app.route("/hello", methods=["GET"])
+def handle():
+    s = time.time()
+    print(async_download_by_thread())
+    total = time.time() - s
+
+    resp = Response(json.dumps({"code": 0, "message": "success", "data": total}, ensure_ascii=False))
+    resp.headers["Content-Type"] = "application/json; charset=utf-8"
+    return resp
+```
+
+`gunicorn -w 1 -b 0.0.0.0:12345 demo1:app`
+
+结果：耗时约 0.4s
+
+### Case5：Gunicorn gevent + 非阻塞 IO（多线程）
+
+```python
+@app.route("/hello", methods=["GET"])
+def handle():
+    s = time.time()
+    print(async_download_by_thread())
+    total = time.time() - s
+
+    resp = Response(json.dumps({"code": 0, "message": "success", "data": total}, ensure_ascii=False))
+    resp.headers["Content-Type"] = "application/json; charset=utf-8"
+    return resp
+```
+
+`gunicorn -w 1 -k gevent -b 0.0.0.0:12345 demo1:app`
+
+结果：耗时约 0.4s
+
 ### 结论
 
-对于 Gunicorn + gevent 的组合，IO 操作必须被封装成 gevent 协程，才能发挥这套组合的效果。可以类比 asyncio 框架，必须把 IO 操作封装到 async 函数中，不然没法进行异步调度  
+对于 Gunicorn + gevent 的组合，IO 操作需要用 gevent 协程或者多线程封装起来，才能发挥这套组合的效果。可以类比 asyncio 框架，必须把 IO 操作封装到 async 函数中，不然事件循环没法进行调度  
 
 ## 数据库场景
 
