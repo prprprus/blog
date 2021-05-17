@@ -148,7 +148,7 @@ def handle():
 
 结果：耗时约 0.4s
 
-### Case5：Gunicorn gevent + 非阻塞 IO（多线程）
+### Case6：Gunicorn gevent + 非阻塞 IO（多线程）
 
 ```python
 @app.route("/hello", methods=["GET"])
