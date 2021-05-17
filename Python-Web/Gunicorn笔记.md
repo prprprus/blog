@@ -134,6 +134,6 @@ def handle1():
 ## 总结
 
 1. gevent 在 Gunicorn 中的表现基本没什么不同，最大区别是不需要手动执行 `monkey.patch_all()`，一旦 Gunicorn 在 gevent
-   模式下启动完成，默认 IO 库就会被替换成非阻塞版本，也就是相应的函数会变成 gevent 协程，可以被 gevent 的事件循环调度（类似 asyncio）
+   模式下启动完成，IO 库就会被替换成非阻塞版本。也就是相应的函数会变成 gevent 协程，可以被 gevent 的事件循环调度（类似 asyncio）
 2. gevent 能确保 Gunicorn 中每个请求（一个请求对应一个 gevent 协程）的非阻塞效果
 3. 如果想在单个 gevent 协程中实现并发效果，需要 spawn 出额外的协程
