@@ -9,14 +9,11 @@
 
 ## 在协程里面处理并发 IO
 
-后端应用程序经常需要去调用其他的服务，使用 requests 库就是一个高频场景
-
 测试代码如下：
 
 ```python
 import json
 import time
-import concurrent.futures
 
 from flask import Flask, Response
 import requests
@@ -37,8 +34,6 @@ URLS = [
     "http://www.example.com",
 ]
 
-pool = concurrent.futures.ThreadPoolExecutor()
-
 
 def _download(url):
     r = requests.get(url)
@@ -53,10 +48,6 @@ def async_download():
     coroutines = [gevent.spawn(_download, url) for url in URLS]
     gevent.joinall(coroutines)
     return [coroutine.value for coroutine in coroutines]
-
-
-def async_download_by_thread():
-    return list(pool.map(_download, URLS))
 ```
 
 ### Case1：Gunicorn sync + 阻塞 IO
