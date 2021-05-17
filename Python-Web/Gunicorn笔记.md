@@ -7,7 +7,7 @@
 > https://github.com/benoitc/gunicorn/blob/master/gunicorn/workers/ggevent.py#L143
 > https://github.com/benoitc/gunicorn/blob/master/gunicorn/workers/ggevent.py#L38
 
-## 单个处理并发 IO
+## 单个协程处理并发 IO 任务
 
 测试代码如下：
 
