@@ -26,6 +26,22 @@ def request(method, url, **kwargs):
         return session.request(method=method, url=url, **kwargs)
 ```
 
+### 常用配置
+
+```python
+import requests
+
+# 连接池大小
+requests.adapters.DEFAULT_POOLSIZE = 30
+# 重试次数
+requests.adapters.DEFAULT_RETRIES = 3
+
+s = requests.Session()
+
+r = s.get("http://www.example.org")
+print(r.status_code)
+```
+
 ### 常用操作
 
 ```BASH
