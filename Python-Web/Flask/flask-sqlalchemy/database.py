@@ -14,8 +14,13 @@ class DatabaseTypeError(Exception):
     pass
 
 
-class DatabaseEngine:
-    def __init__(self, url, echo=False, echo_pool=False, pool_size=5, max_overflow=10, pool_recycle=25200, pool_pre_ping=True):
+class UtilDatabase:
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(UtilDatabase, "_instance"):
+            UtilDatabase._instance = object.__new__(cls)
+        return UtilDatabase._instance
+
+    def __init__(self, url=mysql_config.connection_url, echo=False, echo_pool=False, pool_size=5, max_overflow=10, pool_recycle=25200, pool_pre_ping=True):
         self.__url = url
         self.__echo = echo
         self.__echo_pool = echo_pool
@@ -49,11 +54,10 @@ class DatabaseEngine:
 
 @contextmanager
 def session_factory(database_type=DatabaseType.MYSQL.value):
-    if database_type == DatabaseType.MYSQL.value:
-        session = _dbengine.generate_session()
-    else:
+    if database_type not in (DatabaseType.MYSQL.value, ):
         raise DatabaseTypeError
 
+    session = UtilDatabase().generate_session()
     try:
         yield session
         session.commit()
@@ -64,5 +68,4 @@ def session_factory(database_type=DatabaseType.MYSQL.value):
         session.close()
 
 
-_dbengine = DatabaseEngine(url=mysql_config.connection_url)
-dbengine = _dbengine.engine
+dbengine = UtilDatabase().engine
