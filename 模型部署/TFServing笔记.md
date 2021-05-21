@@ -11,7 +11,7 @@ TFServing 提供的核心功能：
 
 使用 TFServing 的系统，对应的拓扑结构一般如下：
 
-![]()
+![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/modelserving-1.png)
 
 ## 安装
 
