@@ -167,12 +167,12 @@ signature_def['serving_default']:
 
 ## TFServing 客户端
 
-TFServing 服务启动了，模型输入输出格式清楚了，下一步就是编写 TFServing 的客户端，用来发起调用。在实测的过程中发现 HTTP 的响应时间 比 gRPC 要更短，
-所以下面主要讨论 TFServing 的 HTTP 服务
+TFServing 服务启动了，模型输入输出格式清楚了，下一步就是编写 TFServing 的客户端，用来发起调用。TFServing 对外同时支持 HTTP 和 gRPC 两种协议的服务，
+在实测的过程中发现 HTTP 的响应时间 比 gRPC 要更短，下面主要讨论 HTTP 服务
 
 ### HTTP 客户端
 
-以上面的输入输出结构为例，假设行数是 10：
+要调用 TFServing 的 HTTP 服务，就要编写 HTTP 客户端。以上面的输入输出结构为例，假设行数是 10：
 
 ```python
 import requests
@@ -196,7 +196,8 @@ print(res.json()["outputs"]["output_2"])
 
 ### 附带 gRPC 客户端
 
-TFServing 使用 protobuf 作为序列化协议，tensorflow-serving-api 已经包含编译好的相关 proto 文件，可以借助这个库快速完成 gPRC 客户端。也可以自行编译 proto 文件
+要调用 TFServing 的 gRPC 服务，就要编写 gRPC 客户端。TFServing 使用 protobuf 作为序列化协议，tensorflow-serving-api 已经包含编译好的相关 proto 文件，
+可以借助这个库快速完成 gPRC 客户端。也可以自行编译 proto 文件
 
 ```python
 from tensorflow_serving.apis import predict_pb2, prediction_service_pb2_grpc
