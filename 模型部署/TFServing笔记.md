@@ -1,6 +1,7 @@
 # TFServing 笔记
 
-TFServing 全称是 Tensorflow Serving，是谷歌开源的一个用于模型部署的服务组件，功能丰富、生产就绪。主要用于 Tensorflow 训练的模型，听说 pytorch 的也行
+TFServing 全称是 Tensorflow Serving，是谷歌开源的一个用于模型部署的服务组件，功能丰富、生产就绪。主要用于 Tensorflow 训练的模型，听说 pytorch 的也行，
+下面主要讨论 Tensorflow 训练出来的模型。相比用原生的 Tensorflow API 加载模型、预测，TFServing 会提供比较丰富的额外功能
 
 TFServing 提供的核心功能：
 
@@ -13,8 +14,6 @@ TFServing 提供的核心功能：
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/modelserving-1.png)
 
-> 以 Tensorflow 为主要讨论对象
-
 ## 安装
 
 官方提供 Docker 镜像，安装比较方便：
@@ -23,11 +22,11 @@ TFServing 提供的核心功能：
 docker pull tensorflow/serving
 ```
 
-也支持自定义编译安装，通过配置某些 CPU 指令集，可以在一定程度上提升 TFServing 的性能
+也支持编译安装，通过配置某些 CPU 指令集，可以在一定程度上提升 TFServing 的性能
 
 ## 导出模型
 
-TFServing 要求模型以 saved_model 的格式导出，这块主要是算法工程师去操作，后台开发一般只需要在模型交付的时候确保模型文件是如下的格式即可
+这块主要是算法工程师去操作，TFServing 要求模型以 saved_model 的格式导出，后台工程师一般只需要在模型交付的时候确保模型文件是如下的格式即可
 
 ```BASH
 ├── model_name
@@ -45,8 +44,8 @@ TFServing 提供了规范的配置文件，需要按照它的格式要求才能�
 
 model_config_list:{
     config:{                              // 每一个算法模型对应一个 config 配置块
-        name:'model_name1',                       // 模型名称
-        base_path:'/models/model_name1',          // 模型在容器内的路径
+        name:'model_name1',               // 模型名称
+        base_path:'/models/model_name1',  // 模型在容器内的路径
         model_platform:'tensorflow',      // 模型的训练框架
         model_version_policy:{            // 模型的版本
             specific:{
@@ -63,7 +62,7 @@ model_config_list:{
             value:100001
         }
     },
-    config:{                            // 另外一个算法模型配置
+    config:{                              // 另外一个算法模型配置
         name:'model_name2',
         base_path:'/models/model_name2',
         model_platform:'tensorflow',
@@ -105,7 +104,7 @@ docker run \
 
 ## 模型的输入输出结构
 
-在编写客户端之前，还需要确定模型的输入输出格式，不同的算法框架 API 产出的模型格式可能会不一样，比如 Tensorflow 2.0 原生 API 和 tf.estimator 的就不一样，
+在编写客户端之前，还需要确定模型的输入输出格式，不同的训练 API 产出的模型格式可能会不一样，比如 Tensorflow 2.0 原生 API 和 tf.estimator 的就不一样，
 下面主要讨论原生 API 导出的格式
 
 查看格式可以借助 `saved_model_cli` 命令行工具，可以通过 `pip install tensorflow-serving-api==2.5.1` 来安装
@@ -160,16 +159,18 @@ signature_def['serving_default']:
 
 结果解析：
 
-- serving_default：默认的模型签名，在训练模型时可以自定义
-- inputs[input_xxx]：模型的输入参数
+- serving_default：默认的模型签名，可以在训练时自定义
+- inputs[input_xxx]：模型的输入参数，可以在训练时自定义
     - dtype：参数类型
     - shape：参数的行数和列数。(-1, 1) 代表行数不限制，1 列；(-1, 15) 代表行数不限制，15 列
-- outputs[output_xxx]：模型的输出参数
+- outputs[output_xxx]：模型的输出参数，可以在训练时自定义
 
 ## TFServing 客户端
 
 TFServing 服务启动了，模型输入输出格式清楚了，下一步就是编写 TFServing 的客户端，用来发起调用。在实测的过程中发现 HTTP 的响应时间 比 gRPC 要更短，
 所以下面主要讨论 TFServing 的 HTTP 服务
+
+### HTTP 客户端
 
 以上面的输入输出结构为例，假设行数是 10：
 
@@ -191,4 +192,47 @@ res = requests.post(url, json={'inputs': inputs}, timeout=1)
 print(res.status_code)
 print(res.json()["outputs"]["output_1"])
 print(res.json()["outputs"]["output_2"])
+```
+
+### 附带 gRPC 客户端
+
+TFServing 使用 protobuf 作为序列化协议，tensorflow-serving-api 已经包含编译好的相关 proto 文件，可以借助这个库快速完成 gPRC 客户端。也可以自行编译 proto 文件
+
+```python
+from tensorflow_serving.apis import predict_pb2, prediction_service_pb2_grpc
+from tensorflow.contrib.util import make_tensor_proto
+from tensorflow.core.framework import types_pb2
+import grpc
+
+config = {
+    "hostport": "<host>:8500",
+    "max_message_length": 500 * 1024 * 1024,
+    "timeout": 1000,
+    "signature_name": "serving_default",
+    "model_name": "<model_name>",
+    "model_version": "stable"   # gRPC 方式的版本号需要用模型标签
+}
+
+channel = grpc.insecure_channel(config['hostport'])
+stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
+
+request = predict_pb2.PredictRequest()
+request.model_spec.name = config['model_name']
+request.model_spec.signature_name = config['signature_name']
+request.model_spec.version_label = config["model_version"]
+
+input_1 = [[0]] * 10,
+input_2 = [[0]] * 10,
+input_3 = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 10,
+input_4 = [[0]] * 10,
+input_5 = [[0, 0, 0, 0, 0, 0, 0]] * 10
+
+request.inputs['input_1'].CopyFrom(make_tensor_proto(input_1, shape=[10, 1], dtype=types_pb2.DT_INT32))
+request.inputs['input_2'].CopyFrom(make_tensor_proto(input_2, shape=[10, 1], dtype=types_pb2.DT_INT32))
+request.inputs['input_3'].CopyFrom(make_tensor_proto(input_3, shape=[10, 15], dtype=types_pb2.DT_INT32))
+request.inputs['input_4'].CopyFrom(make_tensor_proto(input_4, shape=[10, 1], dtype=types_pb2.DT_INT32))
+request.inputs['input_5'].CopyFrom(make_tensor_proto(input_5, shape=[10, 1], dtype=types_pb2.DT_FLOAT))
+
+result = stub.Predict(request, config['timeout'])
+channel.close()
 ```
