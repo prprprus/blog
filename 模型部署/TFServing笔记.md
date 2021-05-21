@@ -1,7 +1,7 @@
 # TFServing 笔记
 
 TFServing 全称是 Tensorflow Serving，是谷歌开源的一个用于模型部署的服务组件，功能丰富、生产就绪。主要用于 Tensorflow 训练的模型，听说 pytorch 的也行，
-下面主要讨论 Tensorflow 训练出来的模型。相比用原生的 Tensorflow API 加载模型、预测，TFServing 会提供比较丰富的额外功能
+下面主要讨论 Tensorflow 训练出来的模型。相比用原生的 Tensorflow API 加载模型、预测，TFServing 会提供比较丰富的额外功能，省去自行开发的工作量，对开发周期短、需要快速落地的场景很有帮助
 
 TFServing 提供的核心功能：
 
