@@ -30,7 +30,7 @@ docker pull tensorflow/serving
 TFServing 要求模型以 saved_model 的格式导出，这块主要是算法工程师去操作，后台开发一般只需要在模型交付的时候确保模型文件是如下的格式即可
 
 ```BASH
-├── din
+├── model_name
 │   └── 100002
 │       ├── saved_model.pb
 │       └── variables
@@ -45,8 +45,8 @@ TFServing 提供了规范的配置文件，需要按照它的格式要求才能�
 
 model_config_list:{
     config:{                              // 每一个算法模型对应一个 config 配置块
-        name:'din',                       // 模型名称
-        base_path:'/models/din',          // 模型在容器内的路径
+        name:'model_name1',                       // 模型名称
+        base_path:'/models/model_name1',          // 模型在容器内的路径
         model_platform:'tensorflow',      // 模型的训练框架
         model_version_policy:{            // 模型的版本
             specific:{
@@ -64,8 +64,8 @@ model_config_list:{
         }
     },
     config:{                            // 另外一个算法模型配置
-        name:'sdm',
-        base_path:'/models/sdm',
+        name:'model_name2',
+        base_path:'/models/model_name2',
         model_platform:'tensorflow',
         model_version_policy:{
             specific:{
@@ -105,15 +105,90 @@ docker run \
 
 ## 模型的输入输出结构
 
-在编写客户端之前，还需要确定模型的输入输出格式，不同的算法框架 API 产出的模型格式可能会不一样，比如 Tensorflow 2.0 原生 API 和 tf.estimator 的就不一样
+在编写客户端之前，还需要确定模型的输入输出格式，不同的算法框架 API 产出的模型格式可能会不一样，比如 Tensorflow 2.0 原生 API 和 tf.estimator 的就不一样，
+下面主要讨论原生 API 导出的格式
 
 查看格式可以借助 `saved_model_cli` 命令行工具，可以通过 `pip install tensorflow-serving-api==2.5.1` 来安装
 
-```BASH
+安装好之后，到模型所在的目录下（也就是 saved_model.pb 文件所在的目录），执行 `saved_model_cli show --dir ./ --all` 就可以得到类似如下的结果：
 
+```BASH
+MetaGraphDef with tag-set: 'serve' contains the following SignatureDefs:
+
+signature_def['__saved_model_init_op']:
+  The given SavedModel SignatureDef contains the following input(s):
+  The given SavedModel SignatureDef contains the following output(s):
+    outputs['__saved_model_init_op'] tensor_info:
+        dtype: DT_INVALID
+        shape: unknown_rank
+        name: NoOp
+  Method name is:
+
+signature_def['serving_default']:
+  The given SavedModel SignatureDef contains the following input(s):
+    inputs['input_1'] tensor_info:
+        dtype: DT_INT32
+        shape: (-1, 1)
+        name: serving_default_input_1:0
+    inputs['input_2'] tensor_info:
+        dtype: DT_INT32
+        shape: (-1, 1)
+        name: serving_default_input_2:0
+    inputs['input_3'] tensor_info:
+        dtype: DT_INT32
+        shape: (-1, 15)
+        name: serving_default_input_3:0
+    inputs['input_4'] tensor_info:
+        dtype: DT_INT32
+        shape: (-1, 1)
+        name: serving_default_input_4:0
+    inputs['input_5'] tensor_info:
+        dtype: DT_INT32
+        shape: (-1, 7)
+        name: serving_default_input_5:0
+  The given SavedModel SignatureDef contains the following output(s):
+    outputs['output_1'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1, 1)
+        name: StatefulPartitionedCall:0
+    outputs['output_2'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1, 1)
+        name: StatefulPartitionedCall:1
+  Method name is: tensorflow/serving/predict
 ```
+
+结果解析：
+
+- serving_default：默认的模型签名，在训练模型时可以自定义
+- inputs[input_xxx]：模型的输入参数
+    - dtype：参数类型
+    - shape：参数的行数和列数。(-1, 1) 代表行数不限制，1 列；(-1, 15) 代表行数不限制，15 列
+- outputs[output_xxx]：模型的输出参数
 
 ## TFServing 客户端
 
 TFServing 服务启动了，模型输入输出格式清楚了，下一步就是编写 TFServing 的客户端，用来发起调用。在实测的过程中发现 HTTP 的响应时间 比 gRPC 要更短，
-下面主要讨论 TFServing 的 HTTP 服务
+所以下面主要讨论 TFServing 的 HTTP 服务
+
+以上面的输入输出结构为例，假设行数是 10：
+
+```python
+import requests
+
+# 模拟输入
+inputs = {
+    'input_1': [[0]] * 10,
+    'input_2': [[0]] * 10,
+    'input_3': [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 10,
+    'input_4': [[0]] * 10,
+    'input_5': [[0, 0, 0, 0, 0, 0, 0]] * 10
+}
+
+# 8501 是 TFServing 的 HTTP 服务端口
+url = "http://<host>:8501/v1/models/<model_name>/versions/<model_version>:predict"
+res = requests.post(url, json={'inputs': inputs}, timeout=1)
+print(res.status_code)
+print(res.json()["outputs"]["output_1"])
+print(res.json()["outputs"]["output_2"])
+```
