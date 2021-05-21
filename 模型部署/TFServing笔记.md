@@ -13,6 +13,8 @@ TFServing 提供的核心功能：
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/modelserving-1.png)
 
+> 以 Tensorflow 为主要讨论对象
+
 ## 安装
 
 官方提供 Docker 镜像，安装比较方便：
@@ -22,6 +24,17 @@ docker pull tensorflow/serving
 ```
 
 也支持自定义编译安装，通过配置某些 CPU 指令集，可以在一定程度上提升 TFServing 的性能
+
+## 导出模型
+
+TFServing 要求模型以 saved_model 的格式导出，这块主要是算法工程师去操作，后台开发一般只需要在模型交付的时候确保模型文件是如下的格式即可
+
+```BASH
+├── din
+│   └── 100002
+│       ├── saved_model.pb
+│       └── variables
+```
 
 ## 配置文件
 
@@ -89,3 +102,18 @@ docker run \
 - model_config_file_poll_wait_seconds：自动热加载的时间间隔
 
 > 除了这些基本参数外还有其他参数
+
+## 模型的输入输出结构
+
+在编写客户端之前，还需要确定模型的输入输出格式，不同的算法框架 API 产出的模型格式可能会不一样，比如 Tensorflow 2.0 原生 API 和 tf.estimator 的就不一样
+
+查看格式可以借助 `saved_model_cli` 命令行工具，可以通过 `pip install tensorflow-serving-api==2.5.1` 来安装
+
+```BASH
+
+```
+
+## TFServing 客户端
+
+TFServing 服务启动了，模型输入输出格式清楚了，下一步就是编写 TFServing 的客户端，用来发起调用。在实测的过程中发现 HTTP 的响应时间 比 gRPC 要更短，
+下面主要讨论 TFServing 的 HTTP 服务
