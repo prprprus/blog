@@ -1,58 +1,51 @@
 # Cython 容器类型
 
-对比 Python [容器类型](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%AE%B9%E5%99%A8/%E5%AE%B9%E5%99%A8%E7%B1%BB%E5%9E%8B.md#%E5%AE%B9%E5%99%A8%E7%B1%BB%E5%9E%8B) 的基准测试,
-由于 Cython 快很多，所以直接测 N=400000 的级别
-
-测试脚本大致长这样：
-
-```cython
-from libcpp.vector cimport vector
-
-
-cpdef test_vector(int N):
-    cdef vector[int] vec
-
-    for i in range(N):
-        vec.push_back(i)
-```
-
-```python
-import hello_vector
-
-
-if __name__ == "__main__":
-    N = 400000
-    hello_vector.test_vector(N)
-```
-
-[完整的测试报告](https://github.com/hsxhr-10/Blog/blob/master/file/Python%E5%AE%B9%E5%99%A8.numbers)
-
 ## vector
 
-对标 Python 的列表操作
+vector 一般对标 Python 的 list
 
-![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/cython-8.png)
-
-### 操作记录
-
-#### append(x)
+### 对标 list.append(x)
 
 ```cython
 from libcpp.vector cimport vector
 
 
-cpdef test_vector(int N):
+cpdef test_vector():
     cdef vector[int] vec
     cdef int i
 
-    for i in range(N):
+    for i in range(100):
+        # vector.push_back()
         vec.push_back(i)
 ```
 
-#### 遍历
+### 对标遍历 list
+
+####  方法一
 
 ```cython
-# case1
+from libcpp.vector cimport vector
+
+
+cpdef test_vector():
+    cdef vector[int] vec
+    cdef int i
+    cdef int j
+    cdef int size
+
+    for i in range(100):
+        vec.push_back(i)
+
+    j = 0
+    size = vec.size()
+    while j < len:
+        print(vec[j])
+        j += 1
+```
+
+#### 方法二
+
+````cython
 from libcpp.vector cimport vector
 from cython.operator cimport preincrement, dereference
 
@@ -71,27 +64,7 @@ cpdef test_vector(int N):
     while it != it_end:
         print(dereference(it))
         preincrement(it)
-
-
-# case2
-from libcpp.vector cimport vector
-
-
-cpdef test_vector(int N):
-    cdef vector[int] vec
-    cdef int i
-    cdef int j
-    cdef int len
-
-    for i in range(N):
-        vec.push_back(i)
-
-    j = 0
-    len = vec.size()
-    while j < len:
-        print(vec[j])
-        j += 1
-```
+````
 
 #### extend(iterator)
 
