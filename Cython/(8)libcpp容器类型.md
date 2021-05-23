@@ -1,5 +1,7 @@
 # libcpp 容器类型
 
+> 下面例子中的代码可能有些工程化问题，真正使用时可以再封装一下
+
 ## vector
 
 在 Cython 代码中可以用 vector 代替 Python list。vector 支持 `[]` 操作符
@@ -156,10 +158,20 @@ cpdef test_vector():
     cdef vector[int] vec
     cdef int i
 
-    for i in range(10):
+    for i in range(3):
         vec.push_back(i)
 
-    vec.pop_back()
+    if vec.size() > 0:
+        vec.pop_back()
+
+    if vec.size() > 0:
+        vec.pop_back()
+
+    if vec.size() > 0:
+        vec.pop_back()
+
+    if vec.size() > 0:
+        vec.pop_back()
 ```
 
 ### 对标 list.pop(i)
@@ -173,19 +185,29 @@ cpdef test_vector():
     cdef int i
     cdef int index
     cdef vector[int].iterator it
+    cdef int result
 
-    for i in range(10):
+    for i in range(2):
         vec.push_back(i)
 
     it = vec.begin()
-    index = 3
-    if index < vec.size():
+    index = 3121
+    if vec.size() > 0 and index < vec.size():
         vec.erase(it + index)
 
     it = vec.begin()
-    index = 3121
-    if index < vec.size():
+    index = 0
+    if vec.size() > 0 and index < vec.size():
+        result = vec[index]
         vec.erase(it + index)
+
+    it = vec.begin()
+    index = 1
+    if vec.size() > 0 and index < vec.size():
+        result = vec[index]
+        vec.erase(it + index)
+
+    return result
 ```
 
 ### 对标 list.clear()
@@ -451,13 +473,14 @@ cdef pair[int, int] pop_by_key(map[int, int]& m, int key):
     cdef pair[int, int] result
     cdef pair[int, int] _pair
 
-    for _pair in m:
-        if key == _pair.first:
-            it = m.find(key)
-            result.first = dereference(it).first
-            result.second = dereference(it).second
-            m.erase(it)
-            return result
+    if m.size() > 0:
+        for _pair in m:
+            if key == _pair.first:
+                it = m.find(key)
+                result.first = dereference(it).first
+                result.second = dereference(it).second
+                m.erase(it)
+                return result
 
     result.first = -1
     result.second = -1
@@ -470,20 +493,43 @@ cpdef test_map():
     cdef pair[int, int] result
     cdef int key
 
-    for i in range(10):
+    for i in range(3):
         m[i] = i
-
-    key = 6
-    result = pop_by_key(m, key)
-
-    key = 600
-    result = pop_by_key(m, key)
 
     key = 0
     result = pop_by_key(m, key)
+    print(result)
+    print(m)
+
+    key = 600
+    result = pop_by_key(m, key)
+    print(result)
+    print(m)
+
+    key = 1
+    result = pop_by_key(m, key)
+    print(result)
+    print(m)
 
     key = -8989
     result = pop_by_key(m, key)
+    print(result)
+    print(m)
+
+    key = 2
+    result = pop_by_key(m, key)
+    print(result)
+    print(m)
+
+    key = 0
+    result = pop_by_key(m, key)
+    print(result)
+    print(m)
+
+    key = 0
+    result = pop_by_key(m, key)
+    print(result)
+    print(m)
 
     return result
 ```
@@ -500,12 +546,17 @@ cdef pair[int, int] popitem(map[int, int]& m):
     cdef map[int, int].iterator it
     cdef pair[int, int] result
 
-    it = m.begin()
-    result.first = dereference(it).first
-    result.second = dereference(it).second
+    if m.size() > 0:
+        it = m.begin()
+        result.first = dereference(it).first
+        result.second = dereference(it).second
 
-    m.erase(it)
+        m.erase(it)
 
+        return result
+
+    result.first = -1
+    result.second = -1
     return result
 
 
@@ -514,9 +565,12 @@ cpdef test_map():
     cdef int i
     cdef pair[int, int] result
 
-    for i in range(10):
+    for i in range(3):
         m[i] = i
 
+    result = popitem(m)
+    result = popitem(m)
+    result = popitem(m)
     result = popitem(m)
 
     return result
@@ -655,10 +709,10 @@ def test_set():
 
     for item in s:
         print(item)
-
 ```
 
 #### 方法二
+
 ```cython
 from libcpp.set cimport set
 from cython.operator cimport preincrement, dereference
@@ -684,116 +738,135 @@ def test_set():
 from libcpp.set cimport set
 
 
-cdef remove(set[int]& _set, int value):
+cdef remove(set[int]& s, int value):
     cdef set[int].iterator it
+    cdef int item
 
-    it = _set.find(value)
-    _set.erase(it)
+    for item in s:
+        if item == value:
+            it = s.find(value)
+            s.erase(it)
 
 
-def test_set(int N):
-    cdef set[int] _set
+def test_set():
+    cdef set[int] s
     cdef int i
+    cdef int value
 
-    for i in range(N):
-        _set.insert(i)
+    for i in range(10):
+        s.insert(i)
 
-    for i in range(N):
-        remove(_set, i)
+    value = 3
+    remove(s, value)
+
+    value = 113
+    remove(s, value)
 ```
 
-#### pop()
+### 对标 set.pop()
 
 ```cython
 from libcpp.set cimport set
 from cython.operator cimport dereference
 
 
-cdef int pop(set[int]& _set):
+cdef int pop(set[int]& s):
     cdef set[int].iterator it
     cdef int result
 
-    it = _set.begin()
-    result = dereference(it)
-    _set.erase(it)
+    if s.size() > 0:
+        it = s.begin()
+        result = dereference(it)
+        s.erase(it)
+        return  result
 
-    return  result
+    return -1
 
 
-def test_set(int N):
-    cdef set[int] _set
+def test_set():
+    cdef set[int] s
     cdef int i
     cdef int result
 
-    for i in range(N):
-        _set.insert(i)
+    for i in range(3):
+        s.insert(i)
 
-    for i in range(N):
-        result = pop(_set)
+
+    result = pop(s)
+
+    result = pop(s)
+
+    result = pop(s)
+
+    result = pop(s)
 
     return result
 ```
 
-#### clear()
+### 对标 set.clear()
 
 ```cython
 from libcpp.set cimport set
 
 
-def test_set(int N):
-    cdef set[int] _set
+def test_set():
+    cdef set[int] s
     cdef int i
 
-    for i in range(N):
-        _set.insert(i)
+    for i in range(10):
+        s.insert(i)
 
-    for i in range(N):
-        _set.clear()
+    s.clear()
+
+    s.clear()
 ```
 
-#### size()
+### 对标 set.size()
 
 ```cython
 from libcpp.set cimport set
 
 
-def test_set(int N):
-    cdef set[int] _set
+def test_set():
+    cdef set[int] s
     cdef int i
 
-    for i in range(N):
-        _set.insert(i)
+    for i in range(10):
+        s.insert(i)
 
-    for i in range(N):
-        _set.size()
+    s.size()
 ```
 
-#### x in set
+### 对标 x in set
 
 ```cython
 from libcpp.set cimport set
-from cython.operator cimport dereference
 
 
-cdef int get(set[int]& _set, int value):
-    cdef set[int].iterator it
+cdef int _in(set[int]& s, int value):
+    cdef int item
 
-    it = _set.find(value)
-    if dereference(it) == 0:
-        return -1
-    return 1
+    for item in s:
+        if item == value:
+            return 1
+
+    return -1
 
 
-def test_set(int N):
-    cdef set[int] _set
+def test_set():
+    cdef set[int] s
     cdef int i
     cdef int result
+    cdef int value
+    
+    for i in range(10):
+        s.insert(i)
 
-    for i in range(N):
-        _set.insert(i)
+    value = 1
+    result = _in(s, value)
 
-    for i in range(N):
-        result = get(_set, i)
+    value = 1111
+    result = _in(s, value)
 
     return result
 ```
