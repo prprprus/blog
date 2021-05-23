@@ -96,14 +96,22 @@ cpdef test_vector():
     cdef vector[int].iterator it
     cdef int size
     cdef int value
+    cdef int index
 
     for i in range(10):
         vec.push_back(i)
 
-    size = vec.size() / 2
     it = vec.begin()
+    index = 3
     value = 999
-    vec.insert(it + size, value)
+    if index < vec.size():
+        vec.insert(it + index, value)
+
+    it = vec.begin()
+    index = 300
+    value = 777
+    if index < vec.size():
+        vec.insert(it + 300, value)
 ```
 
 ### 对标 list.remove(x)
@@ -170,7 +178,14 @@ cpdef test_vector():
         vec.push_back(i)
 
     it = vec.begin()
-    vec.erase(it + 3)
+    index = 3
+    if index < vec.size():
+        vec.erase(it + index)
+
+    it = vec.begin()
+    index = 3121
+    if index < vec.size():
+        vec.erase(it + index)
 ```
 
 ### 对标 list.clear()
