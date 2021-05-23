@@ -6,6 +6,7 @@
 2. 借助标准库中的 distutils（可以将 C/C++ 代码编译成扩展模块），编写 `setup.py` 用于后续编译
 3. 执行 `python setup.py build_ext --inplace` 编译扩展模块
 4. `import` 使用扩展模块
+5. 分析优化效果，不断调整（本次略）
 
 ## 案例
 
