@@ -7,9 +7,8 @@ SQLAlchemy 是 Python ORM 框架，用来将数据库表映射成编程语言的
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-1.png)
 
-根据官网提供的架构图，可知 SQLAlchemy 分为三部分，最底层的 DBAPI 是具体数据库的驱动接口，中间的 Core 提供了各种核心组件，最上层的 ORM 负责提供对象关系映射建模和一些高级的接口
-
-SQLAlchemy 提供了 Dialect（方言）的概念，专门用于处理、提供一些底层数据库特有的功能 
+根据官网提供的架构图，可知 SQLAlchemy 分为三部分，最底层的 DBAPI 是具体数据库的驱动接口；中间的 Core 提供了各种核心组件；最上层的 ORM 负责提供对象关系映射建模和一些高级的接口。
+SQLAlchemy 还提供了 Dialect（方言）的概念，专门用于处理、提供一些底层数据库特有的功能
 
 > 讨论以 MySQL 为主
 
@@ -44,13 +43,11 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 
 ### (3) Engine 和 Connection Pooling 组件
 
-根据官网的示意图可知 Engine 和其他组件的关系
+**⭐️ Engine 和连接池都是线程安全️**。根据官网的示意图可知 Engine、连接池和其他组件的关系
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-2.png)
 
-**⭐️ Engine 和连接池线程安全 ⭐️**
-
-#### create_engine() 方法说明
+#### create_engine() 方法
 
 用于创建 Engine 对象和配置连接池
 
@@ -70,7 +67,7 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in
 
 ### (1) Session
 
-Session 负责映射一次或一组 SQL 操作，默认不是 autucommit
+Session 代表一次 SQL 操作的会话，默认不是 autucommit
 
 #### sessionmaker() 类说明
 
@@ -83,9 +80,9 @@ Session 负责映射一次或一组 SQL 操作，默认不是 autucommit
 - autocommit=False：是否自动提交事务
 - expire_on_commit=True：Session 是否在事务提交之后失效
 
-> 相关的官方文档在 [这里](https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session)
+详细参考 [这里](https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session)
 
-**⭐️ Session 不是线程安全，可以用 `contextmanager` 加 `yield` 解决⭐️**
+**⭐️ Session 不是线程安全，可以用 `contextmanager` 加 `yield` 解决️**，或者用 `from sqlalchemy.orm import scoped_session` 解决也可以
 
 ```python
 from contextlib import contextmanager
@@ -109,11 +106,9 @@ with session_factory() as session:
     pass
 ```
 
-完整案例参考 [这里](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/Flask/flask-sqlalchemy/database.py#L50) ，或者用 `from sqlalchemy.orm import scoped_session` 解决也可以
-
 ### (2) ORM 建模
 
-有四张表，factory 表和 product 表是一对多关系，orders 表和 product 表关系是多对多：
+有四张表，factory 表和 product 表是一对多关系，orders 表和 product 表关系是多对多
 
 ```sql
 CREATE TABLE factory (
@@ -261,8 +256,6 @@ class OrdersProduct(_BaseMixin):
     with session_factory() as session:
         session.query(Factory).order_by(Factory.name.desc()).first()
     ```
-
-更多操作参考 [这里](https://docs.sqlalchemy.org/en/14/orm/tutorial.html#common-filter-operators)
 
 #### 连表查询
 

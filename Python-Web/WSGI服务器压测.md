@@ -11,10 +11,12 @@
 - 操作系统：Ubuntu 18.04 LTS
 - 硬件配置：4 核 8G
 
-1. 测试场景比较简单，返回一个大约 4KB 的数据，单纯对比纯 IO 表现
-2. 压测前用 ulimit -n 临时调大了可以打开的文件描述符个数
-3. 测试命令 `wrk -t8 -c400 -d30s http://127.0.0.1:12345/hello`
-4. 结果取平均情况
+其他信息：
+
+- 测试场景比较简单，返回一个大约 4KB 的数据，单纯对比纯 IO 表现
+- 压测前用 ulimit -n 临时调大了可以打开的文件描述符个数
+- 测试命令 `wrk -t8 -c400 -d30s http://127.0.0.1:12345/hello`
+- 结果取平均情况
 
 ```python
 import json
@@ -31,8 +33,6 @@ def handle():
     resp.headers["Content-Type"] = "application/json; charset=utf-8"
     return resp
 ```
-
-> 在不同的硬件配置、系统环境、网络环境下，测试结果可能会有一些出入
 
 ## Gunicorn
 

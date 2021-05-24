@@ -14,7 +14,7 @@
 - 显示数据库：`SHOW DATABASES;`
 - 删除数据库：`DROP DATABASE <database_name>;`
 - 选择数据库：`USE <database_>name;`
-  
+
 ### 表
 
 - 建表：参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(7)%E6%95%B0%E6%8D%AE%E8%A1%A8%E8%AE%BE%E8%AE%A1.md#%E4%B8%80%E4%B8%AA%E8%A7%84%E8%8C%83%E7%9A%84%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A5)

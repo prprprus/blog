@@ -1,6 +1,6 @@
 # requests 笔记
 
-requests 是一个常用的 HTTP/HTTPS 客户端，对应的是阻塞 IO，想要非阻塞 IO 可以配合线程使用，或者用 [httpx](https://github.com/encode/httpx)
+requests 是一个常用的 HTTP/HTTPS 客户端，对应的是阻塞 IO，想要非阻塞 IO 可以配合线程、gevent 使用，或者用 [httpx](https://github.com/encode/httpx)
 
 ## requests 的使用
 
