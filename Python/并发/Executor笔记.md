@@ -1,16 +1,18 @@
 # Executor 笔记
 
-1. [Executor](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#executor)
-2. [ThreadPoolExecutor 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#threadpoolexecutor-%E7%9A%84%E4%BD%BF%E7%94%A8)
-3. [Future 对象](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#future-%E5%AF%B9%E8%B1%A1)
-4. [Executor 的调度流程](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#executor-%E7%9A%84%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B)
-5. [异常](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E5%BC%82%E5%B8%B8)
+1. [Executor](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#executor)
+2. [ThreadPoolExecutor 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#threadpoolexecutor-%E7%9A%84%E4%BD%BF%E7%94%A8)
+3. [Future 对象](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#future-%E5%AF%B9%E8%B1%A1)
+4. [Executor 的调度流程](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#executor-%E7%9A%84%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B)
+5. [异常](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#%E5%BC%82%E5%B8%B8)
 
-Executor 提供了池、Future、调度等功能，可以用于并发处理、异步处理等，具体有线程池执行器 ThreadPoolExecutor 和进程池执行器 ProcessPoolExecutor 两个子类，
+Executor 提供了池、Future、调度等功能，可以用于并发、异步等处理场景。具体有线程池执行器 ThreadPoolExecutor 和进程池执行器 ProcessPoolExecutor 两个子类，
 ThreadPoolExecutor 用于 IO 密集型任务，ProcessPoolExecutor 用于 CPU 密集型任务。
 ThreadPoolExecutor 和 ProcessPoolExecutor 的用法差不多，下面以 Executor 和 ThreadPoolExecutor 为主
 
-> 支持 `with` 语句。听说这个库是直接抄 Java 的 Executor 😂
+> 这个类支持 `with` 语句。
+> 
+> 听说这个库是直接抄 Java 的 Executor 😂
 
 ## Executor
 
@@ -18,14 +20,14 @@ Executor 不应该直接使用，应该使用它的子类 ThreadPoolExecutor 或
 
 ### submit(fn, *args, **kwargs)
 
-简单来说是提交任务到执行器中，等待被调度执行。详细的如下
+提交任务到执行器中，等待被调度执行
 
 ```python
 # thread.py:146
 
 def submit(*args, **kwargs):
     # 省略大段大段的参数检查
-    # ...
+    pass
     
     # submit 是一个带锁的操作
     with self._shutdown_lock:
@@ -56,7 +58,7 @@ def submit(*args, **kwargs):
 
 ### shutdown(wait=True, *, cancel_futures=False)
 
-简单来说是关闭执行器。详细的如下
+关闭执行器，关闭后不能再提交任务
 
 ```python
 # _base.py:606
@@ -74,8 +76,6 @@ def shutdown(self, wait=True):
 ```
 
 ## ThreadPoolExecutor 的使用
-
-案例：
 
 ```python
 import concurrent.futures
@@ -108,11 +108,11 @@ if __name__ == "__main__":
 
 ## Future 对象
 
-Executor Future 对象提供的操作和 [asyncio Future 对象](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#3-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C-future) 大体上差不多,
-但是也有一些区别
+Executor Future 对象提供的操作和 [asyncio Future 对象](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#3-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C-future)
+大体上差不多，但是也有一些区别：
 
-- Executor Future 的 `result()` 带超时功能，而且当 Future 未就绪时调用 `result()` 不会立即抛出异常
-- Executor Future 的 `set_result()` 会直接调用绑定的回调函数。asyncio Future 不会直接执行，而是把回调函数加入 `self._ready` 调度队列
+- Executor Future 的 `result()` 带超时功能，而且当 Future 未完成调用 `result()` 不会立即抛出异常
+- Executor Future 的 `set_result()` 会直接触发所绑定的回调函数。asyncio Future 不会直接执行，而是把回调函数加入 `self._ready` 调度队列中，等待被调用
     ```python
     # _base.py:513
 
@@ -173,12 +173,12 @@ _bootstrap, threading.py:890  # 执行线程的相关步骤
 2. thread.py 的 _worker() 函数
 
 线程池里的工作线程对应的 `target` 并不是 `submit()` 提交的任务，而是 `_worker()` 函数。`_worker()` 函数会进入事件循环，
-不断从调度队列 `work_queue` 中尝试获取 _WorkItem 对象（阻塞获取），并执行它的 `run()` 方法
+不断从调度队列 `work_queue` 中获取 _`WorkItem` 对象（阻塞获取），并执行它的 `run()` 方法
 
 ```python
 def _worker(executor_reference, work_queue, initializer, initargs):
     # 忽略相关检查
-    # ...
+    pass
     
     try:
         # 每个工作线程进入事件循环
@@ -193,7 +193,7 @@ def _worker(executor_reference, work_queue, initializer, initargs):
                 continue
             executor = executor_reference()
             # 忽律退出事件循环的一些处理
-            # ...
+            pass
             del executor
     except BaseException:
         _base.LOGGER.critical('Exception in worker', exc_info=True)
@@ -201,7 +201,7 @@ def _worker(executor_reference, work_queue, initializer, initargs):
 
 3. thread.py 的 run() 方法
 
-执行提交过来的任务，调用任务所对应的 Future 对象的 `set_result()` 方法
+先执行提交过来的任务，然后调用对应 Future 对象的 `set_result()` 方法设置运行结果
 
 ```python
 def run(self):
@@ -222,7 +222,7 @@ def run(self):
 
 4. _base.py 的 set_result() 方法
 
-设置结果，唤醒阻塞线程，调用回调函数
+先设置结果，然后唤醒外部阻塞等待结果的线程，最后调用回调函数
 
 ```python
 def set_result(self, result):

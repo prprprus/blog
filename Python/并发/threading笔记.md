@@ -1,19 +1,18 @@
 # threading 笔记
 
-1. [Python 的并发处理](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#python-%E7%9A%84%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86)
-2. [threading 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#threading-%E7%9A%84%E4%BD%BF%E7%94%A8)
-3. [queue 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#queue-%E7%9A%84%E4%BD%BF%E7%94%A8)
+1. [Python 的并发处理](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E7%AC%94%E8%AE%B0.md#python-%E7%9A%84%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86)
+2. [threading 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E7%AC%94%E8%AE%B0.md#threading-%E7%9A%84%E4%BD%BF%E7%94%A8)
+3. [queue 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E7%AC%94%E8%AE%B0.md#queue-%E7%9A%84%E4%BD%BF%E7%94%A8)
 
 ## Python 的并发处理
 
-由于 GIL 的存在，无论 CPU 有多少个核心，一个时刻只能有一个线程使用 CPU 资源，所以 Python 线程是并发不是并行，适用于 IO 密集型任务，
-不适用于 CPU 密集型任务
+由于 GIL 的存在，无论 CPU 有多少个核心，一个时刻只能有一个线程使用 CPU 资源，所以 Python 线程是并发不是并行，适用于 IO 密集型任务，不适用于 CPU 密集型任务
 
 Python 并发方案选择：
 
-- 如果是 IO 密集型任务，并且每个 IO 操作很慢，又需要很多任务并发执行，使用基于协程的异步方案解决（譬如 [asyncio](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md) ）
+- 如果是 IO 密集型任务，并且每个 IO 操作很慢，又需要很多任务并发执行，使用基于协程的异步方案解决（譬如 asyncio、gevent）
 - 如果是 IO 密集型任务，但是每个 IO 操作很快，只需要有限数量的任务并发执行，使用多线程即可
-- 如果是 CPU 密集型任务，使用多进程
+- 如果是 CPU 密集型任务，使用多进程（加上用 Cython 优化~）
 
 ## threading 的使用
 
@@ -127,8 +126,6 @@ main()
     - 如果释放 unlocked 的锁对象，则会抛出 RuntimeError
 - `locked()`：如果锁对象状态为 locked 则返回 True，否则返回 False
 
-案例：
-
 ```python
 import threading
 import time
@@ -167,8 +164,6 @@ main()
 #### (2) 可重入锁
 
 支持的操作和锁对象差不多，没有 `locked()` 方法，和锁对象的区别是，对于持有锁的线程可以继续申请锁
-
-案例：
 
 ```python
 import threading
@@ -238,9 +233,7 @@ condition 对象搭配锁对象使用，可以在线程不满足某种条件时�
 - `notify(n=1)`：打算唤醒 n 个等待线程，该方法被调用后，线程并不会立即被唤醒，还是要等到 `release()` 被调用之后。必须是持有锁的线程调用，否则抛出 RuntimeError 异常
 - `notify_all()`：打算唤醒所有等待线程，该方法被调用后，线程并不会立即被唤醒，还是要等到 `release()` 被调用之后。必须是持有锁的线程调用，否则抛出 RuntimeError 异常
 
-案例 1：
-
-基本使用
+案例 1：基本使用
 
 ```python
 import threading
@@ -295,8 +288,6 @@ def main():
 main()
 ```
 
-输出如下：
-
 ```BASH
 线程 1 进入等待
 main thread done.
@@ -308,9 +299,7 @@ main thread done.
 线程 1 释放锁成功
 ```
 
-案例 2：
-
-`wait()` 方法会一直等待，直到被唤醒或者超时
+案例 2：`wait()` 方法会一直等待，直到被唤醒或者超时
 
 ```python
 import threading
@@ -368,9 +357,7 @@ main()
 
 线程 1 会一直阻塞下去
 
-案例 3：
-
-`wait_for()` 被唤醒后，还需要满足条件，否则继续等待
+案例 3：`wait_for()` 被唤醒后，还需要满足条件，否则继续等待
 
 ```python
 import threading
@@ -441,9 +428,10 @@ main()
 
 #### (4) Semaphore
 
-在并发环境下，用于保护数量有限的资源
+在并发环境下，Semaphore 用于保护数量有限的资源
 
-`Semaphore` 和 `BoundedSemaphore` 的区别：
+从源码上看可以知道 `BoundedSemaphore` 继承于 `Semaphore`，两者区别在于 `release()` 方法，`BoundedSemaphore` 在释放锁时会对比释放次数 `self._value` 和
+初始化时指定的次数 `self._initial_value`，确保了释放次数不会超过指定的次数，否则抛出 ValueError 异常，更加方便可靠
 
 ```python
 class Semaphore:
@@ -481,11 +469,6 @@ class BoundedSemaphore(Semaphore):
             self._value += 1
             self._cond.notify()
 ```
-
-从源码上看可以知道 `BoundedSemaphore` 继承于 `Semaphore`，两者区别在于 `release()` 方法，`BoundedSemaphore` 在释放锁时会对比释放次数 `self._value` 和
-初始化时指定的次数 `self._initial_value`，确保了释放次数不会超过指定的次数，否则抛出 ValueError 异常，更加方便可靠
-
-案例：
 
 ```python
 import threading
@@ -535,8 +518,6 @@ main()
 
 可以用来实现简单的定时任务
 
-案例：
-
 ```python
 import threading
 
@@ -549,8 +530,6 @@ timer.start()
 
 [queue](https://docs.python.org/3/library/queue.html) 模块提供了多种线程安全的队列，用于线程间通信。
 [SimpleQueue](https://docs.python.org/3/library/queue.html#simplequeue-objects) 比较常用，标准库不少需要线程间通信的地方也是用的 SimpleQueue
-
-案例：
 
 简单的生产者消费者模型
 
@@ -585,8 +564,6 @@ if __name__ == "__main__":
     producer.start()
 ```
 
-输出如下：
-
 ```BASH
 等待数据...
 生产数据 0
@@ -609,7 +586,7 @@ if __name__ == "__main__":
 
 ## 其他
 
-在 threading 源码中看到一个小技巧，在 Python 程序退出之前执行一个处理函数：
+在 threading 源码中看到一个小技巧，在 Python 程序退出之前执行一个处理函数
 
 ```python
 import atexit

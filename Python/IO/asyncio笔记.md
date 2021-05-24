@@ -1,29 +1,25 @@
 # asyncio 笔记
 
-1. [事件循环](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF)
-2. [可调度对象](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E5%8F%AF%E8%B0%83%E5%BA%A6%E5%AF%B9%E8%B1%A1)
-3. [await 语句](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#await-%E8%AF%AD%E5%8F%A5)
-4. [Streams](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#streams)
-5. [Queue](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#queue)
-6. [Subprocesses](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#subprocesses)
-7. [协程同步](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E5%8D%8F%E7%A8%8B%E5%90%8C%E6%AD%A5)
-8. [异常](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E5%BC%82%E5%B8%B8)
-9. [其他模块级别函数](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E5%85%B6%E4%BB%96%E6%A8%A1%E5%9D%97%E7%BA%A7%E5%88%AB%E5%87%BD%E6%95%B0)
+1. [事件循环](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF)
+2. [可调度对象](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%8F%AF%E8%B0%83%E5%BA%A6%E5%AF%B9%E8%B1%A1)
+3. [await 语句](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#await-%E8%AF%AD%E5%8F%A5)
+4. [Streams](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#streams)
+5. [Queue](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#queue)
+6. [Subprocesses](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#subprocesses)
+7. [协程同步](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%8D%8F%E7%A8%8B%E5%90%8C%E6%AD%A5)
+8. [异常](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%BC%82%E5%B8%B8)
+9. [其他模块级别函数](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%85%B6%E4%BB%96%E6%A8%A1%E5%9D%97%E7%BA%A7%E5%88%AB%E5%87%BD%E6%95%B0)
 
-Python 有不少异步 IO 框架，对于 IO 处理部分，根据标准的 IO 模型来看，应该叫 IO 多路复用。asyncio 也不例外，
+Python 很多异步 IO 框架，如果根据标准的 IO 模型来看，应该叫 IO 多路复用。asyncio 其实也是，
 对于 IO 部分，asyncio 是基于 [selector](https://github.com/python/cpython/blob/3.9/Lib/asyncio/selector_events.py) 模块，
-而 selector 基于 select 模块，select 基于操作系统提供的 IO 多路复用机制，譬如 Linux 的 epoll，macOS 的 kqueue 等
+而 selector 基于 select 模块，select 基于操作系统提供的 IO 多路复用机制，譬如 Linux 的 epoll，macOS 的 kqueue 等。但是 asyncio 实现的事件循环确实能实现异步的效果
 
-但是 asyncio 也不是只能用于 IO 操作，它所提供的事件循环、Future、线程池、进程池等工具，也可以对一般的代码进行异步化，实现并发的效果
+asyncio 的特点和主流的异步框架（Tornado 等）差不多：
 
-asyncio 的特点和主流的异步框架（tornado 等）差不多：
-
-- 擅长处理 IO 密集型任务，相比线程的昂贵（创建、销毁、上下文切换），asyncio 里的协程要轻量级很多，
-可以同时存在大量的协程，因此可以较好地提升应用的吞吐量，但是应用的响应时间还是要看单个协程的处理时长，跟异步与否无关
+- 擅长处理 IO 密集型任务，相比线程的昂贵（创建、销毁、上下文切换），asyncio 里的协程要轻量级很多，可以同时存在大量的协程，因此可以较好地提升应用的吞吐量，
+  但是应用的响应时间还是要看单个协程的处理时长，跟异步与否无关
 - 事件循环不能被阻塞，也就是不能存在阻塞代码，无论是自己写的、标准库的、还是第三方库的代码。这就需要搭配线程池、进程池等工具，或者要求生态要好，不然连个异步的数据库驱动都没有，也挺麻烦 😂
 - 不擅长 CPU 密集型任务，可以结合进程池、Celery 等工具缓解这个问题
-
-> 在多线程的环境下，Python 虚拟机大概每执行 200 个字节码，就进行一次线程切换的系统调用
 
 > asyncio 需要 Python3.5+，最好是 Python3.7+，功能会多一些，少量新功能需要 Python3.9。另外，asyncio 的接口存在不向后兼容的情况，
 > 譬如 ["Deprecated since version 3.8, will be removed in version 3.10: The loop parameter."](https://docs.python.org/3/library/asyncio-task.html#asyncio.sleep) 这类
@@ -32,7 +28,7 @@ asyncio 的特点和主流的异步框架（tornado 等）差不多：
 
 ### IO 多路复用
 
-asyncio 的事件循环包含着 IO 多路复用，专门用来处理 IO 事件，多路复用本身也有一个事件循环。一般基于多路复用的代码长这样：
+asyncio 的事件循环包含着 IO 多路复用，专门用来处理 IO 事件，多路复用本身也有一个事件循环，一般基于多路复用的代码长这样：
 
 ```python
 # 回调函数映射表
@@ -242,7 +238,7 @@ def _run_once(self):
         # 基于 selector 模块的 IO 多路复用
         event_list = self._selector.select(timeout)
         # 忽略大段大段的调试代码
-        ...
+        pass 
     # 非调试模式下
     else:
         # 基于 selector 模块的 IO 多路复用
@@ -286,7 +282,7 @@ def _run_once(self):
                 # 执行回调函数
                 handle._run()
                 # 忽略大段大段的调试代码
-                ...
+                pass
             finally:
                 self._current_handle = None
         # 非调试模式下
@@ -298,11 +294,8 @@ def _run_once(self):
 
 ### 事件循环的调度流程
 
-调度流程这块其实比并不好找，单步调试貌似最多走到 events.py:88，这一步还是比较明显，执行就绪的回调函数，但是协程间的切换体现不出来
-
-![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-3.png)
-
-到网上查找发现切换相关的代码在 tasks.py 的 `__step()` 和 `__wakeup()` 方法上，`__wakeup()` 调用 `__step()`，所以重点是 `__step()`
+调度流程这块其实比并不好找，单步调试最多走到 events.py:88，貌似是因为协程底层是 C 实现的缘故。到网上查找发现切换相关的代码在 tasks.py 的 `__step()` 和 `__wakeup()` 方法上，
+`__wakeup()` 调用 `__step()`，所以重点是 `__step()`。协程恢复中断的核心是通过生成器的 `send(None)` 来从中断的地方继续执行
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-4.png)
 
@@ -310,7 +303,7 @@ def _run_once(self):
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-5.png)
 
-> 照这样看，其实事件循环中的事件指的是函数
+从这里可以看出，协程和线程的一个区别是，前者主动礼让，后者抢着执行
 
 ### 事件循环的使用
 
@@ -665,8 +658,6 @@ asyncio.run(echo_client())
 异步队列，用法和 [queue](https://docs.python.org/3/library/queue.html#module-queue) 模块差不多，但是线程不安全。
 get/put 操作没有超时功能，需要配合 `asyncio.wait_for()` 实现
 
-案例：
-
 ```python
 import asyncio
 
@@ -704,8 +695,6 @@ asyncio.run(main())
 
 异步 Subprocesses
 
-案例：
-
 ```python
 import asyncio
 
@@ -731,8 +720,6 @@ asyncio.run(test_subprocess("ls -l"))
 
 用法和 [threading](https://docs.python.org/3/library/threading.html#module-threading) 模块差不多，
 区别是 asyncio 提供的同步操作只用于协程，并不是线程级别的同步，也就是线程不安全。超时功能需要配合 `asyncio.wait_for()` 实现
-
-案例：
 
 ```python
 import asyncio
