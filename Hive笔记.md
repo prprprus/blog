@@ -55,7 +55,7 @@ LINES TERMINATED BY "\n"-- 行分隔符
 
 ## Python 中使用 Hive
 
-利用 impyla 作为驱动，pandas 操作结果
+利用 impyla 作为驱动，pandas 操作结果。Python3.6 下用 impyla，如果版本号大于 0.13.8，可能会有问题
 
 安装相关依赖
 
