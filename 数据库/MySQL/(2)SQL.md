@@ -17,7 +17,7 @@
   
 ### 表
 
-- 建表：参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E4%B8%80%E4%B8%AA%E8%A7%84%E8%8C%83%E7%9A%84%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A5)
+- 建表：参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(7)%E6%95%B0%E6%8D%AE%E8%A1%A8%E8%AE%BE%E8%AE%A1.md#%E4%B8%80%E4%B8%AA%E8%A7%84%E8%8C%83%E7%9A%84%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A5)
 - 显示所有表：`SHOW TABLES`;
 - 显示表结构：`DESCRIBE <table_name>;`
 - 显示建表定义：`SHOW CREATE TABLE <table_name>\G;`
@@ -60,32 +60,31 @@ LIMIT <count>;
 
 `WHERE` 可以搭配一系列判断真假的关键字，用来过滤查询结果：
 
-- `AND`
-- `OR`
-- `NOT`
-- `IN`/`NOT IN`
-- `BETWEEN`/`NOT BETWEEN`
-- `LIKE`/`NOT LIKE`
-- `IS NULL`/`IS NOT NULL`
+- `AND` / `OR` / `NOT`
+- `IN` / `NOT IN`
+- `BETWEEN` / `NOT BETWEEN`
+- `LIKE` / `NOT LIKE`
+- `IS NULL` / `IS NOT NULL`
 
 ### JOIN
 
-`join` 是关系型数据库的一大特色，可以通过连接不同的表，查出单表没有的数据
+JOIN 是关系型数据库的特色，可以通过连接不同的表，同时查询不同表的字段，或者查出单表没有的数据。标准的 JOIN 一般有四种：`INNER JOIN`，`LEFT JOIN`，`RIGHT JOIN`，`FULL OUTER JOIN` 
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1.png)
 
 三表连接案例：
 
 ```SQL
-SELECT pi.imageid,p.ProductCode,pi.filepath,p.name,p.defaultimage
-FROM ProductInfringeReport pir INNER JOIN Product p ON pir.ProductCode = p.ProductCode
-    INNER JOIN ProductImage pi ON p.ProductID = pi.ProductID
-WHERE pir.adddatetime>"{}";
+SELECT t3.imageid, t2.ProductCode, t3.filepath, t2.name, t2.defaultimage
+FROM table1 t1
+INNER JOIN table2 t2 ON t2.ProductCode=t1.ProductCode
+INNER JOIN table3 t3 ON t2.ProductID=t3.ProductID
+WHERE t1.adddatetime>"{}";
 ```
 
 ### 分组和聚合
 
-`GROUP BY` 可以对查询结果按照某个字段做分组，并搭配聚合函数做一些统计（个人感觉叫分类更容易理解 😂 ）
+`GROUP BY` 可以对查询结果按照某个字段做分组，并搭配聚合函数做一些统计
 
 - 常用聚合：`SUM()`、`COUNT()`、`MAX()`、`MIN()`、`AVG()` 等
 - 还可以搭配 `HAVING` 可以对 `GROUP BY` 的结果做数据过滤
@@ -94,8 +93,7 @@ WHERE pir.adddatetime>"{}";
 
 `ORDER BY` 可以对查询结果进行排序
 
-- 可以根据一个字段做排序
-- 也可以分别对多个列做排序，比如 `ORDER BY <COLUMN_1> DESC , <COLUMN_2> ASC;`
+- 可以对一个列做排序，也可以分别对多个列做排序，比如 `ORDER BY <COLUMN_1> DESC , <COLUMN_2> ASC;`
 - `DESC` 代表降序，`ASC` 代表升序，默认是升序排序
 
 ### INSERT | UPDATE | DELETE
@@ -129,11 +127,8 @@ SET
 #### DELETE
 
 ```SQL
-DELETE FROM table_name
-WHERE condition;
+DELETE FROM table_name WHERE condition;
 ```
-
-> 这几个语句注意 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#dml-1) 提到的点就可以
 
 ## 事务相关的 SQL
 
@@ -155,11 +150,11 @@ BEGIN;
 ROLLBACK;  
 ```
 
-更多的事务相关可以参考 [事务笔记.md](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/%E4%BA%8B%E5%8A%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md)
+更多事务相关可以参考 [事务.md](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(3)%E4%BA%8B%E5%8A%A1.md#%E4%BA%8B%E5%8A%A1)
 
 ## EXPLAIN
 
-`EXPLAIN` 用来查看 SQL 的执行计划，可以参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/%E7%B4%A2%E5%BC%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92)
+`EXPLAIN` 用来查看 SQL 的执行计划，可以参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(4)%E7%B4%A2%E5%BC%95.md#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92)
 
 ## 最佳实践
 
