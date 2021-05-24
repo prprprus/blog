@@ -1,14 +1,16 @@
 # TFServing 笔记
 
 TFServing 全称是 Tensorflow Serving，是谷歌开源的一个用于模型部署的服务组件，功能丰富、生产就绪。主要用于 Tensorflow 训练的模型，听说 pytorch 的也行，
-下面主要讨论 Tensorflow 训练出来的模型。相比用原生的 Tensorflow API 加载模型、预测，TFServing 会提供比较丰富的额外功能，省去自行开发的工作量，对开发周期短、需要快速落地的场景很有帮助
+下面主要讨论 Tensorflow 训练出来的模型
 
-TFServing 提供的核心功能：
+相比用原生的 Tensorflow API 加载模型和预测，TFServing 提供比较丰富的开箱即用功能，省去自行开发的工作量，对开发周期短、需要快速落地的场景很有帮助
+
+TFServing 提供的功能：
 
 - 支持多模型、多版本部署
 - 提供 gRPC、HTTP 两种服务形式
 - 支持 GPU 批处理
-- 支持不中断服务的模型热加载
+- 支持无需中断服务的模型热加载
 
 使用 TFServing 的系统，对应的拓扑结构一般如下：
 
@@ -26,7 +28,7 @@ docker pull tensorflow/serving
 
 ## 导出模型
 
-这块主要是算法工程师去操作，TFServing 要求模型以 saved_model 的格式导出，后台工程师一般只需要在模型交付的时候确保模型文件是如下的格式即可
+这块主要是算法工程师去操作。TFServing 要求模型以 saved_model 格式导出，后台工程师一般需要在模型交付的时候确保模型文件的格式
 
 ```BASH
 ├── model_name
@@ -43,17 +45,17 @@ TFServing 提供了规范的配置文件，需要按照它的格式要求才能�
 # models.config
 
 model_config_list:{
-    config:{                              // 每一个算法模型对应一个 config 配置块
+    config:{                              // 每个模型对应一个 config 配置块
         name:'model_name1',               // 模型名称
         base_path:'/models/model_name1',  // 模型在容器内的路径
         model_platform:'tensorflow',      // 模型的训练框架
         model_version_policy:{            // 模型的版本
             specific:{
-                versions:100000,          // 版本号 100000
+                versions:100000,          // 版本号 100000, 可以有多个
                 versions:100001
             }
         }
-        version_labels:{                  // 模型额外的标签名称, 需要和版本号对应, 这个不是必须的
+        version_labels:{                  // 模型额外的标签, 需要和版本号对应, 这个不是必须的
             key:'canary',                 
             value:100000
         }
@@ -62,7 +64,7 @@ model_config_list:{
             value:100001
         }
     },
-    config:{                              // 另外一个算法模型配置
+    config:{                              // 另一个模型配置
         name:'model_name2',
         base_path:'/models/model_name2',
         model_platform:'tensorflow',
@@ -104,12 +106,12 @@ docker run \
 
 ## 模型的输入输出结构
 
-在编写客户端之前，还需要确定模型的输入输出格式，不同的训练 API 产出的模型格式可能会不一样，比如 Tensorflow 2.0 原生 API 和 tf.estimator 的就不一样，
+在编写 TFServing 客户端之前，还需要确定模型的输入输出格式，不同的训练 API 产出的模型格式可能会不一样，比如 Tensorflow 2.0 原生 API 和 tf.estimator 的不一样，
 下面主要讨论原生 API 导出的格式
 
-查看格式可以借助 `saved_model_cli` 命令行工具，可以通过 `pip install tensorflow-serving-api==2.5.1` 来安装
+用 `saved_model_cli` 命令行工具查看格式，可以通过 `pip install tensorflow-serving-api==2.5.1` 来安装
 
-安装好之后，到模型所在的目录下（也就是 saved_model.pb 文件所在的目录），执行 `saved_model_cli show --dir ./ --all` 就可以得到类似如下的结果：
+安装好之后，到模型所在的目录下（也就是 saved_model.pb 文件所在的目录），执行 `saved_model_cli show --dir ./ --all` 就可以得到输入输出结构
 
 ```BASH
 MetaGraphDef with tag-set: 'serve' contains the following SignatureDefs:
@@ -160,19 +162,19 @@ signature_def['serving_default']:
 结果解析：
 
 - serving_default：默认的模型签名，可以在训练时自定义
-- inputs[input_xxx]：模型的输入参数，可以在训练时自定义
+- inputs[input_xxx]：模型的输入参数，`input_xxx` 是参数名称，可以在训练时自定义
     - dtype：参数类型
     - shape：参数的行数和列数。(-1, 1) 代表行数不限制，1 列；(-1, 15) 代表行数不限制，15 列
-- outputs[output_xxx]：模型的输出参数，可以在训练时自定义
+- outputs[output_xxx]：模型的输出参数，`output_xxx` 是参数名称，可以在训练时自定义
 
 ## TFServing 客户端
 
-TFServing 服务启动了，模型输入输出格式清楚了，下一步就是编写 TFServing 的客户端，用来发起调用。TFServing 对外同时支持 HTTP 和 gRPC 两种协议的服务，
+TFServing 服务启动了，模型输入输出格式清楚了，下一步就是编写 TFServing 的客户端，用来发起调用。TFServing 同时支持 HTTP 和 gRPC 两种协议的服务，
 在实测的过程中发现 HTTP 的响应时间 比 gRPC 要更短，下面主要讨论 HTTP 服务
 
 ### HTTP 客户端
 
-要调用 TFServing 的 HTTP 服务，就要编写 HTTP 客户端。以上面的输入输出结构为例，假设行数是 10：
+以上面的输入输出结构为例，假设行数是 10
 
 ```python
 import requests
@@ -196,8 +198,7 @@ print(res.json()["outputs"]["output_2"])
 
 ### 附带 gRPC 客户端
 
-要调用 TFServing 的 gRPC 服务，就要编写 gRPC 客户端。TFServing 使用 protobuf 作为序列化协议，tensorflow-serving-api 已经包含编译好的相关 proto 文件，
-可以借助这个库快速完成 gPRC 客户端。也可以自行编译 proto 文件
+TFServing 使用 protobuf 作为序列化协议，tensorflow-serving-api 已经包含编译好的相关 proto 文件，可以借助这个库快速完成 gPRC 客户端。也可以自行编译 proto 文件
 
 ```python
 from tensorflow_serving.apis import predict_pb2, prediction_service_pb2_grpc

@@ -1,16 +1,6 @@
-行为型设计模式的核心是解耦客户端对实现类的使用。不直接调用该类的方法，而是通过新增一个中间行为类去做调用
-
-> 使用前提一般是类的数量比较多、继承关系比较多、能比较充分表现出多态性
-
-使用行为型设计模式的大致的步骤是：
-
-1. 整理好类的继承关系
-2. 定义一个中间行为类
-3. 当客户端需要调用实现类的方法时，通过调用中间行为类包装后的方法，类似
-    ```BASH
-    obj = ObjectClass();
-    behavior = BehaviorMiddleClass();
-    behavior.set_obj(obj);
-    # 这里的 do_something() 可以是实现类方法本身，也可以是在其基础上包装过的方法
-    behavior.do_something();
-    ```
+```BASH
+obj = ObjectClass();
+behavior = BehaviorMiddleClass();
+behavior.set_obj(obj);
+behavior.do_something();
+```
