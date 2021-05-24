@@ -1,10 +1,10 @@
 # (2) SQL
 
-1. [DDL](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#ddl)
-2. [DML](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#dml)
-3. [事务相关的 SQL](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E5%8A%A1%E7%9B%B8%E5%85%B3%E7%9A%84-sql)
-4. [EXPLAIN](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#explain)
-5. [最佳实践](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5)
+1. [DDL](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#ddl)
+2. [DML](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#dml)
+3. [事务相关的 SQL](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#%E4%BA%8B%E5%8A%A1%E7%9B%B8%E5%85%B3%E7%9A%84-sql)
+4. [EXPLAIN](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#explain)
+5. [最佳实践](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5)
 
 ## DDL
 
