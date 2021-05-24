@@ -15,10 +15,10 @@ Hive 就是在 HDFS 或者 HBase 之上的组件，用来查询存储在那些�
 
 ### 数据类型
 
-Hive 支持大多数关系型数据库的类型，还额外支持三中集合类型：STRUCT、MAP、ARRAY。其中 MAP、ARRAY 类似 Java 中的 MAP 和 ARRAY，STRUCT 类似 C 中的 STRUCT。
+Hive 支持大多数关系型数据库的类型，还额外支持三种集合类型：STRUCT、MAP、ARRAY。其中 MAP、ARRAY 类似 Java 中的 MAP 和 ARRAY，STRUCT 类似 C 中的 STRUCT。
 详细参考 [这里](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types)
 
-Hive 支持隐式类型转换，当比较 `FLOAT` 和 `DOUBLE` 时，`FLOAT` 会转换成 `DOUBLE`。所有类型的隐式转换原则是转成更大表示范围的类型。也可以显式类型转换，
+Hive 支持隐式类型转换，譬如当比较 `FLOAT` 和 `DOUBLE` 时，`FLOAT` 会转换成 `DOUBLE`。所有类型的隐式转换原则是转成更大表示范围的类型。也可以显式类型转换，
 譬如 `CAST('1' AS INT)`
 
 ### 文件格式
@@ -49,7 +49,7 @@ LINES TERMINATED BY "\n"-- 行分隔符
 
 这部分使用上和 SQL 差不多，一些明显的差别有：
 
-- `INSERT INTO` 是追加插入数据，原有的数据不会被删除
+- `INSERT INTO` 是追加插入，原有的数据不会被删除
 - `INSERT OVERWRITE` 是覆盖插入，原有的数据会被删除
 - `INSERT INTO` 时必须提供完整的列，不支持插入复杂类型
 
@@ -98,11 +98,11 @@ class UtilHive:
                                    database=self.database, auth_mechanism=self.auth_mechanism)
 
     def ping(self):
-        """如果连接断开，则重新连接"""
+        """ 如果连接断开，则重新连接 """
         pass
 
     def close(self):
-        """关闭数据库连接"""
+        """ 关闭数据库连接 """
         self.__conn.close()
         
     def get_connection(self):
