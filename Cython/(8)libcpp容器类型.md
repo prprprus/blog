@@ -825,7 +825,7 @@ def test_set():
     s.clear()
 ```
 
-### 对标 set.size()
+### 对标 len(set)
 
 ```cython
 from libcpp.set cimport set
