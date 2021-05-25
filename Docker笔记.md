@@ -221,3 +221,44 @@ docker run -d --name container2 --network my-net imageA
     ```
 - 通过启动参数针对某个容器配置
 
+## Docker Compose
+
+Docker Compose 是官方提供的容器编排工具，用来快速部署多个相关联的容器，前身是 Fig 项目
+
+### 示例 WordPress
+
+```yaml
+version: "3"
+services:
+
+   db:  # 定义 db 服务
+     image: mysql:8.0 # 镜像
+     command: # 容器启动命令或者启动参数
+      - --default_authentication_plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci     
+     volumes: # 目录映射
+       - db_data:/var/lib/mysql
+     restart: always  # 重启策略
+     environment: # 环境变量
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress: # 定义 wordpress 服务
+     depends_on:  # 依赖于 db 服务, 会等待 db 启动成功后 wordpress 才会启动 
+       - db
+     image: wordpress:latest
+     ports: # 端口映射
+       - "8000:80"
+     restart: always
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+volumes:  # db 定义了目录影射, 这里必须也声明
+  db_data:
+```
+
+`docker-compose up -d` 后台启动相关容器
