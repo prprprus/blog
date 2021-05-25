@@ -143,6 +143,42 @@ COPY --from=laravel ${LARAVEL_PATH}/public ${LARAVEL_PATH}/public
 
 ## 操作容器
 
+### 常用命令
+
+- 启动容器：`docker run [options] <image> [command] [arg]`
+    - `--name` 设置容器名称
+    - `-d` 设置是否后台运行容器
+    - `-i` 设置交互式启动容器
+    - `-t` 分配终端，一般 `-it` 搭配起来用
+    - `-p` 设置端口映射（宿主机端口：容器端口）
+    - `v` 设置目录影射（宿主机目录路径：容器目录路径）
+    - `--net` 设置容器网络（bridge、host）
+    - `--link` 连接其他容器
+    - `--rm` 设置容器停止后自动删除
+    - `-m` 设置容器内存上限
+    - `--cpuset` 设置容器可以使用哪些 CPU
+    - `--dns` 设置 DNS 服务器
+    - `--restart` 设置容器停止后是否自动重启（no、on-failure、always）
+    - `--privileged` 设置是否特权容器
+- 列出容器：`docker ps -a`，`docker container ps -a`
+- 重启容器：`docker restart <container>`
+- 产看后台容器的日志：`docker logs <container>`
+- 进入容器：`docker exec -it <container> <command>`
+- 删除容器：`docker rmi <container>`，`docker rmi $(docker ps -a -q)`
+- 清理所有已经停止的容器：`docker system prune`，`docker container prune`
+
 ## 数据管理
 
+旧版本是通过 `docker run` 的 `-v` 参数来挂载数据卷，新版本可以通过 `--mount` 实现，额外提供了一些新的功能
+
+```BASH
+# 将 /src/webapp 设置成只读
+docker run -d -P \
+    --name web \
+    # -v /src/webapp:/usr/share/nginx/html:ro \
+    --mount type=bind,source=/src/webapp,target=/usr/share/nginx/html,readonly \
+    nginx:alpine
+```
+
 ## 网络配置
+
