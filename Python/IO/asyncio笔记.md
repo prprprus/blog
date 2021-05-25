@@ -1,14 +1,14 @@
 # asyncio 笔记
 
-1. [事件循环](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF)
-2. [可调度对象](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%8F%AF%E8%B0%83%E5%BA%A6%E5%AF%B9%E8%B1%A1)
-3. [await 语句](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#await-%E8%AF%AD%E5%8F%A5)
-4. [Streams](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#streams)
-5. [Queue](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#queue)
-6. [Subprocesses](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#subprocesses)
-7. [协程同步](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%8D%8F%E7%A8%8B%E5%90%8C%E6%AD%A5)
-8. [异常](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%BC%82%E5%B8%B8)
-9. [其他模块级别函数](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%85%B6%E4%BB%96%E6%A8%A1%E5%9D%97%E7%BA%A7%E5%88%AB%E5%87%BD%E6%95%B0)
+1. [事件循环](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF)
+2. [可调度对象](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%8F%AF%E8%B0%83%E5%BA%A6%E5%AF%B9%E8%B1%A1)
+3. [await 语句](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#await-%E8%AF%AD%E5%8F%A5)
+4. [Streams](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#streams)
+5. [Queue](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#queue)
+6. [Subprocesses](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#subprocesses)
+7. [协程同步](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%8D%8F%E7%A8%8B%E5%90%8C%E6%AD%A5)
+8. [异常](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%BC%82%E5%B8%B8)
+9. [其他模块级别函数](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%85%B6%E4%BB%96%E6%A8%A1%E5%9D%97%E7%BA%A7%E5%88%AB%E5%87%BD%E6%95%B0)
 
 Python 很多异步 IO 框架，如果根据标准的 IO 模型来看，应该叫 IO 多路复用。asyncio 其实也是，
 对于 IO 部分，asyncio 是基于 [selector](https://github.com/python/cpython/blob/3.9/Lib/asyncio/selector_events.py) 模块，
@@ -429,7 +429,7 @@ asyncio.run(main())
 事件循环除了可以搭配 IO 多路复用实现异步之外，还可以搭配进程池、线程池使用。将原本的阻塞代码丢到池里面去执行，也可以避免事件循环被阻塞，实现异步目的。
 **特别是对于 CPU 密集型任务，或者没有异步版本的第三方库等场景，都非常有用**
 
-事件循环和池之间的调度关系可以参考 [事件循环的调度流程](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E7%9A%84%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B) ，
+事件循环和池之间的调度关系可以参考 [事件循环的调度流程](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E7%9A%84%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B) ，
 将 IO 多路复用的部分换成池
 
 ```python
@@ -478,7 +478,7 @@ asyncio.run(main())
 
 ### (1) Future
 
-相关操作参考 [(3) 事件循环和 Future](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#3-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C-future)
+相关操作参考 [(3) 事件循环和 Future](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#3-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C-future)
 
 ### (2) Task
 

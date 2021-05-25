@@ -1,8 +1,8 @@
 # threading 笔记
 
-1. [Python 的并发处理](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E7%AC%94%E8%AE%B0.md#python-%E7%9A%84%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86)
-2. [threading 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E7%AC%94%E8%AE%B0.md#threading-%E7%9A%84%E4%BD%BF%E7%94%A8)
-3. [queue 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E7%AC%94%E8%AE%B0.md#queue-%E7%9A%84%E4%BD%BF%E7%94%A8)
+1. [Python 的并发处理](https://github.com/zongzhenh/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E7%AC%94%E8%AE%B0.md#python-%E7%9A%84%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86)
+2. [threading 的使用](https://github.com/zongzhenh/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E7%AC%94%E8%AE%B0.md#threading-%E7%9A%84%E4%BD%BF%E7%94%A8)
+3. [queue 的使用](https://github.com/zongzhenh/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/threading%E7%AC%94%E8%AE%B0.md#queue-%E7%9A%84%E4%BD%BF%E7%94%A8)
 
 ## Python 的并发处理
 

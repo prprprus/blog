@@ -513,7 +513,7 @@ int main() {
 - 多态使用条件
     - 父类指针或引用指向子类对象
 - 多态的基本原理
-    - ![多态的基本原理](https://github.com/hsxhr-10/Blog/blob/master/image/C%2B%2BVirtual原理.png)
+    - ![多态的基本原理](https://github.com/zongzhenh/Blog/blob/master/image/C%2B%2BVirtual原理.png)
 - 純虚函数和抽象类
     - 純虚函数语法：`virtual 返回值类型 函数名(参数列表) = 0;`
     - 抽象类无法实例化

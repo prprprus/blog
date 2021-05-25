@@ -32,7 +32,7 @@ Python 项目工程化的相关工具
 
 ### 单元测试
 
-- [unittest](https://github.com/hsxhr-10/Blog/blob/master/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.md) （一般够用了）
+- [unittest](https://github.com/zongzhenh/Blog/blob/master/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.md) （一般够用了）
 - unittest.mock（一般够用了）
 - coverage.py（生成覆盖率报告）
 

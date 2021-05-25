@@ -1,7 +1,7 @@
 # WSGI 笔记
 
-1. [简单实现](https://github.com/hsxhr-10/Blog/blob/master/Python-Web/WSGI%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0)
-2. [Flask 中的 WSGI](https://github.com/hsxhr-10/Blog/blob/master/Python-Web/WSGI%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#flask-%E4%B8%AD%E7%9A%84-wsgi)
+1. [简单实现](https://github.com/zongzhenh/Blog/blob/master/Python-Web/WSGI%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0)
+2. [Flask 中的 WSGI](https://github.com/zongzhenh/Blog/blob/master/Python-Web/WSGI%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#flask-%E4%B8%AD%E7%9A%84-wsgi)
 
 WSGI 是 Python Web 的一种协议和规范，分为应用端（Flask、Tornado、Django 等 Web 框架）和服务端（Gunicorn、uWSGI 等应用服务器）。
 WSGI 解耦了应用端和服务端，让它们可以灵活搭配使用，譬如 Flask 既可以运行在 Gunicorn 上，也可以运行在 uWSGI 上。其他编程语言也有类似的协议，像 Java 的 Servlet

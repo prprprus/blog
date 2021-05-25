@@ -1,10 +1,10 @@
 # (2) SQL
 
-1. [DDL](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#ddl)
-2. [DML](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#dml)
-3. [事务相关的 SQL](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#%E4%BA%8B%E5%8A%A1%E7%9B%B8%E5%85%B3%E7%9A%84-sql)
-4. [EXPLAIN](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#explain)
-5. [最佳实践](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5)
+1. [DDL](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#ddl)
+2. [DML](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#dml)
+3. [事务相关的 SQL](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#%E4%BA%8B%E5%8A%A1%E7%9B%B8%E5%85%B3%E7%9A%84-sql)
+4. [EXPLAIN](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#explain)
+5. [最佳实践](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(2)SQL.md#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5)
 
 ## DDL
 
@@ -17,7 +17,7 @@
 
 ### 表
 
-- 建表：参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(7)%E6%95%B0%E6%8D%AE%E8%A1%A8%E8%AE%BE%E8%AE%A1.md#%E4%B8%80%E4%B8%AA%E8%A7%84%E8%8C%83%E7%9A%84%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A5)
+- 建表：参考 [这里](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(7)%E6%95%B0%E6%8D%AE%E8%A1%A8%E8%AE%BE%E8%AE%A1.md#%E4%B8%80%E4%B8%AA%E8%A7%84%E8%8C%83%E7%9A%84%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A5)
 - 显示所有表：`SHOW TABLES`;
 - 显示表结构：`DESCRIBE <table_name>;`
 - 显示建表定义：`SHOW CREATE TABLE <table_name>\G;`
@@ -150,11 +150,11 @@ BEGIN;
 ROLLBACK;  
 ```
 
-更多事务相关可以参考 [事务.md](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(3)%E4%BA%8B%E5%8A%A1.md#%E4%BA%8B%E5%8A%A1)
+更多事务相关可以参考 [事务.md](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(3)%E4%BA%8B%E5%8A%A1.md#%E4%BA%8B%E5%8A%A1)
 
 ## EXPLAIN
 
-`EXPLAIN` 用来查看 SQL 的执行计划，可以参考 [这里](https://github.com/hsxhr-10/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(4)%E7%B4%A2%E5%BC%95.md#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92)
+`EXPLAIN` 用来查看 SQL 的执行计划，可以参考 [这里](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(4)%E7%B4%A2%E5%BC%95.md#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92)
 
 ## 最佳实践
 

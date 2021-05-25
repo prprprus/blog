@@ -29,7 +29,7 @@ Docker 使用上的整体结构：
 
 ### 安装
 
-安装方法比较多，譬如 [用脚本安装](https://github.com/hsxhr-10/Blog/blob/master/%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6%E5%AE%89%E8%A3%85.md#docker)
+安装方法比较多，譬如 [用脚本安装](https://github.com/zongzhenh/Blog/blob/master/%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6%E5%AE%89%E8%A3%85.md#docker)
 
 ## 使用镜像
 

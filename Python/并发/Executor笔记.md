@@ -1,10 +1,10 @@
 # Executor 笔记
 
-1. [Executor](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#executor)
-2. [ThreadPoolExecutor 的使用](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#threadpoolexecutor-%E7%9A%84%E4%BD%BF%E7%94%A8)
-3. [Future 对象](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#future-%E5%AF%B9%E8%B1%A1)
-4. [Executor 的调度流程](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#executor-%E7%9A%84%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B)
-5. [异常](https://github.com/hsxhr-10/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#%E5%BC%82%E5%B8%B8)
+1. [Executor](https://github.com/zongzhenh/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#executor)
+2. [ThreadPoolExecutor 的使用](https://github.com/zongzhenh/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#threadpoolexecutor-%E7%9A%84%E4%BD%BF%E7%94%A8)
+3. [Future 对象](https://github.com/zongzhenh/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#future-%E5%AF%B9%E8%B1%A1)
+4. [Executor 的调度流程](https://github.com/zongzhenh/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#executor-%E7%9A%84%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B)
+5. [异常](https://github.com/zongzhenh/Blog/blob/master/Python/%E5%B9%B6%E5%8F%91/Executor%E7%AC%94%E8%AE%B0.md#%E5%BC%82%E5%B8%B8)
 
 Executor 提供了池、Future、调度等功能，可以用于并发、异步等处理场景。具体有线程池执行器 ThreadPoolExecutor 和进程池执行器 ProcessPoolExecutor 两个子类，
 ThreadPoolExecutor 用于 IO 密集型任务，ProcessPoolExecutor 用于 CPU 密集型任务。
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
 ## Future 对象
 
-Executor Future 对象提供的操作和 [asyncio Future 对象](https://github.com/hsxhr-10/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#3-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C-future)
+Executor Future 对象提供的操作和 [asyncio Future 对象](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#3-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C-future)
 大体上差不多，但是也有一些区别：
 
 - Executor Future 的 `result()` 带超时功能，而且当 Future 未完成调用 `result()` 不会立即抛出异常
