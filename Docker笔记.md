@@ -182,3 +182,42 @@ docker run -d -P \
 
 ## 网络配置
 
+### 端口映射
+
+启动容器是通过相关参数设置
+
+- `P` 随机映射
+- `-p 80:80` 将宿主机任意地址的 80 端口映射到容器的 80 端口
+- `-p 127.0.0.1:80:80` 将宿主机 127.0.0.1 地址的 80 端口映射到容器的 80 端口
+- `-p 127.0.0.1::80` 将宿主机 127.0.0.1 的任意端口映射到容器的 80 端口
+
+### 容器互联
+
+一般使用 Docker Compose，也可以自定义网络实现
+
+```BASH
+# 新建网络
+docker network create -d bridge my-net
+
+# 启动容器1，并连接到 my-net
+docker run -d --name container1 --network my-net imageA
+
+# 启动容器2，并连接到 my-net
+docker run -d --name container2 --network my-net imageA
+
+# 此时容器1和容器2可以相互 ping 通
+```
+
+### 配置 DNS
+
+- 配置全局 DNS：通过 `/etc/docker/daemon.json` 文件
+    ```BASH
+    {
+      "dns" : [
+        "114.114.114.114",
+        "8.8.8.8"
+      ]
+    }
+    ```
+- 通过启动参数针对某个容器配置
+
