@@ -84,7 +84,7 @@ model_config_list:{
 
 ```BASH
 docker run \
-    -t --rm \
+    -t \
     -p 8501:8501 \
     -p 8500:8500 \
     --name tf_serving \
