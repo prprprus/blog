@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.springbootstaging.entity.UserResponse;
 import com.example.springbootstaging.model.User;
+import com.example.springbootstaging.mapper.UserMapper;
 
 @RestController
 @RequestMapping("/api/staging/user")
@@ -16,30 +17,68 @@ public class UserController {
     @Autowired
     private UserResponse UserResponse;
 
-    @GetMapping(value = "/name/{id}")
-    public UserResponse getUser(@PathVariable(value = "id", required = true) Integer id) {
+    @Autowired
+    private UserMapper userMapper;
+
+    @GetMapping(value = "/getUser/{id}")
+    public UserResponse getUser(@PathVariable(value = "id", required = true) Long id) {
+        User user = userMapper.getOne(id);
+
         UserResponse.setCode(0);
         UserResponse.setMessage("success");
-
-        // mock db select
-        User p = new User(1, "yoko", 23, "female");
-        List<User> data = new ArrayList<>();
-        data.add(p);
+        List<User> data = new ArrayList<>(1);
+        data.add(user);
         UserResponse.setData(data);
-
         return UserResponse;
     }
 
-    @PostMapping("/upsert")
-    public UserResponse upsertUser(@RequestParam(value = "name", required = true) String name,
-                                    @RequestParam(value = "age", required = true) Integer age,
-                                    @RequestParam(value = "sex", required = true, defaultValue = "female") String sex) {
-        // mock db update|insert
-        User p = new User(1, "yoko", 23, "female");
-        System.out.println(p);
-        
+    @GetMapping(value = "/getUsers")
+    public UserResponse getUser() {
+        List<User> users = userMapper.getALL();
+
         UserResponse.setCode(0);
         UserResponse.setMessage("success");
+        UserResponse.setData(users);
+        return UserResponse;
+    }
+
+    @PostMapping("/insertUser")
+    public UserResponse insertUser(@RequestParam(value = "userName", required = true) String userName,
+                                   @RequestParam(value = "age", required = true) Integer age,
+                                   @RequestParam(value = "sex", required = true, defaultValue = "female") String sex) {
+        User user = new User(userName, age, sex);
+        userMapper.insert(user);
+
+        UserResponse.setCode(0);
+        UserResponse.setMessage("success");
+        List<User> data = new ArrayList<>(0);
+        UserResponse.setData(data);
+        return UserResponse;
+    }
+
+    @PostMapping("/updateUser")
+    public UserResponse updateUser(@RequestParam(value = "id", required = true) Long id,
+                                   @RequestParam(value = "userName", required = true) String userName,
+                                   @RequestParam(value = "age", required = true) Integer age,
+                                   @RequestParam(value = "sex", required = true, defaultValue = "female") String sex) {
+        User user = new User(id, userName, age, sex);
+        userMapper.update(user);
+
+        UserResponse.setCode(0);
+        UserResponse.setMessage("success");
+        List<User> data = new ArrayList<>(0);
+        UserResponse.setData(data);
+        return UserResponse;
+    }
+
+    @GetMapping("/deleteUser/{id}")
+    public UserResponse deleteUser(@PathVariable(value = "id", required = true) Long id) {
+        userMapper.delete(id);
+
+        UserResponse.setCode(0);
+        UserResponse.setMessage("success");
+        List<User> data = new ArrayList<>(0);
+        UserResponse.setData(data);
         return UserResponse;
     }
 }

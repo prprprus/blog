@@ -4,19 +4,26 @@ import lombok.Data;
 
 @Data
 public class User {
-    private long id;
-    private String name;
-    private int age;
+    private Long id;
+    private String userName;
+    private Integer age;
     private String sex;
 
-    public User(long id, String name, int age, String sex) {
-        this.name = name;
+    public User(String userName, Integer age, String sex) {
+        this.userName = userName;
+        this.age = age;
+        this.sex = sex;
+    }
+
+    public User(Long id, String userName, Integer age, String sex) {
+        this.id = id;
+        this.userName = userName;
         this.age = age;
         this.sex = sex;
     }
 
     @Override
     public String toString() {
-        return String.format("[id: %s, name: %s, age: %s, sex: %s]", this.id, this.name, this.age, this.sex);
+        return String.format("[id: %s, userName: %s, age: %s, sex: %s]", id, userName, age, sex);
     }
 }
