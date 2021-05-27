@@ -3,13 +3,13 @@ package com.example.springbootstaging.model;
 import lombok.Data;
 
 @Data
-public class People {
+public class User {
     private long id;
     private String name;
     private int age;
     private String sex;
 
-    public People(long id, String name, int age, String sex) {
+    public User(long id, String name, int age, String sex) {
         this.name = name;
         this.age = age;
         this.sex = sex;

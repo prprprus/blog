@@ -1,4 +1,4 @@
-CREATE TABLE people (
+CREATE TABLE User (
     `id` bigint(11) NOT NULL AUTO_INCREMENT COMMENT '用户id',
     `name` varchar(45) NOT NULL COMMENT '姓名',
     `age` MEDIUMINT NOT NULL COMMENT '年龄',

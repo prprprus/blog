@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.example.springbootstaging.mapper.PeopleMapper" >
-    <resultMap id="BaseResultMap" type="com.example.springbootstaging.model.People" >
+<mapper namespace="com.example.springbootstaging.mapper.UserMapper" >
+    <resultMap id="BaseResultMap" type="com.example.springbootstaging.model.User" >
         <id column="id" property="id" jdbcType="BIGINT" />
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="age" property="age" jdbcType="INTEGER" />
-        <result column="sex" property="sex" javaType="com.example.springbootstaging.enums.PeopleEnum"/>
+        <result column="sex" property="sex" javaType="com.example.springbootstaging.enums.UserEnum"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -16,29 +16,29 @@
         SELECT
             <include refid="Base_Column_List"></include>
         FROM
-             people
+             User
     </select>
 
     <select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
         SELECT
             <include refid="Base_Column_List"></include>
         FROM
-            people
+            User
         WHERE
             id = #{id}
     </select>
 
-    <insert id="insert" parameterType="com.example.springbootstaging.model.People">
+    <insert id="insert" parameterType="com.example.springbootstaging.model.User">
         INSERT INTO
-            people
+            User
             (name, age, sex)
         VALUES
             (#{name}, #{age}, #{sex})
     </insert>
 
-    <update id="update" parameterType="com.example.springbootstaging.model.People">
+    <update id="update" parameterType="com.example.springbootstaging.model.User">
         UPDATE
-            people
+            User
         SET
             <if test="name != null">name = #{name},</if>
             <if test="age > 0">age = #{age},</if>
@@ -49,7 +49,7 @@
 
     <delete id="delete" parameterType="java.lang.Long">
         DELETE FROM
-            people
+            User
         WHERE
             id = #{id}
     </delete>

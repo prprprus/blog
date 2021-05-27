@@ -1,5 +1,5 @@
 package com.example.springbootstaging.enums;
 
-public enum PeopleEnum {
+public enum UserEnum {
     MALE, FEMALE
 }

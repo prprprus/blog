@@ -5,12 +5,12 @@ import java.util.List;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
-import com.example.springbootstaging.model.People;
+import com.example.springbootstaging.model.User;
 
 @Data
 @Component
-public class PeopleResponse {
+public class UserResponse {
     private int code;
     private String message;
-    private List<People> data;
+    private List<User> data;
 }
