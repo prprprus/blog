@@ -1,9 +1,13 @@
 package com.example.springbootstaging.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.springbootstaging.entity.PeopleResponse;
+import com.example.springbootstaging.model.People;
 
 @RestController
 @RequestMapping("/api/staging/people")
@@ -12,12 +16,29 @@ public class PeopleController {
     private PeopleResponse peopleResponse;
 
     @GetMapping(value = "/name/{id}")
-    public PeopleResponse getName(@PathVariable(value = "id", required = true) Integer id) {
+    public PeopleResponse getPeople(@PathVariable(value = "id", required = true) Integer id) {
+        peopleResponse.setCode(0);
+        peopleResponse.setMessage("success");
+
+        // mock db select
+        People p = new People("yoko", 23, "female");
+        List<People> data = new ArrayList<>();
+        data.add(p);
+        peopleResponse.setData(data);
+
+        return peopleResponse;
+    }
+
+    @PostMapping("/upsert")
+    public PeopleResponse upsertPeople(@RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "age", required = true) Integer age,
+                                    @RequestParam(value = "sex", required = true, defaultValue = "female") String sex) {
+        // mock db update|insert
+        People p = new People(name, age, sex);
+        System.out.println(p);
+        
         peopleResponse.setCode(0);
         peopleResponse.setMessage("success");
         return peopleResponse;
     }
-
-//    @PostMapping("/add")
-//    public
 }
