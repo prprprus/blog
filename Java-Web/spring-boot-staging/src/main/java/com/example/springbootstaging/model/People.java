@@ -4,11 +4,12 @@ import lombok.Data;
 
 @Data
 public class People {
+    private long id;
     private String name;
     private int age;
     private String sex;
 
-    public People(String name, int age, String sex) {
+    public People(long id, String name, int age, String sex) {
         this.name = name;
         this.age = age;
         this.sex = sex;
@@ -16,6 +17,6 @@ public class People {
 
     @Override
     public String toString() {
-        return String.format("[name: %s, age: %s, sex: %s]", this.name, this.age, this.sex);
+        return String.format("[id: %s, name: %s, age: %s, sex: %s]", this.id, this.name, this.age, this.sex);
     }
 }

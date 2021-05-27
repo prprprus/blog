@@ -3,6 +3,7 @@ package com.example.springbootstaging.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.springbootstaging.enums.PeopleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class PeopleController {
         peopleResponse.setMessage("success");
 
         // mock db select
-        People p = new People("yoko", 23, "female");
+        People p = new People(1, "yoko", 23, "female");
         List<People> data = new ArrayList<>();
         data.add(p);
         peopleResponse.setData(data);
@@ -34,7 +35,7 @@ public class PeopleController {
                                     @RequestParam(value = "age", required = true) Integer age,
                                     @RequestParam(value = "sex", required = true, defaultValue = "female") String sex) {
         // mock db update|insert
-        People p = new People(name, age, sex);
+        People p = new People(1, "yoko", 23, "female");
         System.out.println(p);
         
         peopleResponse.setCode(0);
