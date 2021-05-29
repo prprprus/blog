@@ -19,7 +19,7 @@
              user
     </select>
 
-    <select id="getOne" resultMap="BaseResultMap">
+    <select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
         SELECT
             <include refid="BaseColumnList"/>
         FROM
@@ -28,7 +28,7 @@
             id = #{id}
     </select>
 
-    <insert id="insert">
+    <insert id="insert" parameterType="com.example.springbootstaging.model.User">
         INSERT INTO
             user
             (user_name, age, sex)
@@ -36,7 +36,7 @@
             (#{userName}, #{age}, #{sex})
     </insert>
 
-    <update id="update">
+    <update id="update" parameterType="com.example.springbootstaging.model.User">
         UPDATE
             user
         SET
@@ -47,7 +47,7 @@
               id = #{id}
     </update>
 
-    <delete id="delete">
+    <delete id="delete" parameterType="java.lang.Long">
         DELETE FROM
             user
         WHERE
