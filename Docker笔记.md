@@ -4,12 +4,12 @@
 
 Docker 是一种虚拟化技术，基于 Linux 的 cgroup、namespace、OverlayFS 等技术，对进程进行封装隔离，属于操作系统级别的虚拟化
 
-主要和传统虚拟化技术作对比：
+### 对比传统虚拟化
 
 - 传统虚拟化技术会虚拟出一套硬件，在硬件之上运行完整的操作系统，在操作系统之上再运行应用程序；Docker 则不会虚拟化出硬件和操作系统，容器直接运行在宿主机的操作系统上
 - Docker 更轻量级、占用更少系统资源、有更快的启动速度、能运行的容器数量比虚拟机数量更多
 
-使用 Docker 的好处：
+### 使用 Docker 的好处
 
 - 轻量级（省资源、启动快、同时运行的数量多）
 - 提供一致的运行环境（开发、测试、运维）
@@ -17,13 +17,13 @@ Docker 是一种虚拟化技术，基于 Linux 的 cgroup、namespace、OverlayF
 - 可以搭配 CI/CD 使用
 - 对于 Dockerfile 定义的运行环境，开发和运维都看得懂，消除两者的隔阂
 
-Docker 的三个基本概念：
+### Docker 的三个基本概念
 
 - 镜像：一种特殊的文件系统，包含容器运行所需的各种文件，镜像是分层存储的
 - 容器：本质就是一个有独立命名空间的进程，容器内存储的数据会随着容器的消亡而消亡
 - 仓库：集中存储、分发镜像的地方，分为私有仓库和公共仓库两种
 
-Docker 使用上的整体结构：
+### Docker 使用上的整体结构
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/docker-1.png)
 
@@ -31,7 +31,7 @@ Docker 使用上的整体结构：
 
 安装方法比较多，譬如 [用脚本安装](https://github.com/zongzhenh/Blog/blob/master/%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6%E5%AE%89%E8%A3%85.md#docker)
 
-## 使用镜像
+## 镜像
 
 Docker 容器运行之前需要本地存在对应的镜像文件，如果本地没有，Docker 会尝试从仓库拉取
 
@@ -44,12 +44,6 @@ Docker 容器运行之前需要本地存在对应的镜像文件，如果本地�
 - 删除镜像：`docker image rm <image>`
 
 ### Dockerfile
-
-#### 一些技巧
-
-- 使用 `RUN` 命令时能作为一层就尽量作为一层，避免多个 `RUN`
-- 每一层没用的文件要删除，减少镜像体积
-- 镜像构建上下文是指 `docker build` 所在的目录。`ADD`、`COPY` 等命令需要额外赋值对应文件到上下文目录下，也可以通过 `.dockerignore` 忽略需要上传到 Docker 服务端的文件
 
 #### 常用指令
 
@@ -64,6 +58,12 @@ Docker 容器运行之前需要本地存在对应的镜像文件，如果本地�
 - `VOLUME ["<path1>", "<path2>"...]`：设置要挂载的数据卷
 - `EXPOSE <port1>, <port2>, ...`：声明要暴露的端口号
 - `CMD ["executable", "arg1", "arg2", ...]`：设置容器的主进程启动
+
+#### 一些技巧
+
+- 使用 `RUN` 命令时能作为一层就尽量作为一层，避免多个 `RUN`
+- 每一层没用的文件要删除，减少镜像体积
+- 镜像构建上下文是指 `docker build` 所在的目录。`ADD`、`COPY` 等命令需要额外赋值对应文件到上下文目录下，也可以通过 `.dockerignore` 忽略需要上传到 Docker 服务端的文件
 
 #### 示例
 
@@ -81,67 +81,7 @@ EXPOSE 5000
 CMD ["python", "./app.py"]
 ```
 
-多阶段构建：
-
-```dockerfile
-FROM node:alpine as frontend
-
-COPY package.json /app/
-
-RUN set -x ; cd /app \
-      && npm install --registry=https://registry.npm.taobao.org
-
-COPY webpack.mix.js /app/
-COPY resources/ /app/resources/
-
-RUN set -x ; cd /app \
-      && touch artisan \
-      && mkdir -p public \
-      && npm run production
-
-FROM composer as composer
-
-COPY database/ /app/database/
-COPY composer.json /app/
-
-RUN set -x ; cd /app \
-      && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ \
-      && composer install \
-           --ignore-platform-reqs \
-           --no-interaction \
-           --no-plugins \
-           --no-scripts \
-           --prefer-dist
-
-FROM php:7.4-fpm-alpine as laravel
-
-ARG LARAVEL_PATH=/app/laravel
-
-COPY --from=composer /app/vendor/ ${LARAVEL_PATH}/vendor/
-COPY . ${LARAVEL_PATH}
-COPY --from=frontend /app/public/js/ ${LARAVEL_PATH}/public/js/
-COPY --from=frontend /app/public/css/ ${LARAVEL_PATH}/public/css/
-COPY --from=frontend /app/public/mix-manifest.json ${LARAVEL_PATH}/public/mix-manifest.json
-
-RUN set -x ; cd ${LARAVEL_PATH} \
-      && mkdir -p storage \
-      && mkdir -p storage/framework/cache \
-      && mkdir -p storage/framework/sessions \
-      && mkdir -p storage/framework/testing \
-      && mkdir -p storage/framework/views \
-      && mkdir -p storage/logs \
-      && chmod -R 777 storage \
-      && php artisan package:discover
-
-FROM nginx:alpine as nginx
-
-ARG LARAVEL_PATH=/app/laravel
-
-COPY laravel.conf /etc/nginx/conf.d/
-COPY --from=laravel ${LARAVEL_PATH}/public ${LARAVEL_PATH}/public
-```
-
-## 操作容器
+## 容器
 
 ### 常用命令
 
@@ -169,7 +109,7 @@ COPY --from=laravel ${LARAVEL_PATH}/public ${LARAVEL_PATH}/public
 
 ## 数据管理
 
-旧版本是通过 `docker run` 的 `-v` 参数来挂载数据卷，新版本可以通过 `--mount` 实现，额外提供了一些新的功能
+旧版本是通过 `docker run` 的 `-v` 参数来挂载数据卷，新版本可以通过 `--mount` 实现，额外提供了一些新的功能，譬如设置 `readonly`
 
 ```BASH
 # 将 /src/webapp 设置成只读
@@ -183,8 +123,6 @@ docker run -d -P \
 ## 网络配置
 
 ### 端口映射
-
-启动容器是通过相关参数设置
 
 - `P` 随机映射
 - `-p 80:80` 将宿主机任意地址的 80 端口映射到容器的 80 端口
@@ -210,6 +148,7 @@ docker run -d --name container2 --network my-net imageA
 
 ### 配置 DNS
 
+- 配置局部 DNS，通过启动参数针对某个容器配置
 - 配置全局 DNS：通过 `/etc/docker/daemon.json` 文件
     ```BASH
     {
@@ -219,13 +158,12 @@ docker run -d --name container2 --network my-net imageA
       ]
     }
     ```
-- 通过启动参数针对某个容器配置
 
 ## Docker Compose
 
 Docker Compose 是官方提供的容器编排工具，用来快速部署多个相关联的容器，前身是 Fig 项目
 
-### 示例 WordPress
+### 示例：WordPress
 
 ```yaml
 version: "3"
