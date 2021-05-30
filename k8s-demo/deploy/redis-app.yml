@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-app-deployment
+spec:
+    replicas: 1
+    minReadySeconds: 15
+    selector:
+      matchLabels:
+        app: redis-app
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 1
+    template:
+      metadata:
+        labels:
+          app: redis-app
+      spec:
+        containers:
+          - name: redis-name
+            image: redis:6.2
+            imagePullPolicy: Always
+            ports:
+              - containerPort: 6379
+            resources:
+              requests:
+                cpu: 1000m
+                memory: 512Mi
+              limits:
+                cpu: 1000m
+                memory: 1000Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-app-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      protocol: TCP
+      targetPort: 6379
+  selector:
+    app: redis-app

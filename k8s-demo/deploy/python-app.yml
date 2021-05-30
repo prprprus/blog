@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app-deployment
+spec:
+  replicas: 2
+  minReadySeconds: 15
+  selector:
+    matchLabels:
+      app: python-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: python-app
+    spec:
+      containers:
+        - name: python-app
+          image: xxx/python-app:1.0 # 根据实际修改
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 2333
+          env:
+            - name: REDIS_HOST
+              value: redis-app
+          resources:
+            requests:
+              cpu: 300m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1000Mi
+      imagePullSecrets:
+        - name: k8s-demo
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 2333
+      protocol: TCP
+      targetPort: 2333
+  selector:
+    app: python-app
