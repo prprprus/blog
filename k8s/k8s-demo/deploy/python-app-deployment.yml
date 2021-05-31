@@ -21,7 +21,7 @@ spec:
       containers:
         - name: python-app
           image: xxx/python-app:1.0 # 根据实际修改
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 2333
           env:
