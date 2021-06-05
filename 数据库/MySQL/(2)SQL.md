@@ -68,7 +68,7 @@ LIMIT <count>;
 
 ### JOIN
 
-JOIN 是关系型数据库的特色，可以通过连接不同的表，同时查询不同表的字段，或者查出单表没有的数据。标准的 JOIN 一般有四种：`INNER JOIN`，`LEFT JOIN`，`RIGHT JOIN`，`FULL OUTER JOIN` 
+JOIN 是关系型数据库的特色，可以通过连接不同的表，同时查询不同表的字段，或者查出单表没有的数据。标准的 JOIN 一般有四种：`INNER JOIN`，`LEFT JOIN`，`RIGHT JOIN`，`FULL OUTER JOIN`。
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1.png)
 
@@ -84,14 +84,14 @@ WHERE t1.adddatetime>"{}";
 
 ### 分组和聚合
 
-`GROUP BY` 可以对查询结果按照某个字段做分组，并搭配聚合函数做一些统计
+`GROUP BY` 可以对查询结果按照某个字段做分组，并搭配聚合函数做一些统计。
 
 - 常用聚合：`SUM()`、`COUNT()`、`MAX()`、`MIN()`、`AVG()` 等
 - 还可以搭配 `HAVING` 可以对 `GROUP BY` 的结果做数据过滤
 
 ### 排序
 
-`ORDER BY` 可以对查询结果进行排序
+`ORDER BY` 可以对查询结果进行排序。
 
 - 可以对一个列做排序，也可以分别对多个列做排序，比如 `ORDER BY <COLUMN_1> DESC , <COLUMN_2> ASC;`
 - `DESC` 代表降序，`ASC` 代表升序，默认是升序排序
@@ -150,11 +150,11 @@ BEGIN;
 ROLLBACK;  
 ```
 
-更多事务相关可以参考 [事务.md](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(3)%E4%BA%8B%E5%8A%A1.md#%E4%BA%8B%E5%8A%A1)
+更多事务相关可以参考 [事务.md](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(3)%E4%BA%8B%E5%8A%A1.md#%E4%BA%8B%E5%8A%A1) 。
 
 ## EXPLAIN
 
-`EXPLAIN` 用来查看 SQL 的执行计划，可以参考 [这里](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(4)%E7%B4%A2%E5%BC%95.md#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92)
+`EXPLAIN` 用来查看 SQL 的执行计划，可以参考 [这里](https://github.com/zongzhenh/Blog/blob/master/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/(4)%E7%B4%A2%E5%BC%95.md#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92) 。
 
 ## 最佳实践
 
