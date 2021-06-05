@@ -10,9 +10,9 @@
 8. [异常](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%BC%82%E5%B8%B8)
 9. [其他模块级别函数](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E7%AC%94%E8%AE%B0.md#%E5%85%B6%E4%BB%96%E6%A8%A1%E5%9D%97%E7%BA%A7%E5%88%AB%E5%87%BD%E6%95%B0)
 
-Python 很多异步 IO 框架，如果根据标准的 IO 模型来看，应该叫 IO 多路复用。asyncio 其实也是，
+很多 Python 异步 IO 框架，如果根据标准的 IO 模型来看，应该叫 IO 多路复用。asyncio 其实也是，
 对于 IO 部分，asyncio 是基于 [selector](https://github.com/python/cpython/blob/3.9/Lib/asyncio/selector_events.py) 模块，
-而 selector 基于 select 模块，select 基于操作系统提供的 IO 多路复用机制，譬如 Linux 的 epoll，macOS 的 kqueue 等。但是 asyncio 实现的事件循环确实能实现异步的效果
+而 selector 基于 select 模块，select 基于操作系统提供的 IO 多路复用机制，譬如 Linux 的 epoll，macOS 的 kqueue。但是 asyncio 实现的事件循环确实能实现异步的效果。
 
 asyncio 的特点和主流的异步框架（Tornado 等）差不多：
 
@@ -22,7 +22,7 @@ asyncio 的特点和主流的异步框架（Tornado 等）差不多：
 - 不擅长 CPU 密集型任务，可以结合进程池、Celery 等工具缓解这个问题
 
 > asyncio 需要 Python3.5+，最好是 Python3.7+，功能会多一些，少量新功能需要 Python3.9。另外，asyncio 的接口存在不向后兼容的情况，
-> 譬如 ["Deprecated since version 3.8, will be removed in version 3.10: The loop parameter."](https://docs.python.org/3/library/asyncio-task.html#asyncio.sleep) 这类
+> 譬如 ["Deprecated since version 3.8, will be removed in version 3.10: The loop parameter."](https://docs.python.org/3/library/asyncio-task.html#asyncio.sleep) 这类。
 
 ## 事件循环
 
@@ -295,7 +295,7 @@ def _run_once(self):
 ### 事件循环的调度流程
 
 调度流程这块其实比并不好找，单步调试最多走到 events.py:88，貌似是因为协程底层是 C 实现的缘故。到网上查找发现切换相关的代码在 tasks.py 的 `__step()` 和 `__wakeup()` 方法上，
-`__wakeup()` 调用 `__step()`，所以重点是 `__step()`。协程恢复中断的核心是通过生成器的 `send(None)` 来从中断的地方继续执行
+`__wakeup()` 调用 `__step()`，所以重点是 `__step()`。协程恢复中断的核心是通过生成器的 `send(None)` 来从中断的地方继续执行。
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-4.png)
 
@@ -303,7 +303,7 @@ def _run_once(self):
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/pythonio-5.png)
 
-从这里可以看出，协程和线程的一个区别是，前者主动礼让，后者抢着执行
+从这里可以看出，协程和线程的一个区别是，前者主动礼让，后者抢着执行。
 
 ### 事件循环的使用
 
@@ -354,7 +354,7 @@ print(loop.is_closed())
 #### (3) 事件循环和 Future
 
 一个 Future 会对应一个事件循环，可以给 Future 绑定回调函数。当调用 `set_result()` 的时候，回调函数会被加入事件循环的 `self._ready` 队列，
-等待被调度执行
+等待被调度执行。
 
 ```python
 import asyncio
@@ -386,7 +386,7 @@ asyncio.run(main())
 
 #### (4) 事件循环和 Task
 
-Task 继承于 Future，提供的操作和 Future 差不多
+Task 继承于 Future，提供的操作和 Future 差不多。
 
 ```python
 import asyncio
@@ -408,7 +408,7 @@ asyncio.run(main())
 
 事件循环中执行的函数都会被封装成 Handle 对象，也就是说 `self._ready` 队列中保存的都是 Handle 对象。Handle 对象分为两类，
 一种是直接入队等待调度执行的 Handle 类（await 作用的协程），另一种是延迟执行的 TimerHandle 类（继承于 Handle 类）。
-asyncio 对外提供了两个接口 `loop.call_soon()` 和 `loop.call_later()`，可以直接往 `self._ready` 队列添加函数，跳过需要用 Future 对象设置的限制 
+asyncio 对外提供了两个接口 `loop.call_soon()` 和 `loop.call_later()`，可以直接往 `self._ready` 队列添加函数，跳过需要用 Future 对象设置的限制。
 
 ```python
 import asyncio
@@ -427,10 +427,10 @@ asyncio.run(main())
 #### (6) 事件循环和池
 
 事件循环除了可以搭配 IO 多路复用实现异步之外，还可以搭配进程池、线程池使用。将原本的阻塞代码丢到池里面去执行，也可以避免事件循环被阻塞，实现异步目的。
-**特别是对于 CPU 密集型任务，或者没有异步版本的第三方库等场景，都非常有用**
+**特别是对于 CPU 密集型任务，或者没有异步版本的第三方库等场景，都非常有用。**
 
 事件循环和池之间的调度关系可以参考 [事件循环的调度流程](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E7%9A%84%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B) ，
-将 IO 多路复用的部分换成池
+将 IO 多路复用的部分换成池。
 
 ```python
 import asyncio
@@ -470,19 +470,19 @@ async def main():
 asyncio.run(main())
 ```
 
-> 除了这些操作之外，还有异步的 socket 操作、异步的 DNS 操作、异步的信号处理、异步的子进程操作等，其中不少操作也提供了更易于使用的高级 API
+> 除了这些操作之外，还有异步的 socket 操作、异步的 DNS 操作、异步的信号处理、异步的子进程操作等，其中不少操作也提供了更易于使用的高级 API。
 
 ## 可调度对象
 
-协程在底层会被封装成 Task，而 Task 是 Future 的子类，也就是说这三种可调度对象都可以看成 Future 对象
+协程在底层会被封装成 Task，而 Task 是 Future 的子类，也就是说这三种可调度对象都可以看成 Future 对象。
 
 ### (1) Future
 
-相关操作参考 [(3) 事件循环和 Future](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#3-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C-future)
+相关操作参考 [(3) 事件循环和 Future](https://github.com/zongzhenh/Blog/blob/master/Python/IO/asyncio%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#3-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C-future) 。
 
 ### (2) Task
 
-Task 继承于 Future 类，提供的操作差不多
+Task 继承于 Future 类，提供的操作也差不多。
 
 ### (3) 协程
 
@@ -538,9 +538,9 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-> 只考虑 async/await 的写法，不考虑旧的 @asyncio.coroutine 写法
+> 只考虑 async/await 的写法，不考虑旧的 @asyncio.coroutine 写法。
 
-> Profile 一下看到耗时 1039ms，确实并发执行了
+> Profile 一下看到耗时 1039ms，确实并发执行了。
 
 #### Python 协程和 Go 协程的区别
 
@@ -551,7 +551,7 @@ CPU 密集型任务。总的来说即是并发，也是并行
 
 ## await 语句
 
-`await` 的语义是执行一个协程，当遇到阻塞时，主动让出执行权给其他协程。`await` 可以作用于协程、Task、Future 这三类对象
+`await` 的语义是执行一个协程，当遇到阻塞时，主动让出执行权给其他协程。`await` 可以作用于协程、Task、Future 这三类对象。
 
 ### 设置超时时间
 
@@ -580,11 +580,11 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-> asyncio 很多操作并没有提供 timeout 参数来控制超时，但是可以通过 `asyncio.wait_for()` 实现
+> asyncio 很多操作并没有提供 timeout 参数来控制超时，但是可以通过 `asyncio.wait_for()` 实现。
 
 ## Streams
 
-Streams 是专门用来处理网络 IO 的一组高级 API
+Streams 是专门用来处理网络 IO 的一组高级 API。
 
 ### echo 案例
 
@@ -656,7 +656,7 @@ asyncio.run(echo_client())
 ## Queue
 
 异步队列，用法和 [queue](https://docs.python.org/3/library/queue.html#module-queue) 模块差不多，但是线程不安全。
-get/put 操作没有超时功能，需要配合 `asyncio.wait_for()` 实现
+get/put 操作没有超时功能，需要配合 `asyncio.wait_for()` 实现。
 
 ```python
 import asyncio
@@ -719,7 +719,7 @@ asyncio.run(test_subprocess("ls -l"))
 ## 协程同步
 
 用法和 [threading](https://docs.python.org/3/library/threading.html#module-threading) 模块差不多，
-区别是 asyncio 提供的同步操作只用于协程，并不是线程级别的同步，也就是线程不安全。超时功能需要配合 `asyncio.wait_for()` 实现
+区别是 asyncio 提供的同步操作只用于协程，并不是线程级别的同步，也就是线程不安全。超时功能需要配合 `asyncio.wait_for()` 实现。
 
 ```python
 import asyncio
@@ -751,7 +751,7 @@ pass
 
 ## 异常
 
-直接参考 [这里](https://docs.python.org/3/library/asyncio-exceptions.html#exceptions)
+直接参考 [这里](https://docs.python.org/3/library/asyncio-exceptions.html#exceptions) 。
 
 ## 其他模块级别函数
 
