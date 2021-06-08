@@ -2,6 +2,8 @@ package com.example.springbootstaging;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 public class MixTests {
     private int flag = 1;
     static int flag2 = 2333;
@@ -66,15 +68,17 @@ public class MixTests {
 
     @Test
     void Case1() {
-        new MixTests.InnerClass();
-        new MixTests.StaticInnerClass();
+        //String s1 = "111";
+        //String s2 = s1.intern();
+        //String s3 = "111";
+        //System.out.println(s1 == s2);
+        //System.out.println(s1 == s3);
 
-        System.out.println(Day.MONDAY);
-        System.out.println(Day.SUNDAY);
-
-        System.out.println(ErrorCodeEn.OK);
-        System.out.println(ErrorCodeEn.OK.code);
-        System.out.println(ErrorCodeEn.OK.msg);
+        String s1 = new String("aaa");
+        String s2 = new String("aaa");
+        String s3 = new String("aaa");
+        System.out.println(s1 == s2);
+        System.out.println(s1 == s3);
     }
 
 }
