@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.example.springbootstaging.mapper")
 public class SpringBootStagingApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringBootStagingApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootStagingApplication.class, args);
+    }
 
 }
