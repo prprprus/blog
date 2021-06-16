@@ -3,10 +3,10 @@ package com.example.springbootstaging.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.springbootstaging.enums.UserEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.springbootstaging.enums.UserEnum;
 import com.example.springbootstaging.entity.UserResponse;
 import com.example.springbootstaging.model.User;
 import com.example.springbootstaging.mapper.UserMapper;
