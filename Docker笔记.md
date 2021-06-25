@@ -29,7 +29,7 @@ Docker 是一种虚拟化技术，基于 Linux 的 cgroup、namespace、OverlayF
 
 ### 安装
 
-安装方法比较多，譬如 [用脚本安装](https://github.com/zongzhenh/Blog/blob/master/%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6%E5%AE%89%E8%A3%85.md#docker)
+安装方法比较多，比如 [用脚本安装](https://github.com/zongzhenh/Blog/blob/master/%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6%E5%AE%89%E8%A3%85.md#docker)
 
 ## 镜像
 
@@ -109,7 +109,7 @@ CMD ["python", "./app.py"]
 
 ## 数据管理
 
-旧版本是通过 `docker run` 的 `-v` 参数来挂载数据卷，新版本可以通过 `--mount` 实现，额外提供了一些新的功能，譬如设置 `readonly`
+旧版本是通过 `docker run` 的 `-v` 参数来挂载数据卷，新版本可以通过 `--mount` 实现，额外提供了一些新的功能，比如设置 `readonly`
 
 ```BASH
 # 将 /src/webapp 设置成只读
