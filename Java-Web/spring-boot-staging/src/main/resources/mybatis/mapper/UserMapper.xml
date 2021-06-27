@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.springbootstaging.mapper.UserMapper">
     <resultMap id="BaseResultMap" type="com.example.springbootstaging.model.User">
-        <id column="id" property="id" jdbcType="BIGINT" />
-        <result column="user_name" property="userName" jdbcType="VARCHAR" />
-        <result column="age" property="age" jdbcType="INTEGER" />
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="age" property="age" jdbcType="INTEGER"/>
         <result column="sex" property="sex" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -14,44 +14,44 @@
 
     <select id="getALL" resultMap="BaseResultMap">
         SELECT
-            <include refid="BaseColumnList"/>
+        <include refid="BaseColumnList"/>
         FROM
-             user
+        user
     </select>
 
     <select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
         SELECT
-            <include refid="BaseColumnList"/>
+        <include refid="BaseColumnList"/>
         FROM
-            user
+        user
         WHERE
-            id = #{id}
+        id = #{id}
     </select>
 
     <insert id="insert" parameterType="com.example.springbootstaging.model.User">
         INSERT INTO
-            user
-            (user_name, age, sex)
+        user
+        (user_name, age, sex)
         VALUES
-            (#{userName}, #{age}, #{sex})
+        (#{userName}, #{age}, #{sex})
     </insert>
 
     <update id="update" parameterType="com.example.springbootstaging.model.User">
         UPDATE
-            user
+        user
         SET
-            <if test="userName != null">user_name = #{userName},</if>
-            <if test="age > 0">age = #{age},</if>
-            sex = #{sex}
+        <if test="userName != null">user_name = #{userName},</if>
+        <if test="age > 0">age = #{age},</if>
+        sex = #{sex}
         WHERE
-              id = #{id}
+        id = #{id}
     </update>
 
     <delete id="delete" parameterType="java.lang.Long">
         DELETE FROM
-            user
+        user
         WHERE
-            id = #{id}
+        id = #{id}
     </delete>
 
 </mapper>
