@@ -12,7 +12,7 @@
 
 很多 Python 异步 IO 框架，如果根据标准的 IO 模型来看，应该叫 IO 多路复用。asyncio 其实也是，
 对于 IO 部分，asyncio 是基于 [selector](https://github.com/python/cpython/blob/3.9/Lib/asyncio/selector_events.py) 模块，
-而 selector 基于 select 模块，select 基于操作系统提供的 IO 多路复用机制，譬如 Linux 的 epoll，macOS 的 kqueue。但是 asyncio 实现的事件循环确实能实现异步的效果。
+而 selector 基于 select 模块，select 基于操作系统提供的 IO 多路复用机制，比如 Linux 的 epoll，macOS 的 kqueue。但是 asyncio 实现的事件循环确实能实现异步的效果。
 
 asyncio 的特点和主流的异步框架（Tornado 等）差不多：
 
@@ -22,7 +22,7 @@ asyncio 的特点和主流的异步框架（Tornado 等）差不多：
 - 不擅长 CPU 密集型任务，可以结合进程池、Celery 等工具缓解这个问题
 
 > asyncio 需要 Python3.5+，最好是 Python3.7+，功能会多一些，少量新功能需要 Python3.9。另外，asyncio 的接口存在不向后兼容的情况，
-> 譬如 ["Deprecated since version 3.8, will be removed in version 3.10: The loop parameter."](https://docs.python.org/3/library/asyncio-task.html#asyncio.sleep) 这类。
+> 比如 ["Deprecated since version 3.8, will be removed in version 3.10: The loop parameter."](https://docs.python.org/3/library/asyncio-task.html#asyncio.sleep) 这类。
 
 ## 事件循环
 
@@ -194,7 +194,7 @@ def _run_once(self):
     事件循环迭代一次就运行一次这个方法
 
     这个方法会执行所有就绪的回调函数，包括 IO 多路复用的回调、一般 future 的回调、
-    call_later 的回调（譬如含有 asyncio.sleep() 这种语句的函数），回调函数都会被封装成 Handle 对象
+    call_later 的回调（比如含有 asyncio.sleep() 这种语句的函数），回调函数都会被封装成 Handle 对象
     """
     
     # 1. self._scheduled 对应的数据结构是最小二叉堆，用来存放所有的 call_later 回调，根据 time 排序
