@@ -18,8 +18,8 @@ Hive 就是在 HDFS 或者 HBase 之上的组件，用来查询存储在那些�
 Hive 支持大多数关系型数据库的类型，还额外支持三种集合类型：STRUCT、MAP、ARRAY。其中 MAP、ARRAY 类似 Java 中的 MAP 和 ARRAY，STRUCT 类似 C 中的 STRUCT。
 详细参考 [这里](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types)
 
-Hive 支持隐式类型转换，譬如当比较 `FLOAT` 和 `DOUBLE` 时，`FLOAT` 会转换成 `DOUBLE`。所有类型的隐式转换原则是转成更大表示范围的类型。也可以显式类型转换，
-譬如 `CAST('1' AS INT)`
+Hive 支持隐式类型转换，比如当比较 `FLOAT` 和 `DOUBLE` 时，`FLOAT` 会转换成 `DOUBLE`。所有类型的隐式转换原则是转成更大表示范围的类型。也可以显式类型转换，
+比如 `CAST('1' AS INT)`
 
 ### 文件格式
 
