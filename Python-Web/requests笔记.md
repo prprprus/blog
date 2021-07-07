@@ -15,7 +15,7 @@ s = requests.Session()
 s.get('https://httpbin.org/cookies')
 ```
 
-版本比较新的 requests（譬如 2.25.1） 默认使用 `Session()`，源码 api.py:60
+版本比较新的 requests（比如 2.25.1） 默认使用 `Session()`，源码 api.py:60
 
 ```python
 def request(method, url, **kwargs):
