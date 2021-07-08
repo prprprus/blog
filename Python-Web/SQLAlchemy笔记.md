@@ -33,7 +33,7 @@ MySQL 方言：
 
 ### (2) SQL Expression Language 组件
 
-SQL Expression Language 组件负责映射 SQL 语句的一些操作（譬如 in/or/and/not/desc/asc 等）
+SQL Expression Language 组件负责映射 SQL 语句的一些操作（比如 in/or/and/not/desc/asc 等）
 
 常用的有三部分：
 
