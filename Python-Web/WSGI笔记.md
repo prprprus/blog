@@ -4,7 +4,7 @@
 2. [Flask 中的 WSGI](https://github.com/zongzhenh/Blog/blob/master/Python-Web/WSGI%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md#flask-%E4%B8%AD%E7%9A%84-wsgi)
 
 WSGI 是 Python Web 的一种协议和规范，分为应用端（Flask、Tornado、Django 等 Web 框架）和服务端（Gunicorn、uWSGI 等应用服务器）。
-WSGI 解耦了应用端和服务端，让它们可以灵活搭配使用，譬如 Flask 既可以运行在 Gunicorn 上，也可以运行在 uWSGI 上。其他编程语言也有类似的协议，像 Java 的 Servlet
+WSGI 解耦了应用端和服务端，让它们可以灵活搭配使用，比如 Flask 既可以运行在 Gunicorn 上，也可以运行在 uWSGI 上。其他编程语言也有类似的协议，像 Java 的 Servlet
 
 > uwsgi 是另一种 Python Web 协议，而 uWSGI 是既实现了 WSGI 协议，又实现了 uwsgi 协议的应用服务器
 
@@ -26,7 +26,7 @@ class AppClass:
 
 应用端需要满足三个要求：
 
-- 是一个可调用对象，譬如函数、实现了 `__call__()` 方法的类
+- 是一个可调用对象，比如函数、实现了 `__call__()` 方法的类
 - 接受两个参数，environ（一个字典，包含 WSGI 环境信息） 和 start_response（该函数由服务端实现，并传给应用端，主要功能是组装 HTTP headers、返回 `write()` 方法）
 - 返回一个可迭代对象
 
