@@ -20,7 +20,9 @@ class UtilDatabase:
             UtilDatabase._instance = object.__new__(cls)
         return UtilDatabase._instance
 
-    def __init__(self, url=mysql_config.connection_url, echo=False, echo_pool=False, pool_size=5, max_overflow=10, pool_recycle=25200, pool_pre_ping=True):
+    def __init__(self, url=mysql_config.connection_url, echo=False,
+                 echo_pool=False, pool_size=5, max_overflow=10,
+                 pool_recycle=25200, pool_pre_ping=True):
         self.__url = url
         self.__echo = echo
         self.__echo_pool = echo_pool
@@ -54,7 +56,7 @@ class UtilDatabase:
 
 @contextmanager
 def session_factory(database_type=DatabaseType.MYSQL.value):
-    if database_type not in (DatabaseType.MYSQL.value, ):
+    if database_type not in (DatabaseType.MYSQL.value,):
         raise DatabaseTypeError
 
     session = UtilDatabase().generate_session()
@@ -68,4 +70,4 @@ def session_factory(database_type=DatabaseType.MYSQL.value):
         session.close()
 
 
-dbengine = UtilDatabase().engine
+db = UtilDatabase().engine
