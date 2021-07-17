@@ -194,7 +194,7 @@ class ReentrantReadWriteLockDemo {
             lock.writeLock().unlock();
         }
     }
-    
+
     public void pop() {
         lock.readLock().lock();
         try {
