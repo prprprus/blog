@@ -106,17 +106,22 @@ Docker 核心概念：
 例子：
 
 ```dockerfile
-FROM python:3
+FROM python:3.7.9
 
-WORKDIR /usr/src/app
+USER root
 
-COPY . .
+ENV project_dir="/opt/src"
+ENV project_name="python-app"
 
-RUN pip install --no-cache-dir -r requirements.txt
+ADD $project_name.tar.gz $project_dir
 
-EXPOSE 5000
+RUN pip install -r $project_dir/$project_name/requirements.txt -i https://pypi.doubanio.com/simple/
 
-CMD ["python", "./app.py"]
+WORKDIR $project_dir/$project_name
+
+EXPOSE 2333
+
+CMD ["gunicorn", "-w", "1", "-k", "gevent", "-b", "0.0.0.0:2333", "main:app"]
 ```
 
 ## 配置 DNS
