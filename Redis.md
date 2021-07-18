@@ -2,8 +2,8 @@
 
 ## 节省内存
 
-- 控制 key 的长度是一个直接有效的方法，譬如 user:name:abc 可以优化成 u:ne:abc
-- 避免 bygkey，譬如
+- 控制 key 的长度是一个直接有效的方法，比如 user:name:abc 可以优化成 u:ne:abc
+- 避免 bygkey，比如
     - String 大小尽量控制在 10 KB 以下
     - List / Hash / Set / ZSet 元素个数控制在 1w 以下
 - 选择合适的数据结构和注意内部编码类型
@@ -22,7 +22,7 @@
 
 - 避免 bigkey，避免大内存的分配和回收的耗时、网络传输的耗时的增加
 - 开启 lazy-free 机制，将释放内存的操作交给后台线程去做（4.0 后支持）
-- 不要使用时间复杂度过高的命令，譬如 `SORT`、`SINTER`、`SINTERSTORE`、`ZUNIONSTORE`、`ZINTERSTORE` 等聚合命令，这些操作可以放到应用程序去做
+- 不要使用时间复杂度过高的命令，比如 `SORT`、`SINTER`、`SINTERSTORE`、`ZUNIONSTORE`、`ZINTERSTORE` 等聚合命令，这些操作可以放到应用程序去做
 - 就算是 O(N) 复杂度，也要关注 N 的大小，避免网络传输耗时的增加
 - 在查询数据时，应该遵守以下步骤
   1. 先查询数据的数量（`LLEN` / `HLEN` / `SCARD` / `ZCARD`）
