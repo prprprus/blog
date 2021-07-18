@@ -1,7 +1,7 @@
-# Hive 笔记
+## Hive
 
-Hive 是 Hadoop 全家桶中的一个数据仓库工具，提供一个查询引擎和 HQL 查询语言（语法类似 SQL），可以将底层存储的结构化数据映射成一张表，
-并将 HQL 翻译成 MapReduce 程序，避免写 MapReduce 程序，降低了使用难度
+Hive 是 Hadoop 全家桶中的一个数据仓库工具，提供一个查询引擎和 HQL 查询语言（语法类似 SQL），可以将底层存储的结构化数据映射成一张表， 并将
+HQL 翻译成 MapReduce 程序，避免写 MapReduce 程序，降低了使用难度
 
 Hadoop 有三个核心组件：
 
@@ -11,15 +11,14 @@ Hadoop 有三个核心组件：
 
 Hive 就是在 HDFS 或者 HBase 之上的组件，用来查询存储在那些地方的数据。Hive 执行一般很慢，不适合做实时处理，只用来作离线处理
 
-## Hive 基础
-
 ### 数据类型
 
-Hive 支持大多数关系型数据库的类型，还额外支持三种集合类型：STRUCT、MAP、ARRAY。其中 MAP、ARRAY 类似 Java 中的 MAP 和 ARRAY，STRUCT 类似 C 中的 STRUCT。
+Hive 支持大多数关系型数据库的类型，还额外支持三种集合类型：STRUCT、MAP、ARRAY。其中 MAP、ARRAY 类似 Java 中的 MAP 和
+ARRAY，STRUCT 类似 C 中的 STRUCT。
 详细参考 [这里](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types)
 
-Hive 支持隐式类型转换，比如当比较 `FLOAT` 和 `DOUBLE` 时，`FLOAT` 会转换成 `DOUBLE`。所有类型的隐式转换原则是转成更大表示范围的类型。也可以显式类型转换，
-比如 `CAST('1' AS INT)`
+Hive 支持隐式类型转换，比如当比较 `FLOAT` 和 `DOUBLE` 时，`FLOAT` 会转换成 `DOUBLE`
+。所有类型的隐式转换原则是转成更大表示范围的类型。也可以显式类型转换， 比如 `CAST('1' AS INT)`
 
 ### 文件格式
 
@@ -53,7 +52,7 @@ LINES TERMINATED BY "\n"-- 行分隔符
 - `INSERT OVERWRITE` 是覆盖插入，原有的数据会被删除
 - `INSERT INTO` 时必须提供完整的列，不支持插入复杂类型
 
-## Python 中使用 Hive
+### Python 中使用 Hive
 
 利用 impyla 作为驱动，pandas 操作结果。Python3.6 下用 impyla，如果版本号大于 0.13.8，可能会有问题
 
@@ -75,7 +74,8 @@ class UtilHive:
             UtilHive._instance = object.__new__(cls)
         return UtilHive._instance
 
-    def __init__(self, host="127.0.0.1", port=10001, user="xxx", password="xxx", database="xxx", auth_mechanism="PLAIN"):
+    def __init__(self, host="127.0.0.1", port=10001, user="xxx", password="xxx",
+                 database="xxx", auth_mechanism="PLAIN"):
         """
         auth_mechanism 的值取决于 hive - site.xml 里边的一个配置
         <name>hive.server2.authentication</name>
@@ -94,8 +94,10 @@ class UtilHive:
         self.password = password
         self.database = database
         self.auth_mechanism = auth_mechanism
-        self.__conn = hive_connect(host=self.host, port=self.port, user=self.user, password=self.password,
-                                   database=self.database, auth_mechanism=self.auth_mechanism)
+        self.__conn = hive_connect(host=self.host, port=self.port,
+                                   user=self.user, password=self.password,
+                                   database=self.database,
+                                   auth_mechanism=self.auth_mechanism)
 
     def ping(self):
         """ 如果连接断开，则重新连接 """
@@ -104,7 +106,7 @@ class UtilHive:
     def close(self):
         """ 关闭数据库连接 """
         self.__conn.close()
-        
+
     def get_connection(self):
         return self.__conn
 
