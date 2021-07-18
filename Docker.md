@@ -18,7 +18,7 @@ Docker 核心概念：
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Blog/master/image/docker-1.png)
 
-### 常用 docker 命令
+## 常用 docker 命令
 
 镜像：
 
@@ -77,7 +77,7 @@ Docker 核心概念：
 
 - 可以使用 Docker Compose
 
-### Dockerfile
+## Dockerfile
 
 相关命令：
 
@@ -119,7 +119,7 @@ EXPOSE 5000
 CMD ["python", "./app.py"]
 ```
 
-### 配置 DNS
+## 配置 DNS
 
 - 配置局部 DNS，通过启动参数针对某个容器配置
 - 配置全局 DNS：通过 `/etc/docker/daemon.json` 文件
