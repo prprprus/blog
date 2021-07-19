@@ -1,4 +1,4 @@
-## 常用命令
+## 日常操作相关命令
 
 查找：
 
@@ -40,7 +40,7 @@ awk：
 - 强制终止某个服务：
   `sudo ps aux | grep gunicorn | grep -v color | awk  'BEGIN {FS=" "} {print $2 "\t"}' | xargs kill -9`
 
----
+## 查找信息相关命令
 
 系统版本信息：
 
@@ -93,9 +93,7 @@ CPU 信息：
 
 - 查看进程的文件使用情况：`lsof -p $PID`
 
----
-
-性能分析相关：
+## 性能分析相关命令
 
 - 查看服务器可以打开的最大文件数：`cat /proc/sys/fs/file-max`
 - 查看进程的资源限制：`ulimit -a`
