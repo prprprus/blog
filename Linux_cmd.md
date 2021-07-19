@@ -99,7 +99,7 @@ CPU 信息：
 
 - 查看服务器可以打开的最大文件数：`cat /proc/sys/fs/file-max`
 - 查看进程的资源限制：`ulimit -a`
-- 查看服务器整体的 CPU、内存、虚拟内存、磁盘 IO 等使用情况：`vmstat 2`
+- 查看服务器 CPU、内存、虚拟内存、磁盘 IO、进程等资源的整体使用情况：`vmstat 2`
     - CPU 相关指标
         - in：每秒的中断次数
         - cs：每秒的上下文切换次数（系统调用、线程切换、进程切换），值太大说明可能有地方进程数、线程数等数量设置不合理
@@ -108,15 +108,15 @@ CPU 信息：
         - id：空闲的 CPU 时间
         - wa：等待 IO 的 CPU 时间，值太大说明 IO 操作比较频繁，往往会严重影响系统的性能
     - 内存、虚拟内存相关指标
-        - swpd：已使用的虚拟内存大小，如果值太大，可能存在内存瓶颈或者内存泄漏问题
         - free：空闲的物理内存大小
         - buff：用于磁盘块的缓存大小
         - cache：用于文件的缓存大小
-    - 磁盘 IO 相关指标
-        - si：每秒从磁盘读入虚拟内存的大小，如果值太大，可能存在内存瓶颈或者内存泄漏问题
+        - swpd：已使用的虚拟内存大小，如果值太大，可能存在内存瓶颈或者内存泄漏问题
+        - si：每秒从磁盘读入虚拟内存的大小，同上
         - so：每秒从虚拟内存写入磁盘的大小，同上
-        - bi：块设备每秒接收到的块数量，值越大说明 IO 写操作越频繁
-        - bo：块设备每秒发送的块数量，值越大说明 IO 读操作越频繁
+    - 磁盘 IO 相关指标
+        - bi：每秒写入磁盘的块数量（块大小默认 1024 byte）
+        - bo：每秒从磁盘读取的块数量
     - 进程相关指标
         - r：有多少个进程被分配到 CPU 资源，当值超过 CPU 个数时，就可能存在 CPU 瓶颈
         - b：阻塞的进程个数
@@ -136,6 +136,7 @@ CPU 信息：
   vmstat命令实战详解：https://www.cnblogs.com/ggjucheng/archive/2012/01/05/2312625.html
 - What is the difference between buffer and cache memory in
   Linux?：https://stackoverflow.com/questions/6345020/what-is-the-difference-between-buffer-and-cache-memory-in-linux
-  
+- Linux
+  IO实时监控iostat命令详解：https://www.cnblogs.com/ggjucheng/archive/2013/01/13/2858810.html  
 
 
