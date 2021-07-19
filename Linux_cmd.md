@@ -93,7 +93,7 @@ CPU 信息：
 
 ---
 
-性能分析相关命令：
+性能分析相关：
 
 - 查看服务器可以打开的最大文件数：`cat /proc/sys/fs/file-max`
 - 查看进程的资源限制：`ulimit -a`
@@ -136,5 +136,7 @@ CPU 信息：
   Linux?：https://stackoverflow.com/questions/6345020/what-is-the-difference-between-buffer-and-cache-memory-in-linux
 - Linux
   IO实时监控iostat命令详解：https://www.cnblogs.com/ggjucheng/archive/2013/01/13/2858810.html  
+
+
 
 
