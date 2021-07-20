@@ -194,3 +194,7 @@ http {
 - nginx优化 突破十万并发：https://www.cnblogs.com/sxlfybb/archive/2011/09/15/2178160.html
 - Nginx - keepliave 相关知识点：https://www.cnblogs.com/hukey/p/10506556.html
 - Nginx 单机百万QPS环境搭建：https://www.cnblogs.com/wunaozai/p/6073731.html
+- 连接数包括代理服务器的连接、客户端的连接等：https://www.jianshu.com/p/7bfbfa8bce66
+- 如何用 Nginx 实现百万并发连接？| 极客时间：https://www.infoq.cn/article/c-tv6mr2rofl3jtevy61
+- Rate Limiting with NGINX and NGINX
+  Plus：https://www.nginx.com/blog/rate-limiting-nginx/
