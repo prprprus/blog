@@ -3,12 +3,13 @@
 1. [SQLAlchemy Core](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/SQLAlchemy%E7%AC%94%E8%AE%B0.md#sqlalchemy-core)
 2. [SQLAlchemy ORM](https://github.com/hsxhr-10/Notes/blob/master/Python-Web/SQLAlchemy%E7%AC%94%E8%AE%B0.md#sqlalchemy-orm)
 
-SQLAlchemy 是 Python ORM 框架，用来将数据库表映射成编程语言的对象，同时解耦应用程序和数据库，让应用程序可以用同一套 API 去操作不同的数据库
+SQLAlchemy 是 Python ORM 框架，用来将数据库表映射成编程语言的对象，同时解耦应用程序和数据库，让应用程序可以用同一套 API
+去操作不同的数据库
 
 ![](https://raw.githubusercontent.com/hsxhr-10/Notes/master/image/pythonwebsqla-1.png)
 
-根据官网提供的架构图，可知 SQLAlchemy 分为三部分，最底层的 DBAPI 是具体数据库的驱动接口；中间的 Core 提供了各种核心组件；最上层的 ORM 负责提供对象关系映射建模和一些高级的接口。
-SQLAlchemy 还提供了 Dialect（方言）的概念，专门用于处理、提供一些底层数据库特有的功能
+根据官网提供的架构图，可知 SQLAlchemy 分为三部分，最底层的 DBAPI 是具体数据库的驱动接口；中间的 Core 提供了各种核心组件；最上层的
+ORM 负责提供对象关系映射建模和一些高级的接口。 SQLAlchemy 还提供了 Dialect（方言）的概念，专门用于处理、提供一些底层数据库特有的功能
 
 > 讨论以 MySQL 为主
 
@@ -53,10 +54,12 @@ SQL Expression Language 组件负责映射 SQL 语句的一些操作（比如 in
 
 常用参数说明：
 
-- url：数据库连接 URL，格式 `dialect+driver://username:password@host:port/database`。具体参考 [这里](https://docs.sqlalchemy.org/en/14/core/engines.html#database-urls)
+- url：数据库连接 URL，格式 `dialect+driver://username:password@host:port/database`
+  。具体参考 [这里](https://docs.sqlalchemy.org/en/14/core/engines.html#database-urls)
 - echo=False：是否开启 Engine 日志。对性能有比较大的影响，线上环境应该关闭
 - echo_pool=False：是否开启连接池日志。对性能有比较大的影响，线上环境应该关闭
-- isolation_level：事务隔离级别。取值 ("SERIALIZABLE", "REPEATABLE READ", "READ COMMITTED", "READ UNCOMMITTED")，一般不需要主动设置
+- isolation_level：事务隔离级别。取值 ("SERIALIZABLE", "REPEATABLE READ", "READ COMMITTED"
+  , "READ UNCOMMITTED")，一般不需要主动设置
 - pool_size=5：连接池中保持打开的连接数。QueuePool 下设置为 0 代表无限制
 - max_overflow=10：在 pool_size 之外还能打开的连接数，也就是最大连接数，仅在 QueuePool 下有效
 - pool_pre_ping：每次从池中取出连接时，是否检测连接的有效性。一般设置为 True 确保使用有效的连接
@@ -82,7 +85,8 @@ Session 代表一次 SQL 操作的会话，默认不是 autucommit
 
 详细参考 [这里](https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session)
 
-**⭐️ Session 不是线程安全，可以用 `contextmanager` 加 `yield` 解决️**，或者用 `from sqlalchemy.orm import scoped_session` 解决也可以
+**⭐️ Session 不是线程安全，可以用 `contextmanager` 加 `yield` 解决️**
+，或者用 `from sqlalchemy.orm import scoped_session` 解决也可以
 
 ```python
 from contextlib import contextmanager
@@ -111,50 +115,54 @@ with session_factory() as session:
 有四张表，factory 表和 product 表是一对多关系，orders 表和 product 表关系是多对多
 
 ```sql
-CREATE TABLE factory (
-    `id` bigint(11) NOT NULL AUTO_INCREMENT,
-    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
-    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
-    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
-    `factory_id` varchar(255) NOT NULL UNIQUE COMMENT '生产厂家ID',
-    `name` varchar(45) NOT NULL COMMENT '生产厂家名称',
+CREATE TABLE factory
+(
+    `id`          bigint(11) NOT NULL AUTO_INCREMENT,
+    `is_deleted`  tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
+    `create_time` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
+    `update_time` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
+    `factory_id`  varchar(255) NOT NULL UNIQUE COMMENT '生产厂家ID',
+    `name`        varchar(45)  NOT NULL COMMENT '生产厂家名称',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='生产厂家信息';
 ```
 
 ```sql
-CREATE TABLE product (
-    `id` bigint(11) NOT NULL AUTO_INCREMENT,
-    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
-    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
-    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
-    `product_id` varchar(255) NOT NULL UNIQUE COMMENT '商品ID',
-    `name` varchar(45) NOT NULL COMMENT '商品名称',
-    `factory_id` varchar(255) NOT NULL UNIQUE COMMENT '关联的生产厂家ID',
+CREATE TABLE product
+(
+    `id`          bigint(11) NOT NULL AUTO_INCREMENT,
+    `is_deleted`  tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
+    `create_time` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
+    `update_time` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
+    `product_id`  varchar(255) NOT NULL UNIQUE COMMENT '商品ID',
+    `name`        varchar(45)  NOT NULL COMMENT '商品名称',
+    `factory_id`  varchar(255) NOT NULL UNIQUE COMMENT '关联的生产厂家ID',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品信息';
 ```
 
 ```sql
-CREATE TABLE orders (
-    `id` bigint(11) NOT NULL AUTO_INCREMENT,
-    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
-    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
-    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
-    `order_id` varchar(255) NOT NULL UNIQUE COMMENT '订单ID',
-    `price` decimal(13, 5) NOT NULL DEFAULT 0 COMMENT '订单金额',
+CREATE TABLE orders
+(
+    `id`          bigint(11) NOT NULL AUTO_INCREMENT,
+    `is_deleted`  tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
+    `create_time` timestamp      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
+    `update_time` timestamp      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
+    `order_id`    varchar(255)   NOT NULL UNIQUE COMMENT '订单ID',
+    `price`       decimal(13, 5) NOT NULL DEFAULT 0 COMMENT '订单金额',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单信息';
 ```
 
 ```sql
-CREATE TABLE orders_product (
-    `id` bigint(11) NOT NULL AUTO_INCREMENT,
-    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
-    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
-    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
-    `order_id` varchar(255) NOT NULL UNIQUE COMMENT '订单ID',
-    `product_id` varchar(255) NOT NULL UNIQUE COMMENT '商品ID',
+CREATE TABLE orders_product
+(
+    `id`          bigint(11) NOT NULL AUTO_INCREMENT,
+    `is_deleted`  tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记, 0 是未删除, 1 是已删除',
+    `create_time` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
+    `update_time` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改的时间',
+    `order_id`    varchar(255) NOT NULL UNIQUE COMMENT '订单ID',
+    `product_id`  varchar(255) NOT NULL UNIQUE COMMENT '商品ID',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表和商品表的多对多关系';
 ```
@@ -183,9 +191,11 @@ class _BaseMixin(_Base):
 
     id = Column(Integer, primary_key=True)
     is_deleted = Column(TINYINT, nullable=False, default=0)
-    create_time = Column(DateTime, nullable=False, default=text("CURRENT_TIMESTAMP"))
-    update_time = Column(DateTime, nullable=False, default=text("CURRENT_TIMESTAMP"))
-    
+    create_time = Column(DateTime, nullable=False,
+                         default=text("CURRENT_TIMESTAMP"))
+    update_time = Column(DateTime, nullable=False,
+                         default=text("CURRENT_TIMESTAMP"))
+
 
 class Factory(_BaseMixin):
     __tablename__ = "factory"
